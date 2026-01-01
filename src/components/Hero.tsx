@@ -95,9 +95,7 @@ const Hero = () => {
                 </div>
               </div>
 
-              <p className="text-base text-muted-foreground">
-                Такое объединение позволяет нам сочетать общественную защиту прав граждан с профессиональной юридической поддержкой на самом высоком уровне.
-              </p>
+              <p className="text-base text-muted-foreground">Юридическая компания, основанная в 2016 году</p>
             </div>
 
             {/* Right side - Logos with orbit animation */}
