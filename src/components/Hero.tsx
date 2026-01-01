@@ -77,8 +77,30 @@ const Hero = () => {
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             {/* Left side - Text content */}
             <div className="lg:w-1/2 space-y-6">
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                ЮрСервисНСК — это уникальное объединение юридической компании "Правоотношение" и Народной дружины Октябрьского района г. Новосибирска, аккредитованных МВД Новосибирской области. Мы работаем во взаимодействии с государственными органами, обеспечивая доверие, законность и ответственность в каждом действии.
+              <p className="text-lg text-muted-foreground">
+                Компания, объединяющая в себе:
+              </p>
+              
+              <div className="bg-gradient-to-r from-primary/10 via-blue-50 to-primary/5 rounded-xl p-6 border-l-4 border-primary space-y-4">
+                <div>
+                  <h3 className="font-semibold text-foreground mb-2">Общественная деятельность</h3>
+                  <p className="text-sm text-muted-foreground">
+                    При поддержке <strong>Народной Дружины</strong> в лице ФЗ о дружинах, зарегистрированной в МВД и подчиняющейся Администрации г. Новосибирска
+                  </p>
+                </div>
+                
+                <div className="h-px bg-border"></div>
+                
+                <div>
+                  <h3 className="font-semibold text-foreground mb-2">ООО "Правоотношение"</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Юридическая компания, работающая с 2016 года в области права и оказывающая профессиональные юридические услуги
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-base text-muted-foreground">
+                Такое объединение позволяет нам сочетать общественную защиту прав граждан с профессиональной юридической поддержкой на самом высоком уровне.
               </p>
             </div>
 
