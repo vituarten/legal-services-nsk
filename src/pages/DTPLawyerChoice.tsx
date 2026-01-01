@@ -180,18 +180,22 @@ const DTPLawyerChoice = () => {
                 <Button 
                   size="lg"
                   className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
-                  onClick={() => window.location.href = 'tel:+79994523500'}
+                  asChild
                 >
-                  <Icon name="Phone" size={20} className="mr-2" />
-                  Позвонить юристу
+                  <a href="tel:+79994523500">
+                    <Icon name="Phone" size={20} className="mr-2" />
+                    +7 999 452 35 00
+                  </a>
                 </Button>
                 <Button 
                   size="lg"
-                  className="bg-green-500 text-white hover:bg-green-600 font-semibold"
-                  onClick={() => window.open('https://wa.me/79994523500', '_blank')}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+                  asChild
                 >
-                  <Icon name="MessageCircle" size={20} className="mr-2" />
-                  WhatsApp
+                  <a href="https://t.me/+79931903500" target="_blank">
+                    <Icon name="Send" size={20} className="mr-2" />
+                    Telegram
+                  </a>
                 </Button>
               </div>
             </div>

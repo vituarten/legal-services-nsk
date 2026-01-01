@@ -38,19 +38,20 @@ const GuiltDetermination = () => {
                   className="bg-yellow-600 hover:bg-yellow-700 text-white"
                   asChild
                 >
-                  <a href="tel:+79931903500">
+                  <a href="tel:+79994523500">
                     <Icon name="Phone" className="mr-2" />
-                    +7 993 190 35 00
+                    +7 999 452 35 00
                   </a>
                 </Button>
                 <Button 
                   size="lg"
-                  variant="outline"
-                  className="border-2 border-yellow-600 text-yellow-600 hover:bg-yellow-50"
-                  onClick={() => window.location.href = 'tel:+79931903500'}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  asChild
                 >
-                  <Icon name="Phone" className="mr-2" />
-                  +7 993 190 35 00
+                  <a href="https://t.me/+79931903500" target="_blank">
+                    <Icon name="Send" className="mr-2" />
+                    Telegram
+                  </a>
                 </Button>
               </div>
               

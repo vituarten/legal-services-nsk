@@ -157,19 +157,19 @@ export default function ContactFormSection() {
               </CardContent>
             </Card>
 
-            <Card className="bg-green-600 text-white">
+            <Card className="bg-blue-500 text-white">
               <CardContent className="p-6">
                 <h4 className="font-bold mb-4 flex items-center gap-2">
-                  <Icon name="MessageCircle" size={24} />
-                  Написать в WhatsApp
+                  <Icon name="Send" size={24} />
+                  Написать в Telegram
                 </h4>
                 <a 
-                  href={`https://wa.me/${CONTACTS.whatsapp}`}
+                  href={`https://t.me/${CONTACTS.telegram}`}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="block"
                 >
-                  <Button className="w-full bg-white text-green-600 hover:bg-gray-100 h-12">
+                  <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 h-12">
                     Открыть чат
                   </Button>
                 </a>

@@ -54,9 +54,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onConsultationClick }) => {
               </button>
               <a
                 href="tel:+79994523500"
-                className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-900 transition-colors text-center"
+                className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-blue-900 transition-colors flex items-center justify-center gap-2"
               >
-                +7 (999) 452-35-00
+                <Icon name="Phone" size={20} />
+                +7 999 452 35 00
+              </a>
+              <a
+                href="https://t.me/+79931903500"
+                target="_blank"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors flex items-center justify-center gap-2"
+              >
+                <Icon name="Send" size={20} />
+                TELEGRAM
               </a>
             </div>
 

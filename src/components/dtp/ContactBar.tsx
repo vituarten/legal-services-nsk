@@ -3,13 +3,13 @@ import Icon from "@/components/ui/icon";
 
 interface ContactBarProps {
   phone?: string;
-  whatsapp?: string;
+  telegram?: string;
   onConsultClick?: () => void;
 }
 
 const ContactBar = ({ 
   phone = "+7 (999) 452-35-00", 
-  whatsapp = "79994523500",
+  telegram = "79931903500",
   onConsultClick 
 }: ContactBarProps) => {
   const handlePhoneClick = () => {
@@ -19,11 +19,11 @@ const ContactBar = ({
     window.location.href = `tel:${phone.replace(/[^\d+]/g, '')}`;
   };
 
-  const handleWhatsAppClick = () => {
+  const handleTelegramClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'whatsapp_click');
+      window.ym(103525320, 'reachGoal', 'telegram_click');
     }
-    window.open(`https://wa.me/${whatsapp}`, '_blank');
+    window.open(`https://t.me/${telegram}`, '_blank');
   };
 
   return (
@@ -38,20 +38,20 @@ const ContactBar = ({
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button
               size="lg"
-              className="bg-green-600 hover:bg-green-700 text-white"
-              onClick={handleWhatsAppClick}
-            >
-              <Icon name="MessageCircle" size={20} className="mr-2" />
-              WhatsApp
-            </Button>
-            
-            <Button
-              size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handlePhoneClick}
             >
               <Icon name="Phone" size={20} className="mr-2" />
               {phone}
+            </Button>
+            
+            <Button
+              size="lg"
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+              onClick={handleTelegramClick}
+            >
+              <Icon name="Send" size={20} className="mr-2" />
+              Telegram
             </Button>
 
             {onConsultClick && (

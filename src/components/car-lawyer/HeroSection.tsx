@@ -63,18 +63,18 @@ export default function HeroSection() {
                   </Button>
                 </a>
                 <a 
-                  href={`https://wa.me/${CONTACTS.whatsapp}`} 
+                  href={`https://t.me/${CONTACTS.telegram}`} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   onClick={() => {
                     if (typeof window !== 'undefined' && window.ym) {
-                      window.ym(103525320, 'reachGoal', 'whatsapp_click');
+                      window.ym(103525320, 'reachGoal', 'telegram_click');
                     }
                   }}
                 >
-                  <Button size="lg" className="bg-green-600 hover:bg-green-700 text-lg h-14 px-8">
-                    <Icon name="MessageCircle" className="mr-2" size={20} />
-                    WhatsApp
+                  <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-lg h-14 px-8">
+                    <Icon name="Send" className="mr-2" size={20} />
+                    Telegram
                   </Button>
                 </a>
               </div>
