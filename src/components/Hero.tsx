@@ -120,8 +120,8 @@ const Hero = () => {
         {/* About Company Section */}
         <div className="mt-24">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">О компании</h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Юридический сервис Новосибирск это -</h2>
+            <p className="text-muted-foreground max-w-3xl mx-auto font-semibold text-lg">
               Объединение профессионализма и государственной поддержки
             </p>
           </div>
