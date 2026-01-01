@@ -77,26 +77,30 @@ const Hero = () => {
           {/* Right side - Logos */}
           <div className="relative">
             <div className="relative w-full max-w-[500px] mx-auto">
-              <div className="grid grid-cols-2 gap-8 items-center">
+              <div className="grid grid-cols-2 gap-8 items-stretch">
                 {/* Логотип Народной Дружины */}
-                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all">
-                  <img
-                    src="https://cdn.poehali.dev/files/ЛоготипНД54%20(%20без%20фона%20)%20.jpe%20g.png"
-                    alt="Народная Дружина Октябрьского района"
-                    className="w-full h-auto object-contain"
-                  />
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all flex flex-col">
+                  <div className="flex-1 flex items-center justify-center">
+                    <img
+                      src="https://cdn.poehali.dev/files/ЛоготипНД54%20(%20без%20фона%20)%20.jpe%20g.png"
+                      alt="Народная Дружина Октябрьского района"
+                      className="w-full h-40 object-contain"
+                    />
+                  </div>
                   <p className="text-xs text-center text-muted-foreground mt-4">
                     Народная Дружина<br/>Октябрьского района
                   </p>
                 </div>
 
                 {/* Логотип Правоотношение */}
-                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all">
-                  <img
-                    src="https://cdn.poehali.dev/files/Unkwn.png"
-                    alt="ООО Правоотношение"
-                    className="w-full h-auto object-contain"
-                  />
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all flex flex-col">
+                  <div className="flex-1 flex items-center justify-center">
+                    <img
+                      src="https://cdn.poehali.dev/files/Unkwn.png"
+                      alt="ООО Правоотношение"
+                      className="w-full h-40 object-contain"
+                    />
+                  </div>
                   <p className="text-xs text-center text-muted-foreground mt-4">
                     ООО "Правоотношение"
                   </p>
