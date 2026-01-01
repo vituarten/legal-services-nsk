@@ -82,9 +82,7 @@ const Hero = () => {
               <div className="bg-gradient-to-r from-primary/10 via-blue-50 to-primary/5 rounded-xl p-6 border-l-4 border-primary space-y-4">
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Народная дружина Октябрьского района</h3>
-                  <p className="text-sm text-muted-foreground">
-                    При поддержке <strong>Народной Дружины</strong> в лице ФЗ о дружинах, зарегистрированной в МВД и подчиняющейся Администрации г. Новосибирска
-                  </p>
+                  <p className="text-sm text-muted-foreground">Действующая на основании лицензии МВД от 18 марта 2016 года</p>
                 </div>
                 
                 <div className="h-px bg-border"></div>
