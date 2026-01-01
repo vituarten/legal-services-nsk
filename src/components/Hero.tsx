@@ -70,9 +70,7 @@ const Hero = () => {
 
         {/* About Company Section */}
         <div className="mt-20">
-          <h2 className="">
-            ЮрСервисНСК
-          </h2>
+          <h2 className=""></h2>
           
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             {/* Left side - Text content */}
