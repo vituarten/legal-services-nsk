@@ -49,7 +49,7 @@ ${formData.message}
 ⏰ Время: ${new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Novosibirsk' })}`;
 
       const result = await sendWhatsAppMessage({
-        phone: '79994523500',
+        phone: '79931903500',
         message
       });
 
@@ -83,14 +83,14 @@ ${formData.message}
     {
       icon: "Phone",
       title: "Телефон",
-      value: "+7 (999) 452-35-00",
-      link: "tel:+79994523500",
+      value: "+7 (993) 190-35-00",
+      link: "tel:+79931903500",
     },
     {
       icon: "MessageCircle",
       title: "WhatsApp",
-      value: "+7 (999) 452-35-00",
-      link: "https://wa.me/79994523500",
+      value: "+7 (993) 190-35-00",
+      link: "https://wa.me/79931903500",
     },
     {
       icon: "Mail",
@@ -101,13 +101,13 @@ ${formData.message}
     {
       icon: "MapPin",
       title: "Адрес",
-      value: "г. Новосибирск, ул. Ленина, д. 3, офис 323",
+      value: "г. Новосибирск, ул. Ленина, д. 3",
       link: "#",
     },
     {
       icon: "Clock",
       title: "Режим работы",
-      value: "Пн-Пт: 9:00-18:00, Сб: 10:00-15:00",
+      value: "Ежедневно 24/7",
       link: "#",
     },
   ];

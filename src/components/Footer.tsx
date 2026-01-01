@@ -15,8 +15,12 @@ const Footer = () => {
             </div>
             <p className="text-muted-foreground leading-relaxed text-sm">
               Профессиональные юридические услуги в Новосибирске. Защищаем ваши
-              права и интересы с 2024 года.
+              права и интересы с 2016 года.
             </p>
+            <div className="flex items-start gap-2 text-sm text-muted-foreground">
+              <Icon name="MapPin" className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
+              <span>г. Новосибирск, ул. Ленина, д. 3</span>
+            </div>
           </div>
 
           {/* Services */}
@@ -83,7 +87,7 @@ const Footer = () => {
             <h3 className="font-semibold text-foreground text-lg">Контакты</h3>
             <div className="space-y-3 text-sm">
               <a 
-                href="tel:+79994523500"
+                href="tel:+79931903500"
                 onClick={() => {
                   if (typeof window !== 'undefined' && window.ym) {
                     window.ym(103525320, 'reachGoal', 'phone_click');
@@ -92,7 +96,7 @@ const Footer = () => {
                 className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group"
               >
                 <Icon name="Phone" className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                <span>+7 999 452 35 00</span>
+                <span>+7 993 190 35 00</span>
               </a>
               <a href="mailto:vituarten@icloud.com" className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group">
                 <Icon name="Mail" className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -101,8 +105,12 @@ const Footer = () => {
               <div className="flex items-start space-x-2 text-muted-foreground">
                 <Icon name="MapPin" className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span className="leading-relaxed">
-                  г. Новосибирск, ул. Ленина, д. 3, офис 323
+                  г. Новосибирск, ул. Ленина, д. 3
                 </span>
+              </div>
+              <div className="flex items-center space-x-2 text-muted-foreground">
+                <Icon name="Clock" className="h-4 w-4" />
+                <span>Работаем 24/7</span>
               </div>
             </div>
           </div>
@@ -119,7 +127,7 @@ const Footer = () => {
           <div className="grid md:grid-cols-2 gap-8 items-start">
             <div className="space-y-3">
               <p className="text-sm font-medium text-foreground/90">
-                © 2024 ЮрСервис НСК. Все права защищены.
+                © 2016-2026 ЮрСервис НСК. Все права защищены.
               </p>
               <div className="text-xs text-muted-foreground space-y-1.5 leading-relaxed">
                 <p className="font-medium text-foreground/70">ИП Витушкин Артем Вячеславович</p>
