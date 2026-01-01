@@ -47,7 +47,8 @@ const Services = () => {
       description: "Развод, раздел имущества, алименты, опека, споры по детям",
       category: ["popular", "citizens"],
       price: "от 15 000₽",
-      duration: "1-3 месяца"
+      duration: "1-3 месяца",
+      link: "/family-lawyer"
     },
     {
       icon: "TrendingDown",
@@ -55,7 +56,8 @@ const Services = () => {
       description: "Процедура банкротства для граждан, списание долгов, защита имущества от кредиторов",
       category: ["popular", "bankruptcy", "citizens"],
       price: "от 50 000₽",
-      duration: "6-12 месяцев"
+      duration: "6-12 месяцев",
+      link: "/bankruptcy-lawyer"
     },
     {
       icon: "FileText",
@@ -72,7 +74,8 @@ const Services = () => {
       description: "Защита в уголовных делах, представительство в суде, обжалование приговоров",
       category: ["popular", "citizens"],
       price: "от 30 000₽",
-      duration: "3-24 месяца"
+      duration: "3-24 месяца",
+      link: "/criminal-lawyer"
     },
     {
       icon: "Home",
@@ -80,7 +83,8 @@ const Services = () => {
       description: "Сделки с недвижимостью, узаконивание перепланировок, споры с соседями",
       category: ["popular", "realestate"],
       price: "от 20 000₽",
-      duration: "1-4 месяца"
+      duration: "1-4 месяца",
+      link: "/real-estate-lawyer"
     },
     {
       icon: "CreditCard",

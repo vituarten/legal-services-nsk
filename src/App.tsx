@@ -47,6 +47,10 @@ const BusinessPricing = lazy(() => import("@/pages/business/BusinessPricing"));
 const BusinessContactsPage = lazy(() => import("@/pages/business/BusinessContacts"));
 const ConsumerProtection = lazy(() => import("@/pages/ConsumerProtection"));
 const DTPLanding = lazy(() => import("@/pages/DTPLanding"));
+const FamilyLawyer = lazy(() => import("@/pages/FamilyLawyer"));
+const BankruptcyLawyer = lazy(() => import("@/pages/BankruptcyLawyer"));
+const RealEstateLawyer = lazy(() => import("@/pages/RealEstateLawyer"));
+const CriminalLawyer = lazy(() => import("@/pages/CriminalLawyer"));
 
 function AppContent() {
   const location = useLocation();
@@ -98,6 +102,10 @@ function AppContent() {
               <Route path="/consumer-protection" element={<ConsumerProtection />} />
               <Route path="/car-lawyer" element={<CarLawyer />} />
               <Route path="/dtp-landing" element={<DTPLanding />} />
+              <Route path="/family-lawyer" element={<FamilyLawyer />} />
+              <Route path="/bankruptcy-lawyer" element={<BankruptcyLawyer />} />
+              <Route path="/real-estate-lawyer" element={<RealEstateLawyer />} />
+              <Route path="/criminal-lawyer" element={<CriminalLawyer />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
