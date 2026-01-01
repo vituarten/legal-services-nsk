@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
-import { useDynamicSEO } from "@/hooks/useDynamicSEO";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import {
@@ -20,8 +19,6 @@ import {
 const Services = () => {
   const [activeTab, setActiveTab] = useState("all");
   const seo = getSEOConfig('services');
-  
-  useDynamicSEO();
 
   const tabs = [
     { id: "all", label: "ВСЕ УСЛУГИ" },
