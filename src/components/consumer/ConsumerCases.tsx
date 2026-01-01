@@ -3,10 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 
 const ConsumerCases = () => {
-  const { openModal } = useModal();
   const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
 
   const cases = [
@@ -176,10 +174,12 @@ const ConsumerCases = () => {
 
                   <Button 
                     className="w-full bg-primary hover:bg-primary/90 group-hover:shadow-lg transition-all"
-                    onClick={openModal}
+                    asChild
                   >
-                    <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
-                    Бесплатная консультация
+                    <a href="tel:+79931903500">
+                      <Icon name="Phone" className="h-4 w-4 mr-2" />
+                      +7 993 190 35 00
+                    </a>
                   </Button>
                 </div>
               </CardContent>

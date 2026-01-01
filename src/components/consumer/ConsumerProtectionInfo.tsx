@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 
 const ConsumerProtectionInfo = () => {
-  const { openModal } = useModal();
 
   const howItWorks = [
     {
@@ -188,8 +186,11 @@ const ConsumerProtectionInfo = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full mt-4" onClick={openModal}>
-                  Получить консультацию
+                <Button className="w-full mt-4" asChild>
+                  <a href="tel:+79931903500">
+                    <Icon name="Phone" className="h-4 w-4 mr-2" />
+                    +7 993 190 35 00
+                  </a>
                 </Button>
               </CardContent>
             </Card>

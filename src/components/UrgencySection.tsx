@@ -1,9 +1,7 @@
 import Icon from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
-import { useModal } from "@/hooks/useModal";
 
 const UrgencySection = () => {
-  const { openModal } = useModal();
 
   const consequences = [
     {
@@ -79,10 +77,12 @@ const UrgencySection = () => {
           <Button
             size="lg"
             className="bg-red-600 hover:bg-red-700 text-white text-lg px-10 py-6"
-            onClick={openModal}
+            asChild
           >
-            <Icon name="MessageCircle" size={24} className="mr-2" />
-            Получить срочную консультацию
+            <a href="tel:+79931903500">
+              <Icon name="Phone" size={24} className="mr-2" />
+              +7 993 190 35 00
+            </a>
           </Button>
           <div className="flex items-center justify-center gap-6 mt-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">

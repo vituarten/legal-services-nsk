@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
 import { useDynamicSEO } from "@/hooks/useDynamicSEO";
@@ -20,7 +19,6 @@ import {
 
 const Services = () => {
   const [activeTab, setActiveTab] = useState("all");
-  const { openModal } = useModal();
   const seo = getSEOConfig('services');
   
   useDynamicSEO();

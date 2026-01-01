@@ -1,9 +1,7 @@
 import Icon from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
-import { useModal } from "@/hooks/useModal";
 
 const ProblemsSection = () => {
-  const { openModal } = useModal();
 
   const problems = [
     {
@@ -85,10 +83,12 @@ const ProblemsSection = () => {
           <Button
             size="lg"
             className="bg-red-600 hover:bg-red-700 text-white text-lg px-10 py-6 shadow-2xl animate-pulse"
-            onClick={openModal}
+            asChild
           >
-            <Icon name="Phone" size={24} className="mr-2" />
-            Узнать, как решить мою проблему бесплатно
+            <a href="tel:+79931903500">
+              <Icon name="Phone" size={24} className="mr-2" />
+              +7 993 190 35 00
+            </a>
           </Button>
           <p className="text-sm text-gray-500 mt-4">
             Консультация 15 минут • Без оплаты • Конфиденциально

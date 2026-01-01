@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
 
 const About = () => {
-  const { openModal } = useModal();
   const seo = getSEOConfig('about');
 
   const team = [
@@ -128,10 +126,12 @@ const About = () => {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90"
-            onClick={openModal}
+            asChild
           >
-            <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-            Получить консультацию
+            <a href="tel:+79931903500">
+              <Icon name="Phone" className="h-5 w-5 mr-2" />
+              +7 993 190 35 00
+            </a>
           </Button>
         </div>
       </section>

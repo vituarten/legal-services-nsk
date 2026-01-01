@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
@@ -20,7 +19,6 @@ import ConsumerCases from "@/components/consumer/ConsumerCases";
 import ConsumerProtectionInfo from "@/components/consumer/ConsumerProtectionInfo";
 
 const ConsumerProtection = () => {
-  const { openModal } = useModal();
 
   return (
     <>
@@ -69,9 +67,11 @@ const ConsumerProtection = () => {
                   штраф и компенсацию морального вреда. <strong>98% выигранных дел.</strong>
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" onClick={openModal} className="bg-primary hover:bg-primary/90">
-                    <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                    Бесплатная консультация
+                  <Button size="lg" asChild className="bg-primary hover:bg-primary/90">
+                    <a href="tel:+79931903500">
+                      <Icon name="Phone" className="h-5 w-5 mr-2" />
+                      +7 993 190 35 00
+                    </a>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -113,10 +113,12 @@ const ConsumerProtection = () => {
                     <Button
                       size="lg"
                       className="bg-primary hover:bg-primary/90 text-white"
-                      onClick={openModal}
+                      asChild
                     >
-                      <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                      Получить консультацию
+                      <a href="tel:+79931903500">
+                        <Icon name="Phone" className="h-5 w-5 mr-2" />
+                        +7 993 190 35 00
+                      </a>
                     </Button>
                     <Button
                       variant="outline"

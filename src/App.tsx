@@ -1,14 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { ModalProvider } from "@/hooks/useModal";
 import { ThemeProvider } from "next-themes";
 import { BlogProvider } from "@/contexts/BlogContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { lazy, Suspense } from "react";
 import Navigation from "@/components/Navigation";
 import Home from "@/pages/Index";
-import PopupModal from "@/components/PopupModal";
-import ConsultationModal from "@/components/ConsultationModal";
 import ScrollToTop from "@/components/ScrollToTop";
 import SmoothScroll from "@/components/SmoothScroll";
 import { Toaster } from "@/components/ui/sonner";
@@ -103,8 +100,6 @@ function AppContent() {
             </Routes>
           </Suspense>
         </main>
-        <PopupModal />
-        <ConsultationModal />
         <ScrollToTop />
         <SmoothScroll />
         <StructuredData />
@@ -120,11 +115,9 @@ function App() {
       <ThemeProvider attribute="class" defaultTheme="light">
         <AuthProvider>
           <BlogProvider>
-            <ModalProvider>
-              <Router>
-                <AppContent />
-              </Router>
-            </ModalProvider>
+            <Router>
+              <AppContent />
+            </Router>
           </BlogProvider>
         </AuthProvider>
       </ThemeProvider>

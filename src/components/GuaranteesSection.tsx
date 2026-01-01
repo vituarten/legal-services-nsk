@@ -1,9 +1,7 @@
 import Icon from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
-import { useModal } from "@/hooks/useModal";
 
 const GuaranteesSection = () => {
-  const { openModal } = useModal();
 
   const guarantees = [
     {
@@ -84,10 +82,12 @@ const GuaranteesSection = () => {
               <Button
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-10"
-                onClick={openModal}
+                asChild
               >
-                <Icon name="MessageCircle" size={24} className="mr-2" />
-                Бесплатная консультация
+                <a href="tel:+79931903500">
+                  <Icon name="Phone" size={24} className="mr-2" />
+                  +7 993 190 35 00
+                </a>
               </Button>
               <Button
                 size="lg"

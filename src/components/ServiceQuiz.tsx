@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import { useModal } from '@/hooks/useModal';
 
 interface QuizOption {
   id: string;
@@ -26,7 +25,6 @@ const ServiceQuiz = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
-  const { openModal } = useModal();
 
   const steps: QuizStep[] = [
     {
@@ -163,9 +161,7 @@ const ServiceQuiz = () => {
     setShowResult(false);
   };
 
-  const handleConsultation = () => {
-    openModal();
-  };
+
 
   if (showResult) {
     const recommendation = getRecommendation();
@@ -203,12 +199,14 @@ const ServiceQuiz = () => {
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button 
-              onClick={handleConsultation}
+              asChild
               className="flex-1 bg-primary hover:bg-primary/90"
               size="lg"
             >
-              <Icon name="Phone" className="h-5 w-5 mr-2" />
-              Получить консультацию
+              <a href="tel:+79931903500">
+                <Icon name="Phone" className="h-5 w-5 mr-2" />
+                +7 993 190 35 00
+              </a>
             </Button>
             <Button 
               onClick={handleReset}

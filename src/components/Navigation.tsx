@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface NavigationProps {
@@ -12,7 +11,6 @@ interface NavigationProps {
 const Navigation = ({ onLoginClick }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { openModal } = useModal();
   const { user, isAuthenticated } = useAuth();
   const location = useLocation();
 
@@ -126,9 +124,12 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
             )}
             <Button
               className="bg-primary hover:bg-primary/90"
-              onClick={openModal}
+              asChild
             >
-              Консультация
+              <a href="tel:+79931903500">
+                <Icon name="Phone" className="h-4 w-4 mr-2" />
+                +7 993 190 35 00
+              </a>
             </Button>
           </div>
 
@@ -198,9 +199,12 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
               )}
               <Button
                 className="mt-2 w-full bg-primary hover:bg-primary/90"
-                onClick={openModal}
+                asChild
               >
-                Консультация
+                <a href="tel:+79931903500">
+                  <Icon name="Phone" className="h-4 w-4 mr-2" />
+                  +7 993 190 35 00
+                </a>
               </Button>
             </nav>
           </div>

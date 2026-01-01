@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
@@ -19,7 +18,6 @@ const Contacts = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { openModal } = useModal();
   const seo = getSEOConfig('contacts');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -183,10 +181,12 @@ const Contacts = () => {
           <Button
             size="lg"
             className="bg-primary hover:bg-primary/90"
-            onClick={openModal}
+            asChild
           >
-            <Icon name="Phone" className="h-5 w-5 mr-2" />
-            Позвонить сейчас
+            <a href="tel:+79931903500">
+              <Icon name="Phone" className="h-5 w-5 mr-2" />
+              +7 993 190 35 00
+            </a>
           </Button>
         </div>
       </section>

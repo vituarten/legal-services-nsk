@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import { useState, useEffect } from "react";
 
 const Hero = () => {
-  const { openModal } = useModal();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -40,10 +38,12 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90"
-                onClick={openModal}
+                asChild
               >
-                <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ
+                <a href="tel:+79931903500">
+                  <Icon name="Phone" className="h-5 w-5 mr-2" />
+                  +7 993 190 35 00
+                </a>
               </Button>
               <Button 
                 variant="outline" 

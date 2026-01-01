@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import { useModal } from "@/hooks/useModal";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
 
 const GuiltDetermination = () => {
-  const { openModal } = useModal();
   const seo = getSEOConfig('guiltDetermination');
 
   return (
@@ -38,10 +36,12 @@ const GuiltDetermination = () => {
                 <Button 
                   size="lg"
                   className="bg-yellow-600 hover:bg-yellow-700 text-white"
-                  onClick={openModal}
+                  asChild
                 >
-                  <Icon name="MessageCircle" className="mr-2" />
-                  Бесплатная консультация
+                  <a href="tel:+79931903500">
+                    <Icon name="Phone" className="mr-2" />
+                    +7 993 190 35 00
+                  </a>
                 </Button>
                 <Button 
                   size="lg"
