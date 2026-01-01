@@ -205,10 +205,12 @@ const ConsumerCases = () => {
                 <Button 
                   variant="outline" 
                   className="border-2 border-primary text-primary hover:bg-primary hover:text-white flex-shrink-0"
-                  onClick={openModal}
+                  asChild
                 >
-                  <Icon name="Phone" className="h-4 w-4 mr-2" />
-                  Связаться
+                  <a href="tel:+79931903500">
+                    <Icon name="Phone" className="h-4 w-4 mr-2" />
+                    Связаться
+                  </a>
                 </Button>
               </div>
             </CardContent>
