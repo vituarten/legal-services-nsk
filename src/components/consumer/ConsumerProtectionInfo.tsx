@@ -234,8 +234,11 @@ const ConsumerProtectionInfo = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full mt-4" onClick={openModal}>
-                  Заказать услугу
+                <Button className="w-full mt-4" asChild>
+                  <a href="tel:+79931903500">
+                    <Icon name="Phone" className="h-4 w-4 mr-2" />
+                    Заказать услугу
+                  </a>
                 </Button>
               </CardContent>
             </Card>
