@@ -46,6 +46,7 @@ const BusinessCases = lazy(() => import("@/pages/business/BusinessCases"));
 const BusinessPricing = lazy(() => import("@/pages/business/BusinessPricing"));
 const BusinessContactsPage = lazy(() => import("@/pages/business/BusinessContacts"));
 const ConsumerProtection = lazy(() => import("@/pages/ConsumerProtection"));
+const DTPLanding = lazy(() => import("@/pages/DTPLanding"));
 
 function AppContent() {
   const location = useLocation();
@@ -96,6 +97,7 @@ function AppContent() {
               <Route path="/consumer-rights" element={<ConsumerRights />} />
               <Route path="/consumer-protection" element={<ConsumerProtection />} />
               <Route path="/car-lawyer" element={<CarLawyer />} />
+              <Route path="/dtp-landing" element={<DTPLanding />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
