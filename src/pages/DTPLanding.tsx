@@ -40,7 +40,7 @@ const DTPLanding = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                ЮрСервисНСК — юридическая помощь после ДТП без риска для вас!
+                Юридическая помощь после ДТП — без риска для вас!
               </h1>
               <p className="text-xl md:text-2xl mb-8 text-blue-100">
                 Оставьте все сложности нам, мы доведем ваше дело до результата
