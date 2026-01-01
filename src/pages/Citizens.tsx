@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import ServicesMain from "@/components/ServicesMain";
-import Blog from "@/components/Blog";
+
 import Contacts from "@/components/Contacts";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -25,7 +25,7 @@ const Citizens = () => {
       <div className="min-h-screen">
         <Hero />
         <ServicesMain />
-        <Blog />
+
         <Contacts />
         <Footer />
       </div>
