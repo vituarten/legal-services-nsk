@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import { useAuth } from "@/contexts/AuthContext";
+
 
 interface NavigationProps {
   onLoginClick?: () => void;
@@ -11,7 +11,7 @@ interface NavigationProps {
 const Navigation = ({ onLoginClick }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+
   const location = useLocation();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
     { name: "Главная", href: "/citizens" },
     { name: "Услуги", href: "/services" },
     { name: "Цены", href: "/pricing" },
-    { name: "Блог", href: "/blog" },
+
     { name: "О нас", href: "/about" },
     { name: "Контакты", href: "/contacts" },
   ];
@@ -107,21 +107,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
               />
               {isTransitioning ? "Переключение..." : (isCitizensVersion ? "Для бизнеса" : "Для граждан")}
             </Button>
-            {isAuthenticated ? (
-              <Link to={user?.role === 'client' ? '/client/cabinet' : '/lawyer'}>
-                <Button variant="outline">
-                  <Icon name="User" className="h-4 w-4 mr-2" />
-                  {user?.name}
-                </Button>
-              </Link>
-            ) : (
-              <Link to="/client/login">
-                <Button variant="outline">
-                  <Icon name="LogIn" className="h-4 w-4 mr-2" />
-                  Вход
-                </Button>
-              </Link>
-            )}
+
             <Button
               className="bg-primary hover:bg-primary/90"
               asChild
@@ -179,24 +165,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                 />
                 {isTransitioning ? "Переключение..." : (isCitizensVersion ? "Для бизнеса" : "Для граждан")}
               </Button>
-              {isAuthenticated ? (
-                <Link 
-                  to={user?.role === 'client' ? '/client/cabinet' : '/lawyer'}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Button variant="outline" className="w-full">
-                    <Icon name="User" className="h-4 w-4 mr-2" />
-                    {user?.name}
-                  </Button>
-                </Link>
-              ) : (
-                <Link to="/client/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    <Icon name="LogIn" className="h-4 w-4 mr-2" />
-                    Вход
-                  </Button>
-                </Link>
-              )}
+
               <Button
                 className="mt-2 w-full bg-primary hover:bg-primary/90"
                 asChild
