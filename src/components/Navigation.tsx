@@ -93,22 +93,6 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-2">
             <Button
-              variant="outline"
-              size="sm"
-              onClick={handleVersionSwitch}
-              disabled={isTransitioning}
-              className={`border-2 transition-all duration-300 ${
-                isTransitioning ? 'opacity-50 scale-95' : 'hover:scale-105'
-              }`}
-            >
-              <Icon 
-                name={isTransitioning ? "RefreshCw" : (isCitizensVersion ? "Building2" : "Users")} 
-                className={`h-4 w-4 mr-2 ${isTransitioning ? 'animate-spin' : ''}`}
-              />
-              {isTransitioning ? "Переключение..." : (isCitizensVersion ? "Для бизнеса" : "Для граждан")}
-            </Button>
-
-            <Button
               className="bg-primary hover:bg-primary/90"
               asChild
             >
@@ -149,25 +133,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                 </Link>
               ))}
               <Button
-                variant="outline"
-                className={`w-full border-2 transition-all duration-300 ${
-                  isTransitioning ? 'opacity-50' : ''
-                }`}
-                disabled={isTransitioning}
-                onClick={() => {
-                  handleVersionSwitch();
-                  setIsMenuOpen(false);
-                }}
-              >
-                <Icon 
-                  name={isTransitioning ? "RefreshCw" : (isCitizensVersion ? "Building2" : "Users")} 
-                  className={`h-4 w-4 mr-2 ${isTransitioning ? 'animate-spin' : ''}`}
-                />
-                {isTransitioning ? "Переключение..." : (isCitizensVersion ? "Для бизнеса" : "Для граждан")}
-              </Button>
-
-              <Button
-                className="mt-2 w-full bg-primary hover:bg-primary/90"
+                className="w-full bg-primary hover:bg-primary/90"
                 asChild
               >
                 <a href="tel:+79931903500">
