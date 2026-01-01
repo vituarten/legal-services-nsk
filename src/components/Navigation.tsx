@@ -64,6 +64,14 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
       itemType="https://schema.org/SiteNavigationElement"
     >
       <div className="container mx-auto px-4">
+        {/* Адрес */}
+        <div className="hidden lg:flex items-center justify-center py-2 border-b border-border/50">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Icon name="MapPin" className="h-4 w-4 text-primary" />
+            <span>г. Новосибирск, ул. Ленина, д. 3</span>
+          </div>
+        </div>
+
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">

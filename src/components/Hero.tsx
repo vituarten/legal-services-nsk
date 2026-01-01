@@ -74,19 +74,39 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right side - Visual */}
+          {/* Right side - Logos */}
           <div className="relative">
-            <div className="relative w-full aspect-square max-w-[500px] mx-auto">
-              <div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
-              <div className="relative z-10 flex items-center justify-center h-full">
-                <div className="text-center space-y-6">
-                  <div className="w-32 h-32 bg-primary rounded-full flex items-center justify-center mx-auto shadow-2xl">
-                    <Icon name="Scale" className="h-16 w-16 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-foreground">ЮрСервисНСК</h3>
-                    <p className="text-muted-foreground mt-2">Ваш надёжный юридический партнёр</p>
-                  </div>
+            <div className="relative w-full max-w-[500px] mx-auto">
+              <div className="grid grid-cols-2 gap-8 items-center">
+                {/* Логотип Народной Дружины */}
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all">
+                  <img
+                    src="https://cdn.poehali.dev/files/ЛоготипНД54%20(%20без%20фона%20)%20.jpe%20g.png"
+                    alt="Народная Дружина Октябрьского района"
+                    className="w-full h-auto object-contain"
+                  />
+                  <p className="text-xs text-center text-muted-foreground mt-4">
+                    Народная Дружина<br/>Октябрьского района
+                  </p>
+                </div>
+
+                {/* Логотип Правоотношение */}
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all">
+                  <img
+                    src="https://cdn.poehali.dev/files/Unkwn.png"
+                    alt="ООО Правоотношение"
+                    className="w-full h-auto object-contain"
+                  />
+                  <p className="text-xs text-center text-muted-foreground mt-4">
+                    ООО "Правоотношение"
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center gap-3 bg-primary/10 rounded-full px-6 py-3 border border-primary/20">
+                  <Icon name="Scale" className="h-6 w-6 text-primary" />
+                  <span className="font-bold text-foreground">ЮрСервисНСК</span>
                 </div>
               </div>
             </div>
