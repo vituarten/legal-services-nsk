@@ -2,8 +2,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import ConsumerCalculator from '@/components/ConsumerCalculator';
+import { trackCustomGoal } from '@/utils/metrika';
 
 export default function ConsumerRights() {
+  const handlePhoneClick = () => {
+    trackCustomGoal('consumer_rights_consultation', {
+      source: 'page',
+      action: 'phone_call'
+    });
+  };
+
+  const handleWhatsAppClick = () => {
+    trackCustomGoal('consumer_rights_whatsapp', {
+      source: 'page',
+      action: 'whatsapp_click'
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <section className="py-20 px-4">
@@ -25,13 +40,14 @@ export default function ConsumerRights() {
               href="https://wa.me/79994523500"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={handleWhatsAppClick}
             >
               <Button size="lg" className="text-lg px-8 bg-green-600 hover:bg-green-700">
                 <Icon name="MessageCircle" className="mr-2" size={20} />
                 Получить консультацию
               </Button>
             </a>
-            <a href="tel:+79994523500">
+            <a href="tel:+79994523500" onClick={handlePhoneClick}>
               <Button size="lg" variant="outline" className="text-lg px-8">
                 <Icon name="Phone" className="mr-2" size={20} />
                 +7 (999) 452-35-00

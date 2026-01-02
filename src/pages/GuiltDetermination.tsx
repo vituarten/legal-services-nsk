@@ -2,11 +2,16 @@ import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
+import { trackCustomGoal } from "@/utils/metrika";
 
 const GuiltDetermination = () => {
   const seo = getSEOConfig('guiltDetermination');
 
   const handleConsultation = () => {
+    trackCustomGoal('guilt_determination_consultation', {
+      source: 'page',
+      action: 'phone_call'
+    });
     window.location.href = 'tel:+79994523500';
   };
   

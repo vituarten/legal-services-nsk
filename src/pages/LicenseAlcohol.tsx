@@ -7,10 +7,19 @@ import DTPConsultationModal from "@/components/dtp/DTPConsultationModal";
 import ContactBar from "@/components/dtp/ContactBar";
 import UrgencyLicenseSection from "@/components/license/UrgencyLicenseSection";
 import RealLicenseStoriesSection from "@/components/license/RealLicenseStoriesSection";
+import { trackCustomGoal } from "@/utils/metrika";
 
 const LicenseAlcohol = () => {
   const [showForm, setShowForm] = useState(false);
   const seo = getSEOConfig('licenseAlcohol');
+
+  const handleConsultation = () => {
+    trackCustomGoal('license_consultation', {
+      source: 'page',
+      action: 'form_open'
+    });
+    setShowForm(true);
+  };
 
   return (
     <>
@@ -40,7 +49,7 @@ const LicenseAlcohol = () => {
             <Button 
               size="lg"
               className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-6"
-              onClick={() => setShowForm(true)}
+              onClick={handleConsultation}
             >
               <Icon name="MessageCircle" size={24} className="mr-2" />
               Срочная консультация юриста

@@ -4,12 +4,17 @@ import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { trackCustomGoal } from '@/utils/metrika';
 
 export default function BankruptcyLawyer() {
   const [formData, setFormData] = useState({ name: '', phone: '', debt: '' });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    trackCustomGoal('bankruptcy_consultation', {
+      source: 'page',
+      action: 'form_submit'
+    });
     toast.success('Заявка отправлена! Перезвоним в течение 15 минут');
     setFormData({ name: '', phone: '', debt: '' });
   };

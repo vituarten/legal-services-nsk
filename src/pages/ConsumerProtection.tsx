@@ -5,6 +5,7 @@ import Icon from "@/components/ui/icon";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
+import { trackCustomGoal } from "@/utils/metrika";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -19,6 +20,12 @@ import ConsumerCases from "@/components/consumer/ConsumerCases";
 import ConsumerProtectionInfo from "@/components/consumer/ConsumerProtectionInfo";
 
 const ConsumerProtection = () => {
+  const handlePhoneClick = () => {
+    trackCustomGoal('consumer_protection_consultation', {
+      source: 'page',
+      action: 'phone_call'
+    });
+  };
 
   return (
     <>
@@ -68,7 +75,7 @@ const ConsumerProtection = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" asChild className="bg-primary hover:bg-primary/90">
-                    <a href="tel:+79931903500">
+                    <a href="tel:+79931903500" onClick={handlePhoneClick}>
                       <Icon name="Phone" className="h-5 w-5 mr-2" />
                       +7 993 190 35 00
                     </a>
@@ -76,7 +83,7 @@ const ConsumerProtection = () => {
                   <Button 
                     variant="outline" 
                     size="lg"
-                    onClick={() => window.open('tel:+79994523500', '_self')}
+                    onClick={() => { handlePhoneClick(); window.open('tel:+79994523500', '_self'); }}
                   >
                     <Icon name="Phone" className="h-5 w-5 mr-2" />
                     +7 999 452 35 00

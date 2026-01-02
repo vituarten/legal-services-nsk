@@ -5,10 +5,19 @@ import Icon from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import DTPConsultationModal from "@/components/dtp/DTPConsultationModal";
 import ContactBar from "@/components/dtp/ContactBar";
+import { trackCustomGoal } from "@/utils/metrika";
 
 const IllegalFine = () => {
   const [showForm, setShowForm] = useState(false);
   const seo = getSEOConfig('illegalFine');
+
+  const handleConsultation = () => {
+    trackCustomGoal('illegal_fine_consultation', {
+      source: 'page',
+      action: 'form_open'
+    });
+    setShowForm(true);
+  };
 
   return (
     <>
@@ -36,7 +45,7 @@ const IllegalFine = () => {
             <Button 
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-6"
-              onClick={() => setShowForm(true)}
+              onClick={handleConsultation}
             >
               <Icon name="MessageCircle" size={24} className="mr-2" />
               Бесплатная оценка перспектив

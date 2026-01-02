@@ -4,9 +4,18 @@ import Icon from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import DTPConsultationModal from "@/components/dtp/DTPConsultationModal";
+import { trackCustomGoal } from "@/utils/metrika";
 
 const Migration = () => {
   const [showForm, setShowForm] = useState(false);
+
+  const handleConsultation = () => {
+    trackCustomGoal('migration_consultation', {
+      source: 'page',
+      action: 'form_open'
+    });
+    setShowForm(true);
+  };
 
   const problems = [
     {
@@ -141,7 +150,7 @@ const Migration = () => {
               <Button 
                 size="lg"
                 className="bg-orange-600 hover:bg-orange-700 text-white text-lg px-8 py-6"
-                onClick={() => setShowForm(true)}
+                onClick={handleConsultation}
               >
                 <Icon name="MessageCircle" size={24} className="mr-2" />
                 Бесплатная консультация

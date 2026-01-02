@@ -5,10 +5,19 @@ import Icon from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import DTPConsultationModal from "@/components/dtp/DTPConsultationModal";
 import ContactBar from "@/components/dtp/ContactBar";
+import { trackCustomGoal } from "@/utils/metrika";
 
 const BadRepair = () => {
   const [showForm, setShowForm] = useState(false);
   const seo = getSEOConfig('badRepair');
+
+  const handleConsultation = () => {
+    trackCustomGoal('bad_repair_consultation', {
+      source: 'page',
+      action: 'form_open'
+    });
+    setShowForm(true);
+  };
 
   return (
     <>
@@ -36,7 +45,7 @@ const BadRepair = () => {
             <Button 
               size="lg"
               className="bg-green-600 hover:bg-green-700 text-white text-lg px-8 py-6"
-              onClick={() => setShowForm(true)}
+              onClick={handleConsultation}
             >
               <Icon name="MessageCircle" size={24} className="mr-2" />
               Бесплатная консультация юриста

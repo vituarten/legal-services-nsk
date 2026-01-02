@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import Icon from "@/components/ui/icon";
 import SEOHead from "@/components/SEOHead";
 import { toast } from "sonner";
+import { trackCustomGoal } from "@/utils/metrika";
 
 const DTPLanding = () => {
   const [formData, setFormData] = useState({
@@ -16,11 +17,19 @@ const DTPLanding = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    trackCustomGoal('dtp_landing_form_submit', {
+      source: 'landing',
+      action: 'form_submit'
+    });
     toast.success("Заявка отправлена! Мы свяжемся с вами в течение 15 минут.");
     setFormData({ name: "", phone: "", callTime: "" });
   };
 
   const scrollToForm = () => {
+    trackCustomGoal('dtp_landing_scroll', {
+      source: 'landing',
+      action: 'scroll_to_form'
+    });
     document.getElementById("consultation-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
