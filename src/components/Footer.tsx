@@ -90,7 +90,7 @@ const Footer = () => {
                 href="tel:+79931903500"
                 onClick={() => {
                   if (typeof window !== 'undefined' && window.ym) {
-                    window.ym(103525320, 'reachGoal', 'phone_click');
+                    window.ym(106063131, 'reachGoal', 'phone_click');
                   }
                 }}
                 className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group"

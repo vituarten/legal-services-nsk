@@ -5,14 +5,14 @@ import { CONTACTS } from "@/config/contacts";
 const BusinessHero = () => {
   const handlePhoneClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'phone_click');
+      window.ym(106063131, 'reachGoal', 'phone_click');
     }
     window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, '')}`;
   };
 
   const handleWhatsAppClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'whatsapp_click');
+      window.ym(106063131, 'reachGoal', 'whatsapp_click');
     }
     window.open(`https://wa.me/${CONTACTS.whatsapp}`, '_blank');
   };

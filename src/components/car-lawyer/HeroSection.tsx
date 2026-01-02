@@ -53,7 +53,7 @@ export default function HeroSection() {
                   href={`tel:${CONTACTS.phone}`}
                   onClick={() => {
                     if (typeof window !== 'undefined' && window.ym) {
-                      window.ym(103525320, 'reachGoal', 'phone_click');
+                      window.ym(106063131, 'reachGoal', 'phone_click');
                     }
                   }}
                 >
@@ -68,7 +68,7 @@ export default function HeroSection() {
                   rel="noopener noreferrer"
                   onClick={() => {
                     if (typeof window !== 'undefined' && window.ym) {
-                      window.ym(103525320, 'reachGoal', 'telegram_click');
+                      window.ym(106063131, 'reachGoal', 'telegram_click');
                     }
                   }}
                 >

@@ -27,7 +27,7 @@ const BusinessNavigation = () => {
 
   const handlePhoneClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'phone_click');
+      window.ym(106063131, 'reachGoal', 'phone_click');
     }
     window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, '')}`;
   };

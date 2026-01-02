@@ -35,7 +35,7 @@ const ContactForm = () => {
       
       // Отправляем событие в Яндекс.Метрику
       if (typeof window !== 'undefined' && window.ym) {
-        window.ym(103525320, 'reachGoal', 'main_contact_form_submit');
+        window.ym(106063131, 'reachGoal', 'main_contact_form_submit');
       }
       
       setFormData({ name: '', phone: '', email: '', message: '', service: '' });

@@ -69,7 +69,7 @@ export const use404Handler = (is404: boolean = false) => {
         
         // Яндекс.Метрика
         if ((window as any).ym) {
-          (window as any).ym(0, 'reachGoal', '404_error', {
+          (window as any).ym(106063131, 'reachGoal', '404_error', {
             page: location.pathname
           });
         }

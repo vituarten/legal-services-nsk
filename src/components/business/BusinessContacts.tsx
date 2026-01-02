@@ -19,7 +19,7 @@ const BusinessContacts = () => {
     e.preventDefault();
     
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'business_form_submit');
+      window.ym(106063131, 'reachGoal', 'business_form_submit');
     }
 
     const text = `Заявка с сайта (Бизнес):\n\nКомпания: ${formData.company}\nКонтактное лицо: ${formData.name}\nТелефон: ${formData.phone}\nEmail: ${formData.email}\nСообщение: ${formData.message}`;
@@ -29,7 +29,7 @@ const BusinessContacts = () => {
 
   const handlePhoneClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'phone_click');
+      window.ym(106063131, 'reachGoal', 'phone_click');
     }
     window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, '')}`;
   };

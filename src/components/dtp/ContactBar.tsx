@@ -14,14 +14,14 @@ const ContactBar = ({
 }: ContactBarProps) => {
   const handlePhoneClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'phone_click');
+      window.ym(106063131, 'reachGoal', 'phone_click');
     }
     window.location.href = `tel:${phone.replace(/[^\d+]/g, '')}`;
   };
 
   const handleTelegramClick = () => {
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', 'telegram_click');
+      window.ym(106063131, 'reachGoal', 'telegram_click');
     }
     window.open(`https://t.me/${telegram}`, '_blank');
   };

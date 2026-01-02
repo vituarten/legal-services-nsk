@@ -56,7 +56,7 @@ ${formData.message}
       if (result.success) {
         // Отправляем событие в Яндекс.Метрику
         if (typeof window !== 'undefined' && window.ym) {
-          window.ym(103525320, 'reachGoal', 'contacts_form_submit');
+          window.ym(106063131, 'reachGoal', 'contacts_form_submit');
         }
         
         alert('Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.');
@@ -154,7 +154,7 @@ ${formData.message}
                               onClick={() => {
                                 if (typeof window !== 'undefined' && window.ym) {
                                   const goalName = info.title === "Телефон" ? 'phone_click' : 'whatsapp_click';
-                                  window.ym(103525320, 'reachGoal', goalName);
+                                  window.ym(106063131, 'reachGoal', goalName);
                                 }
                               }}
                             >

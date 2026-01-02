@@ -29,7 +29,7 @@ const AudienceSelector = ({ onSelect, alwaysShow = false }: AudienceSelectorProp
     onSelect(type);
     
     if (typeof window !== 'undefined' && window.ym) {
-      window.ym(103525320, 'reachGoal', `audience_${type}`);
+      window.ym(106063131, 'reachGoal', `audience_${type}`);
     }
   };
 
