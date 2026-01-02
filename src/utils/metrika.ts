@@ -9,12 +9,37 @@ declare global {
 export const initMetrikaTracking = () => {
   if (typeof window === 'undefined' || !window.ym) return;
 
+  trackUTMParams();
   trackScrollDepth();
   trackTimeOnPage();
   trackOutboundLinks();
   trackFileDownloads();
   trackFormInteractions();
   trackUserEngagement();
+};
+
+const trackUTMParams = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const utmParams: Record<string, string> = {};
+  
+  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  
+  utmKeys.forEach(key => {
+    const value = urlParams.get(key);
+    if (value) {
+      utmParams[key] = value;
+    }
+  });
+
+  if (Object.keys(utmParams).length > 0) {
+    window.ym(METRIKA_ID, 'params', {
+      utm: utmParams
+    });
+
+    window.ym(METRIKA_ID, 'reachGoal', 'utm_traffic', utmParams);
+
+    sessionStorage.setItem('utm_params', JSON.stringify(utmParams));
+  }
 };
 
 const scrollDepthTracked = {
@@ -222,4 +247,9 @@ export const trackEcommerce = (action: 'detail' | 'add' | 'remove' | 'purchase',
   if (typeof window !== 'undefined' && window.ym) {
     window.ym(METRIKA_ID, 'ecommerce', action, product);
   }
+};
+
+export const getUTMParams = (): Record<string, string> | null => {
+  const stored = sessionStorage.getItem('utm_params');
+  return stored ? JSON.parse(stored) : null;
 };
