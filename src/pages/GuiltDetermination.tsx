@@ -30,9 +30,7 @@ const GuiltDetermination = () => {
                 <Icon name="Scale" size={40} className="text-yellow-600" />
               </div>
               
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Установление вины за ДТП
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Установление вины в ДТП</h1>
               
               <p className="text-xl text-gray-600 mb-8">
                 Докажем вашу невиновность и защитим от необоснованных претензий
