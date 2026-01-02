@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "next-themes";
 
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Home from "@/pages/Index";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -10,6 +10,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { Toaster } from "@/components/ui/sonner";
 import StructuredData from "@/components/StructuredData";
 import PageTransition from "@/components/PageTransition";
+import { initMetrikaTracking } from "@/utils/metrika";
 
 const Citizens = lazy(() => import("@/pages/Citizens"));
 const Services = lazy(() => import("@/pages/Services"));
@@ -48,6 +49,13 @@ const CriminalLawyer = lazy(() => import("@/pages/CriminalLawyer"));
 function AppContent() {
   const location = useLocation();
   const showNavigation = location.pathname !== '/';
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      initMetrikaTracking();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
