@@ -6,6 +6,10 @@ import { getSEOConfig } from "@/utils/seoConfig";
 const GuiltDetermination = () => {
   const seo = getSEOConfig('guiltDetermination');
 
+  const openModal = () => {
+    window.location.href = 'tel:+79994523500';
+  };
+
   return (
     <>
       <SEOHead 
