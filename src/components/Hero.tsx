@@ -16,17 +16,11 @@ const Hero = () => {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
-  // Функция для отслеживания звонков
-  const trackPhoneClick = (context: string) => {
+  // Простая функция для метрики
+  const trackPhoneClick = () => {
     if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", `phone_click_${context}`);
+      window.ym(106063131, "reachGoal", "phone_click_hero");
     }
-  };
-
-  const handlePhoneClick = (e: React.MouseEvent, context: string) => {
-    e.preventDefault();
-    trackPhoneClick(context);
-    window.location.href = "tel:+79931903500";
   };
 
   return (
@@ -77,15 +71,17 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Кнопки как в старой версии */}
+            {/* Кнопки - ПРОСТО КАК В СТАРОЙ ВЕРСИИ */}
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-base md:text-lg px-6 md:px-8 py-4 md:py-6"
-                onClick={(e) => handlePhoneClick(e, "hero_main")}
+                asChild
               >
-                <Icon name="Phone" className="h-5 w-5 mr-2" />
-                +7 993 190 35 00
+                <a href="tel:+79931903500" onClick={trackPhoneClick}>
+                  <Icon name="Phone" className="h-5 w-5 mr-2" />
+                  +7 993 190 35 00
+                </a>
               </Button>
 
               <Button
@@ -96,7 +92,7 @@ const Hero = () => {
               >
                 <a href="#contacts">
                   <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                  Получить консультацию
+                  Бесплатная консультация
                 </a>
               </Button>
             </div>
