@@ -30,8 +30,7 @@ const Hero = () => {
                 Профессиональная юридическая помощь
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Защищаем ваши права и интересы. Индивидуальный подход,
-                прозрачные цены, гарантия результата.
+                Защищаем ваши права и интересы. Индивидуальный подход, прозрачные цены, гарантия результата.
               </p>
             </div>
 
@@ -89,9 +88,7 @@ const Hero = () => {
                     />
                   </div>
                   <p className="text-xs text-center text-muted-foreground mt-4">
-                    Народная Дружина
-                    <br />
-                    Октябрьского района
+                    Народная Дружина<br/>Октябрьского района
                   </p>
                 </div>
 
@@ -120,66 +117,13 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* About Company Section - ДОБАВЛЕНА МИССИЯ И КОНЦЕПЦИИ */}
+        {/* About Company Section */}
         <div className="mt-24">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Наша миссия
-            </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Юридический сервис Новосибирск это -</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto font-semibold text-lg">
-              Сделать правовую защиту доступной и эффективной для каждого
+              Объединение профессионализма и государственной поддержки
             </p>
-          </div>
-
-          <div className="grid lg:grid-cols-4 gap-6 mb-8">
-            {/* Принципы работы */}
-            <div className="bg-white rounded-xl p-6 border border-border">
-              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
-                <Icon name="Shield" className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">
-                Защита интересов
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Ваши интересы — наш приоритет
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 border border-border">
-              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
-                <Icon name="Scale" className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">
-                Законность
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Строгое соблюдение закона
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 border border-border">
-              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
-                <Icon name="Users" className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">
-                Индивидуальный подход
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Персональная стратегия
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 border border-border">
-              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
-                <Icon name="Clock" className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">
-                Оперативность
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Быстрое решение задач
-              </p>
-            </div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
@@ -189,13 +133,10 @@ const Hero = () => {
                   <Icon name="Building2" className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-foreground mb-2">
-                    ООО "Правоотношение"
-                  </h3>
+                  <h3 className="text-xl font-bold text-foreground mb-2">ООО "Правоотношение"</h3>
                   <p className="text-muted-foreground">
-                    Юридическая компания с 2016 года. Специализируемся на защите
-                    прав граждан и бизнеса во всех сферах права — от семейных
-                    споров до корпоративных конфликтов.
+                    Юридическая компания с 2016 года. Специализируемся на защите прав граждан и бизнеса 
+                    во всех сферах права — от семейных споров до корпоративных конфликтов.
                   </p>
                 </div>
               </div>
@@ -207,13 +148,10 @@ const Hero = () => {
                   <Icon name="Shield" className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-foreground mb-2">
-                    Народная дружина Октябрьского района
-                  </h3>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Народная дружина Октябрьского района</h3>
                   <p className="text-muted-foreground">
-                    Аккредитация МВД Новосибирской области от 18 марта 2016
-                    года. Работаем в тесном взаимодействии с государственными
-                    органами для защиты законности.
+                    Аккредитация МВД Новосибирской области от 18 марта 2016 года. 
+                    Работаем в тесном взаимодействии с государственными органами для защиты законности.
                   </p>
                 </div>
               </div>
@@ -222,14 +160,9 @@ const Hero = () => {
 
           <div className="mt-8 text-center">
             <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
-              <strong className="text-foreground">ЮрСервисНСК</strong> — это
-              объединение юридической компании{" "}
-              <strong className="text-primary">"Правоотношение"</strong> и{" "}
-              <strong className="text-blue-600">Народной дружины</strong>{" "}
-              (аккредитация МВД).
-            </p>
-            <p className="text-lg text-primary font-semibold mt-4">
-              Экспертиза в праве + государственная поддержка = ваша уверенность.
+              <strong className="text-foreground">ЮрСервисНСК</strong> — это синергия юридической экспертизы 
+              и государственной поддержки. Мы обеспечиваем профессиональную защиту ваших интересов 
+              на основе законности, доверия и полной ответственности.
             </p>
           </div>
         </div>
