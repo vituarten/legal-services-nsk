@@ -56,7 +56,7 @@ const Footer = () => {
               ].map((service, index) => (
                 <li key={index}>
                   <a
-                    href={`/${service.toLowerCase().replace(" ", "-")}`}
+                    href={`#${service.toLowerCase().replace(" ", "-")}`}
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     {service}
@@ -80,7 +80,7 @@ const Footer = () => {
               ].map((area, index) => (
                 <li key={index}>
                   <a
-                    href="/#practice"
+                    href="#practice"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     {area}
@@ -141,7 +141,7 @@ const Footer = () => {
                     <input
                       type="tel"
                       placeholder="Ваш телефон"
-                      className="flex-1 px-3 py-1.5 text-xs rounded border border-border"
+                      className="flex-1 px-3 py-1.5 text-xs rounded border border-border focus:outline-none focus:border-primary"
                     />
                     <Button size="sm" className="text-xs px-3">
                       Жду звонка
@@ -199,19 +199,19 @@ const Footer = () => {
             <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1 text-muted-foreground">
               <a
                 href="/privacy"
-                className="hover:text-primary transition-colors"
+                className="hover:text-primary transition-colors hover:underline"
               >
                 Политика конфиденциальности
               </a>
               <a
                 href="/privacy#terms"
-                className="hover:text-primary transition-colors"
+                className="hover:text-primary transition-colors hover:underline"
               >
                 Пользовательское соглашение
               </a>
             </div>
 
-            {/* Бейджы доверия */}
+            {/* Бейдж доверия */}
             <div className="flex items-center gap-2 mt-2 sm:mt-0">
               <div className="text-xs px-1.5 py-0.5 bg-green-50 text-green-700 rounded border border-green-200">
                 ФНС проверено
