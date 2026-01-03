@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 
 const Footer = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
@@ -16,7 +15,6 @@ const Footer = () => {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
-  // Отслеживание кликов
   const trackPhoneClick = (context: string) => {
     if (typeof window !== "undefined" && window.ym) {
       window.ym(106063131, "reachGoal", `phone_click_${context}`);
@@ -113,50 +111,21 @@ const Footer = () => {
               Контакты
             </h3>
             <div className="space-y-2 text-xs sm:text-sm">
-              {/* Скрытый/раскрываемый телефон */}
-              <div className="mb-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-muted-foreground">Телефон юриста:</span>
-                  <button
-                    onClick={() => setShowPhone(!showPhone)}
-                    className="text-xs text-primary hover:underline flex items-center gap-1"
-                  >
-                    <Icon
-                      name={showPhone ? "EyeOff" : "Eye"}
-                      className="h-3 w-3"
-                    />
-                    {showPhone ? "Скрыть" : "Показать"}
-                  </button>
-                </div>
-
-                {showPhone ? (
-                  <a
-                    href="tel:+79931903500"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      trackPhoneClick("footer_revealed");
-                      window.location.href = "tel:+79931903500";
-                    }}
-                    className="block text-lg font-bold text-primary hover:text-primary/80 transition-colors py-1"
-                  >
-                    +7 993 190 35 00
-                  </a>
-                ) : (
-                  <div className="text-lg font-bold text-foreground/50 select-none py-1">
-                    +7 993 ••• •• 00
-                  </div>
-                )}
-
-                <p className="text-xs text-muted-foreground mt-1">
-                  {showPhone
-                    ? "Нажмите для звонка"
-                    : "Нажмите 'Показать' для телефона"}
-                </p>
-              </div>
+              <a
+                href="tel:+79931903500"
+                onClick={(e) => handlePhoneClick(e, "footer_main")}
+                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Icon
+                  name="Phone"
+                  className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
+                />
+                <span className="font-medium text-base">+7 993 190 35 00</span>
+              </a>
 
               <a
                 href="mailto:info@yurservicensk.ru"
-                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors py-1"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors"
               >
                 <Icon
                   name="Mail"
@@ -165,12 +134,12 @@ const Footer = () => {
                 <span>info@yurservicensk.ru</span>
               </a>
 
-              <div className="flex items-center space-x-2 text-muted-foreground py-1">
+              <div className="flex items-center space-x-2 text-muted-foreground">
                 <Icon
                   name="Clock"
                   className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
                 />
-                <span>пн-пт 9:00-18:00</span>
+                <span>Работаем 24/7</span>
               </div>
 
               {/* Форма обратного звонка */}
