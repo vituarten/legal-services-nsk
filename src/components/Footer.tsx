@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 const Footer = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
@@ -15,8 +16,24 @@ const Footer = () => {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
+  // Отслеживание кликов
+  const trackPhoneClick = (context: string) => {
+    if (typeof window !== "undefined" && window.ym) {
+      window.ym(106063131, "reachGoal", `phone_click_${context}`);
+    }
+  };
+
+  const handlePhoneClick = (e: React.MouseEvent, context: string) => {
+    e.preventDefault();
+    trackPhoneClick(context);
+    window.location.href = "tel:+79931903500";
+  };
+
   return (
-    <footer className="bg-gradient-to-b from-background to-secondary/10 border-t border-border/50">
+    <footer
+      id="contacts"
+      className="bg-gradient-to-b from-background to-secondary/10 border-t border-border/50"
+    >
       <div className="container mx-auto px-4 sm:px-6 py-10 sm:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Company Info */}
@@ -96,25 +113,50 @@ const Footer = () => {
               Контакты
             </h3>
             <div className="space-y-2 text-xs sm:text-sm">
-              <a
-                href="tel:+79931903500"
-                onClick={() => {
-                  if (typeof window !== "undefined" && window.ym) {
-                    window.ym(106063131, "reachGoal", "phone_click_footer");
-                  }
-                }}
-                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Icon
-                  name="Phone"
-                  className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
-                />
-                <span className="font-medium">+7 993 190 35 00</span>
-              </a>
+              {/* Скрытый/раскрываемый телефон */}
+              <div className="mb-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-muted-foreground">Телефон юриста:</span>
+                  <button
+                    onClick={() => setShowPhone(!showPhone)}
+                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                  >
+                    <Icon
+                      name={showPhone ? "EyeOff" : "Eye"}
+                      className="h-3 w-3"
+                    />
+                    {showPhone ? "Скрыть" : "Показать"}
+                  </button>
+                </div>
+
+                {showPhone ? (
+                  <a
+                    href="tel:+79931903500"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      trackPhoneClick("footer_revealed");
+                      window.location.href = "tel:+79931903500";
+                    }}
+                    className="block text-lg font-bold text-primary hover:text-primary/80 transition-colors py-1"
+                  >
+                    +7 993 190 35 00
+                  </a>
+                ) : (
+                  <div className="text-lg font-bold text-foreground/50 select-none py-1">
+                    +7 993 ••• •• 00
+                  </div>
+                )}
+
+                <p className="text-xs text-muted-foreground mt-1">
+                  {showPhone
+                    ? "Нажмите для звонка"
+                    : "Нажмите 'Показать' для телефона"}
+                </p>
+              </div>
 
               <a
                 href="mailto:info@yurservicensk.ru"
-                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors py-1"
               >
                 <Icon
                   name="Mail"
@@ -123,7 +165,7 @@ const Footer = () => {
                 <span>info@yurservicensk.ru</span>
               </a>
 
-              <div className="flex items-center space-x-2 text-muted-foreground">
+              <div className="flex items-center space-x-2 text-muted-foreground py-1">
                 <Icon
                   name="Clock"
                   className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"
@@ -131,7 +173,7 @@ const Footer = () => {
                 <span>пн-пт 9:00-18:00</span>
               </div>
 
-              {/* Форма быстрого звонка только на десктопе */}
+              {/* Форма обратного звонка */}
               {!isMobile && (
                 <div className="pt-3">
                   <div className="text-xs text-muted-foreground mb-1">
@@ -143,7 +185,16 @@ const Footer = () => {
                       placeholder="Ваш телефон"
                       className="flex-1 px-3 py-1.5 text-xs rounded border border-border focus:outline-none focus:border-primary"
                     />
-                    <Button size="sm" className="text-xs px-3">
+                    <Button
+                      size="sm"
+                      className="text-xs px-3"
+                      onClick={() => {
+                        if (typeof window !== "undefined" && window.ym) {
+                          window.ym(106063131, "reachGoal", "callback_request");
+                        }
+                        alert("Мы перезвоним вам в течение 15 минут!");
+                      }}
+                    >
                       Жду звонка
                     </Button>
                   </div>
@@ -199,19 +250,19 @@ const Footer = () => {
             <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1 text-muted-foreground">
               <a
                 href="/privacy"
-                className="hover:text-primary transition-colors hover:underline"
+                className="hover:text-primary transition-colors"
               >
                 Политика конфиденциальности
               </a>
               <a
                 href="/privacy#terms"
-                className="hover:text-primary transition-colors hover:underline"
+                className="hover:text-primary transition-colors"
               >
                 Пользовательское соглашение
               </a>
             </div>
 
-            {/* Бейдж доверия */}
+            {/* Бейджы доверия */}
             <div className="flex items-center gap-2 mt-2 sm:mt-0">
               <div className="text-xs px-1.5 py-0.5 bg-green-50 text-green-700 rounded border border-green-200">
                 ФНС проверено
