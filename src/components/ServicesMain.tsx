@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 const ServicesMain = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
 
   useEffect(() => {
     const checkDevice = () => {
@@ -17,7 +16,6 @@ const ServicesMain = () => {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
-  // Функция для отслеживания
   const trackPhoneClick = (context: string) => {
     if (typeof window !== "undefined" && window.ym) {
       window.ym(106063131, "reachGoal", `phone_click_${context}`);
@@ -153,57 +151,31 @@ const ServicesMain = () => {
           ))}
         </div>
 
-        {/* УСИЛЕННЫЙ CTA БАННЕР С ОТСЛЕЖИВАНИЕМ */}
-        <Card className="bg-gradient-to-r from-primary via-primary/95 to-primary/90 text-white border-none shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden relative">
-          <CardContent className="p-6 sm:p-8 md:p-10 relative">
-            <div className="text-center space-y-5 sm:space-y-6">
-              {/* Заголовок */}
-              <div>
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">
-                  ⚖️ Решите проблему сегодня — получите план действий за 15
-                  минут!
-                </h3>
-                <p className="text-sm sm:text-base md:text-lg text-blue-100/90 max-w-2xl mx-auto">
-                  Не откладывайте решение юридического вопроса. Позвоните сейчас
-                  и получите:
-                </p>
+        {/* CTA Баннер - ПРОСТОЙ И ПОНЯТНЫЙ */}
+        <Card className="bg-gradient-to-r from-primary to-primary/90 text-white border-none">
+          <CardContent className="p-6 sm:p-8">
+            <div className="text-center space-y-4">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold">
+                Нужна юридическая помощь?
+              </h3>
+              <p className="text-sm sm:text-base text-blue-100">
+                Получите бесплатную консультацию за 15 минут
+              </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <div className="text-lg font-bold mb-1">1</div>
-                    <p className="text-sm">Анализ вашей ситуации</p>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <div className="text-lg font-bold mb-1">2</div>
-                    <p className="text-sm">План действий</p>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <div className="text-lg font-bold mb-1">3</div>
-                    <p className="text-sm">Расчёт стоимости</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Кнопки с разным отслеживанием */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   size={isMobile ? "default" : "lg"}
-                  className="bg-white text-primary hover:bg-gray-50 font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all group"
+                  className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8 text-base font-semibold"
                   onClick={(e) => handlePhoneClick(e, "cta_main")}
                 >
-                  <Icon name="Phone" className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
-                  <span className="relative">
-                    СРОЧНЫЙ ЗВОНОК
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      +7 993 ••• •• 00
-                    </span>
-                  </span>
+                  <Icon name="Phone" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                  +7 993 190 35 00
                 </Button>
 
                 <Button
                   variant="outline"
                   size={isMobile ? "default" : "lg"}
-                  className="border-2 border-white text-white hover:bg-white hover:text-primary font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg"
+                  className="border-2 border-white text-white hover:bg-white hover:text-primary px-6 sm:px-8 text-base font-semibold"
                   asChild
                 >
                   <a
@@ -211,70 +183,26 @@ const ServicesMain = () => {
                     onClick={() => trackPhoneClick("cta_form")}
                   >
                     <Icon
-                      name="MessageSquare"
-                      className="h-5 w-5 sm:h-6 sm:w-6 mr-2"
+                      name="MessageCircle"
+                      className="h-4 w-4 sm:h-5 sm:w-5 mr-2"
                     />
-                    Записаться на консультацию
+                    Получить консультацию
                   </a>
                 </Button>
               </div>
 
-              {/* Раскрываемый телефон */}
-              <div className="pt-2">
-                <button
-                  onClick={() => {
-                    setShowPhone(!showPhone);
-                    if (!showPhone) trackPhoneClick("phone_reveal");
-                  }}
-                  className="text-xs sm:text-sm text-blue-100/80 hover:text-white transition-colors flex items-center gap-1.5 mx-auto"
-                >
-                  <Icon
-                    name={showPhone ? "EyeOff" : "Eye"}
-                    className="h-3 w-3"
-                  />
-                  <span>
-                    {showPhone
-                      ? "Скрыть телефон"
-                      : "Показать телефон для звонка"}
-                  </span>
-                </button>
-
-                {showPhone && (
-                  <div className="mt-3 p-4 bg-white/10 rounded-xl border border-white/20 animate-in fade-in">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                      <div className="text-left">
-                        <p className="font-medium">Прямой телефон юриста:</p>
-                        <p className="text-xs text-blue-100/70">
-                          Нажмите для звонка
-                        </p>
-                      </div>
-                      <a
-                        href="tel:+79931903500"
-                        className="text-2xl font-bold text-white hover:text-yellow-200 transition-colors"
-                        onClick={() => trackPhoneClick("cta_revealed")}
-                      >
-                        +7 993 190 35 00
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Гарантии */}
-              <div className="pt-4 sm:pt-6 border-t border-white/20">
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm text-blue-100">
-                  <div className="flex items-center gap-2">
-                    <Icon name="CheckCircle" className="h-4 w-4" />
-                    <span>Бесплатный анализ ситуации</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Icon name="Shield" className="h-4 w-4" />
-                    <span>Конфиденциально</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Icon name="Clock" className="h-4 w-4" />
-                    <span>15 минут консультации</span>
-                  </div>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-4 text-xs sm:text-sm text-blue-100">
+                <div className="flex items-center gap-1.5">
+                  <Icon name="Clock" className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>Работаем 24/7</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Icon name="Shield" className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>100% конфиденциальность</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Icon name="CheckCircle" className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>Опыт с 2016 года</span>
                 </div>
               </div>
             </div>
