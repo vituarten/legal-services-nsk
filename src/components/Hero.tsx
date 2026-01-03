@@ -25,7 +25,7 @@ const Hero = () => {
           {/* Контент слева */}
           <div className="space-y-4 md:space-y-6">
             <div className="space-y-3 md:space-y-4">
-              <div className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-semibold">
+              <div className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-semibold border border-primary/20">
                 <Icon
                   name="MapPin"
                   className="h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2"
@@ -77,7 +77,7 @@ const Hero = () => {
               <Button
                 variant="outline"
                 size={isMobile ? "default" : "lg"}
-                className="border-primary text-primary hover:bg-primary"
+                className="border-primary text-primary hover:bg-primary hover:text-white px-6 md:px-8"
                 asChild
               >
                 <a href="#contacts">Бесплатная консультация</a>
@@ -85,7 +85,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Логотипы */}
+          {/* Логотипы справа */}
           <div className="relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="bg-white rounded-xl p-4 sm:p-5 shadow-lg border border-border">
@@ -116,7 +116,7 @@ const Hero = () => {
               </div>
             </div>
             <div className="mt-6 text-center">
-              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2">
+              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20">
                 <Icon name="Scale" className="h-5 w-5 text-primary" />
                 <span className="font-bold text-sm">ЮрСервисНСК</span>
               </div>
@@ -124,7 +124,7 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Миссия и ценности (сжатая версия) */}
+        {/* Миссия и принципы */}
         <div className="mb-12 md:mb-16">
           <div className="text-center mb-8">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3">
@@ -161,10 +161,13 @@ const Hero = () => {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white p-4 rounded-xl border border-border"
+                className="bg-white p-4 rounded-xl border border-border hover:border-primary/30 transition-colors"
               >
                 <div className="inline-block p-2.5 bg-primary/10 rounded-lg mb-3">
-                  <Icon name={item.icon} className="h-5 w-5 text-primary" />
+                  <Icon
+                    name={item.icon as any}
+                    className="h-5 w-5 text-primary"
+                  />
                 </div>
                 <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
                 <p className="text-sm text-muted-foreground">{item.desc}</p>
@@ -172,13 +175,13 @@ const Hero = () => {
             ))}
           </div>
 
-          {/* История компаний (коротко) */}
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 sm:p-6">
+          {/* История компаний */}
+          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 sm:p-6 border border-primary/20">
             <p className="text-center text-foreground mb-2">
-              <strong className="text-primary">ЮрСервисНСК</strong> —
-              объединение юридической компании
-              <strong className="text-primary"> "Правоотношение"</strong> и
-              <strong className="text-blue-600"> Народной дружины</strong>{" "}
+              <span className="font-bold text-primary">ЮрСервисНСК</span> —
+              объединение юридической компании{" "}
+              <span className="font-bold text-primary">"Правоотношение"</span> и{" "}
+              <span className="font-bold text-blue-600">Народной дружины</span>{" "}
               (аккредитация МВД).
             </p>
             <p className="text-center text-sm text-muted-foreground">
