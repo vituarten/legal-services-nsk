@@ -4,225 +4,231 @@ import { useState, useEffect } from "react";
 
 const Hero = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkDevice = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkDevice();
-    window.addEventListener("resize", checkDevice);
     setIsVisible(true);
-    return () => window.removeEventListener("resize", checkDevice);
   }, []);
-
-  // Простая функция для метрики
-  const trackPhoneClick = () => {
-    if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", "phone_click_hero");
-    }
-  };
 
   return (
     <main
       id="home"
-      className="pt-16 md:pt-20 pb-12 bg-gradient-to-b from-background to-secondary/20"
+      className="pt-20 pb-16 bg-gradient-to-b from-background to-secondary/20"
+      role="main"
     >
-      <div className="container mx-auto px-4 sm:px-6">
-        {/* Основной Hero */}
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12 md:mb-16">
-          {/* Контент слева */}
-          <div className="space-y-4 md:space-y-6">
-            <div className="space-y-3 md:space-y-4">
-              <div className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-semibold border border-primary/20">
-                <Icon
-                  name="MapPin"
-                  className="h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2"
-                />
-                Новосибирск • С 2016 года
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Content */}
+          <div
+            className={`space-y-6 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+          >
+            <div className="space-y-4">
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20">
+                <Icon name="MapPin" className="h-4 w-4 mr-2" />
+                Новосибирск
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
+              <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
                 Профессиональная юридическая помощь
               </h1>
-              <p className="text-base sm:text-lg text-muted-foreground">
-                Защищаем права граждан и бизнеса. Гарантия результата.
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                Защищаем ваши права и интересы. Индивидуальный подход,
+                прозрачные цены, гарантия результата.
               </p>
             </div>
 
-            {/* Статистика */}
-            <div className="grid grid-cols-3 gap-3 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4">
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-bold text-primary">
-                  8+
-                </div>
-                <div className="text-xs md:text-sm">лет</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-bold text-primary">
-                  1500+
-                </div>
-                <div className="text-xs md:text-sm">дел</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-bold text-primary">
-                  95%
-                </div>
-                <div className="text-xs md:text-sm">успеха</div>
-              </div>
-            </div>
-
-            {/* Кнопки - ПРОСТО КАК В СТАРОЙ ВЕРСИИ */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-base md:text-lg px-6 md:px-8 py-4 md:py-6"
+                className="bg-primary hover:bg-primary/90 text-lg px-8 py-6"
                 asChild
               >
-                <a href="tel:+79931903500" onClick={trackPhoneClick}>
+                <a href="tel:+79931903500">
                   <Icon name="Phone" className="h-5 w-5 mr-2" />
                   +7 993 190 35 00
                 </a>
               </Button>
-
               <Button
                 variant="outline"
                 size="lg"
-                className="border-2 border-primary text-primary hover:bg-primary hover:text-white text-base md:text-lg px-6 md:px-8 py-4 md:py-6"
                 asChild
+                className="border-2 border-primary text-primary hover:bg-primary hover:text-white text-lg px-8 py-6"
               >
                 <a href="#contacts">
                   <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                  Бесплатная консультация
+                  Получить консультацию
                 </a>
               </Button>
             </div>
 
-            {/* Преимущества */}
-            <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-6 pt-3 text-xs md:text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Icon
-                  name="CheckCircle"
-                  className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0"
-                />
+            <div className="flex flex-wrap gap-6 pt-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Icon name="CheckCircle" className="h-5 w-5 text-primary" />
                 <span>Опыт с 2016 года</span>
               </div>
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Icon
-                  name="Shield"
-                  className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0"
-                />
+              <div className="flex items-center gap-2">
+                <Icon name="Shield" className="h-5 w-5 text-primary" />
                 <span>100% конфиденциальность</span>
               </div>
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Icon
-                  name="Clock"
-                  className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0"
-                />
+              <div className="flex items-center gap-2">
+                <Icon name="Clock" className="h-5 w-5 text-primary" />
                 <span>Работаем 24/7</span>
               </div>
             </div>
           </div>
 
-          {/* Логотипы справа */}
+          {/* Right side - Logos */}
           <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div className="bg-white rounded-xl p-4 sm:p-5 shadow-lg border border-border">
-                <div className="h-24 sm:h-28 flex items-center justify-center">
-                  <img
-                    src="https://cdn.poehali.dev/files/ЛоготипНД54%20(%20без%20фона%20)%20.jpe%20g.png"
-                    alt="Народная Дружина"
-                    className="h-full object-contain"
-                    loading="lazy"
-                  />
+            <div className="relative w-full max-w-[500px] mx-auto">
+              <div className="grid grid-cols-2 gap-8 items-stretch">
+                {/* Логотип Народной Дружины */}
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all flex flex-col">
+                  <div className="flex-1 flex items-center justify-center">
+                    <img
+                      src="https://cdn.poehali.dev/files/ЛоготипНД54%20(%20без%20фона%20)%20.jpe%20g.png"
+                      alt="Народная Дружина Октябрьского района"
+                      className="w-full h-40 object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground mt-4">
+                    Народная Дружина
+                    <br />
+                    Октябрьского района
+                  </p>
                 </div>
-                <p className="text-xs text-center text-muted-foreground mt-3">
-                  Народная Дружина
-                </p>
-              </div>
-              <div className="bg-white rounded-xl p-4 sm:p-5 shadow-lg border border-border">
-                <div className="h-24 sm:h-28 flex items-center justify-center">
-                  <img
-                    src="https://cdn.poehali.dev/files/Unkwn.png"
-                    alt="ООО Правоотношение"
-                    className="h-full object-contain"
-                    loading="lazy"
-                  />
+
+                {/* Логотип Правоотношение */}
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-border hover:shadow-2xl transition-all flex flex-col">
+                  <div className="flex-1 flex items-center justify-center">
+                    <img
+                      src="https://cdn.poehali.dev/files/Unkwn.png"
+                      alt="ООО Правоотношение"
+                      className="w-full h-40 object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground mt-4">
+                    ООО "Правоотношение"
+                  </p>
                 </div>
-                <p className="text-xs text-center text-muted-foreground mt-3">
-                  ООО "Правоотношение"
-                </p>
               </div>
-            </div>
-            <div className="mt-6 text-center">
-              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 border border-primary/20">
-                <Icon name="Scale" className="h-5 w-5 text-primary" />
-                <span className="font-bold text-sm">ЮрСервисНСК</span>
+
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center gap-3 bg-primary/10 rounded-full px-6 py-3 border border-primary/20">
+                  <Icon name="Scale" className="h-6 w-6 text-primary" />
+                  <span className="font-bold text-foreground">ЮрСервисНСК</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Миссия и принципы */}
-        <div className="mb-12 md:mb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3">
+        {/* About Company Section - ДОБАВЛЕНА МИССИЯ И КОНЦЕПЦИИ */}
+        <div className="mt-24">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Наша миссия
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-3xl mx-auto font-semibold text-lg">
               Сделать правовую защиту доступной и эффективной для каждого
             </p>
           </div>
 
-          {/* Принципы работы */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {[
-              {
-                icon: "Shield",
-                title: "Защита интересов",
-                desc: "Ваши интересы — наш приоритет",
-              },
-              {
-                icon: "Scale",
-                title: "Законность",
-                desc: "Строгое соблюдение закона",
-              },
-              {
-                icon: "Users",
-                title: "Индивидуальный подход",
-                desc: "Персональная стратегия",
-              },
-              {
-                icon: "Clock",
-                title: "Оперативность",
-                desc: "Быстрое решение задач",
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white p-4 rounded-xl border border-border hover:border-primary/30 transition-colors"
-              >
-                <div className="inline-block p-2.5 bg-primary/10 rounded-lg mb-3">
-                  <Icon
-                    name={item.icon as any}
-                    className="h-5 w-5 text-primary"
-                  />
-                </div>
-                <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
+          <div className="grid lg:grid-cols-4 gap-6 mb-8">
+            {/* Принципы работы */}
+            <div className="bg-white rounded-xl p-6 border border-border">
+              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
+                <Icon name="Shield" className="h-6 w-6 text-primary" />
               </div>
-            ))}
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                Защита интересов
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Ваши интересы — наш приоритет
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-border">
+              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
+                <Icon name="Scale" className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                Законность
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Строгое соблюдение закона
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-border">
+              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
+                <Icon name="Users" className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                Индивидуальный подход
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Персональная стратегия
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-border">
+              <div className="inline-block p-3 bg-primary/10 rounded-lg mb-4">
+                <Icon name="Clock" className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                Оперативность
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Быстрое решение задач
+              </p>
+            </div>
           </div>
 
-          {/* История компаний */}
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-5 sm:p-6 border border-primary/20">
-            <p className="text-center text-foreground mb-2">
-              <span className="font-bold text-primary">ЮрСервисНСК</span> —
+          <div className="grid lg:grid-cols-2 gap-8">
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20 space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon name="Building2" className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">
+                    ООО "Правоотношение"
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Юридическая компания с 2016 года. Специализируемся на защите
+                    прав граждан и бизнеса во всех сферах права — от семейных
+                    споров до корпоративных конфликтов.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-8 border border-blue-200 space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Icon name="Shield" className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">
+                    Народная дружина Октябрьского района
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Аккредитация МВД Новосибирской области от 18 марта 2016
+                    года. Работаем в тесном взаимодействии с государственными
+                    органами для защиты законности.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
+              <strong className="text-foreground">ЮрСервисНСК</strong> — это
               объединение юридической компании{" "}
-              <span className="font-bold text-primary">"Правоотношение"</span> и{" "}
-              <span className="font-bold text-blue-600">Народной дружины</span>{" "}
+              <strong className="text-primary">"Правоотношение"</strong> и{" "}
+              <strong className="text-blue-600">Народной дружины</strong>{" "}
               (аккредитация МВД).
             </p>
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-lg text-primary font-semibold mt-4">
               Экспертиза в праве + государственная поддержка = ваша уверенность.
             </p>
           </div>
