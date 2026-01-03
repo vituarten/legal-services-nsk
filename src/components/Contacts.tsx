@@ -208,7 +208,7 @@ ${formData.message}
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
-              <form onSubmit={sendToWhatsApp} className="space-y-6">
+              <form id="contact-form" name="contact-form" onSubmit={sendToWhatsApp} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Имя *</label>
