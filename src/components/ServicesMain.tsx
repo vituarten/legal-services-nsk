@@ -139,47 +139,83 @@ const ServicesMain = () => {
           ))}
         </div>
 
-        {/* CTA Баннер */}
-        <Card className="bg-gradient-to-r from-primary to-primary/90 text-white border-none">
-          <CardContent className="p-6 sm:p-8">
-            <div className="text-center space-y-4">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold">
-                Нужна юридическая помощь?
-              </h3>
-              <p className="text-sm sm:text-base text-blue-100">
-                Получите бесплатную консультацию за 15 минут
-              </p>
+        {/* УСИЛЕННЫЙ CTA БАННЕР (Новая версия) */}
+        <Card className="bg-gradient-to-r from-primary via-primary/95 to-primary/90 text-white border-none shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden relative">
+          {/* Декоративные элементы */}
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-20 translate-x-20"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
+            <div className="text-center space-y-5 sm:space-y-6">
+              {/* Заголовок с эмоциональным акцентом */}
+              <div>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">
+                  Бесплатная консультация за 15 минут — ваши права под защитой!
+                </h3>
+                <p className="text-sm sm:text-base md:text-lg text-blue-100/90 max-w-2xl mx-auto">
+                  Позвоните нам или оставьте заявку, чтобы получить
+                  профессиональную помощь прямо сейчас.
+                  <span className="block mt-1 font-medium">
+                    15 минут консультации помогут разобраться в вашей ситуации и
+                    определить следующий шаг.
+                  </span>
+                </p>
+              </div>
+
+              {/* Упрощённые и сильные кнопки */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
                 <Button
                   size={isMobile ? "default" : "lg"}
-                  className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8"
+                  className="bg-white text-primary hover:bg-gray-50 font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
                   asChild
                 >
                   <a href="tel:+79931903500">
-                    <Icon name="Phone" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                    <Icon name="Phone" className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
                     Позвонить сейчас
                   </a>
                 </Button>
+
                 <Button
                   variant="outline"
                   size={isMobile ? "default" : "lg"}
-                  className="border-white text-white hover:bg-white hover:text-primary px-6 sm:px-8"
+                  className="border-2 border-white text-white hover:bg-white hover:text-primary font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg"
                   asChild
                 >
-                  <a href="#contacts">Заказать консультацию</a>
+                  <a href="#contacts">
+                    <Icon
+                      name="MessageSquare"
+                      className="h-5 w-5 sm:h-6 sm:w-6 mr-2"
+                    />
+                    Оставить заявку
+                  </a>
                 </Button>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-4 text-xs sm:text-sm text-blue-100">
-                <div className="flex items-center gap-1.5">
-                  <Icon name="Clock" className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>Консультация 15 минут</span>
+              {/* Усиленные гарантии */}
+              <div className="pt-4 sm:pt-6 border-t border-white/20">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm text-blue-100">
+                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
+                    <Icon
+                      name="CheckCircle"
+                      className="h-3 w-3 sm:h-4 sm:w-4"
+                    />
+                    <span>Консультация бесплатна</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
+                    <Icon name="Shield" className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Полная конфиденциальность</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
+                    <Icon name="Clock" className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Ответ за 15 минут</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Icon name="Shield" className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>Конфиденциальность</span>
-                </div>
+
+                {/* Заключительное сообщение */}
+                <p className="text-xs text-blue-100/70 mt-4 pt-3 border-t border-white/10">
+                  Мы перезвоним вам в течение 15 минут в рабочее время. Ваши
+                  данные защищены.
+                </p>
               </div>
             </div>
           </CardContent>
