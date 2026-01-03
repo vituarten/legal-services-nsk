@@ -3,8 +3,8 @@ import Icon from "@/components/ui/icon";
 import { useState, useEffect } from "react";
 
 const Hero = () => {
+  const [isVisible, setIsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
 
   useEffect(() => {
     const checkDevice = () => {
@@ -12,31 +12,21 @@ const Hero = () => {
     };
     checkDevice();
     window.addEventListener("resize", checkDevice);
+    setIsVisible(true);
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
-  // Функция для отслеживания кликов по телефону
+  // Функция для отслеживания звонков
   const trackPhoneClick = (context: string) => {
     if (typeof window !== "undefined" && window.ym) {
       window.ym(106063131, "reachGoal", `phone_click_${context}`);
     }
-    // Также можно отправлять в GA или другие системы
-    console.log(`Phone clicked from: ${context}`);
   };
 
   const handlePhoneClick = (e: React.MouseEvent, context: string) => {
     e.preventDefault();
     trackPhoneClick(context);
-
-    // Открываем телефон
     window.location.href = "tel:+79931903500";
-  };
-
-  const togglePhone = () => {
-    if (!showPhone) {
-      trackPhoneClick("hero_toggle");
-    }
-    setShowPhone(!showPhone);
   };
 
   return (
@@ -87,62 +77,53 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Кнопки с "скрытым" телефоном */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            {/* Кнопки как в старой версии */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
-                size={isMobile ? "default" : "lg"}
-                className="bg-primary hover:bg-primary/90 px-6 md:px-8 group relative"
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-base md:text-lg px-6 md:px-8 py-4 md:py-6"
                 onClick={(e) => handlePhoneClick(e, "hero_main")}
               >
-                <Icon name="Phone" className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                <span className="relative">
-                  Позвонить юристу
-                  {/* Скрытый телефон, который показывается при наведении */}
-                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    +7 993 190 35 00
-                  </span>
-                </span>
+                <Icon name="Phone" className="h-5 w-5 mr-2" />
+                +7 993 190 35 00
               </Button>
 
               <Button
                 variant="outline"
-                size={isMobile ? "default" : "lg"}
-                className="border-primary text-primary hover:bg-primary hover:text-white px-6 md:px-8"
+                size="lg"
+                className="border-2 border-primary text-primary hover:bg-primary hover:text-white text-base md:text-lg px-6 md:px-8 py-4 md:py-6"
                 asChild
               >
-                <a href="#contacts">Бесплатная консультация</a>
+                <a href="#contacts">
+                  <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
+                  Получить консультацию
+                </a>
               </Button>
             </div>
 
-            {/* Альтернативный вариант показа телефона */}
-            <div className="pt-2">
-              <button
-                onClick={togglePhone}
-                className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
-              >
-                <Icon name={showPhone ? "EyeOff" : "Eye"} className="h-3 w-3" />
-                <span>{showPhone ? "Скрыть телефон" : "Показать телефон"}</span>
-              </button>
-
-              {showPhone && (
-                <div className="mt-2 p-3 bg-primary/5 rounded-lg border border-primary/20 animate-in fade-in">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-foreground">
-                      Телефон:
-                    </span>
-                    <a
-                      href="tel:+79931903500"
-                      className="text-lg font-bold text-primary hover:underline"
-                      onClick={(e) => trackPhoneClick("hero_revealed")}
-                    >
-                      +7 993 190 35 00
-                    </a>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Нажмите для звонка (отслеживается в метрике)
-                  </p>
-                </div>
-              )}
+            {/* Преимущества */}
+            <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-6 pt-3 text-xs md:text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Icon
+                  name="CheckCircle"
+                  className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0"
+                />
+                <span>Опыт с 2016 года</span>
+              </div>
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Icon
+                  name="Shield"
+                  className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0"
+                />
+                <span>100% конфиденциальность</span>
+              </div>
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Icon
+                  name="Clock"
+                  className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0"
+                />
+                <span>Работаем 24/7</span>
+              </div>
             </div>
           </div>
 
