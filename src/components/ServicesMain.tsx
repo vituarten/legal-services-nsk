@@ -2,79 +2,100 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const ServicesMain = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+    };
+
+    checkDevice();
+    window.addEventListener("resize", checkDevice);
+    return () => window.removeEventListener("resize", checkDevice);
+  }, []);
+
   const serviceCategories = [
     {
       icon: "Car",
       title: "Автоюрист",
-      description: "Защита при ДТП, споры со страховыми, лишение прав, незаконные штрафы",
-      link: "/dtp-lawyer"
+      description:
+        "Защита при ДТП, споры со страховыми, лишение прав, незаконные штрафы",
+      link: "/dtp-lawyer",
     },
     {
       icon: "Users",
       title: "Семейное право",
       description: "Разводы, алименты, раздел имущества, споры о детях",
-      link: "/family-lawyer"
+      link: "/family-lawyer",
     },
     {
       icon: "TrendingDown",
       title: "Банкротство",
       description: "Списание долгов физических лиц, защита от кредиторов",
-      link: "/bankruptcy-lawyer"
+      link: "/bankruptcy-lawyer",
     },
     {
       icon: "FileText",
       title: "Миграционное право",
       description: "РВП, ВНЖ, гражданство, депортация, запреты на въезд",
-      link: "/migration"
+      link: "/migration",
     },
     {
       icon: "Home",
       title: "Недвижимость",
-      description: "Сделки купли-продажи, споры с застройщиками, перепланировки",
-      link: "/real-estate-lawyer"
+      description:
+        "Сделки купли-продажи, споры с застройщиками, перепланировки",
+      link: "/real-estate-lawyer",
     },
     {
       icon: "Shield",
       title: "Уголовная защита",
       description: "Защита на следствии и в суде, обжалование приговоров",
-      link: "/criminal-lawyer"
-    }
+      link: "/criminal-lawyer",
+    },
   ];
 
   return (
-    <section
-      id="services"
-      className="py-20 bg-secondary/20"
-    >
-      <div className="container mx-auto px-4">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+    <section id="services" className="py-12 sm:py-16 md:py-20 bg-secondary/20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center space-y-3 md:space-y-4 mb-10 sm:mb-12 md:mb-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
             Наши услуги
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Комплексная юридическая поддержка — от консультации до победы в суде
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mb-12 sm:mb-14 md:mb-16">
           {serviceCategories.map((service, index) => (
-            <Link key={index} to={service.link}>
-              <Card className="h-full hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary hover:-translate-y-1 cursor-pointer group">
-                <CardContent className="p-8 space-y-4">
-                  <div className="inline-block p-4 bg-primary/10 rounded-xl group-hover:bg-primary group-hover:scale-110 transition-all">
-                    <Icon name={service.icon} className="h-8 w-8 text-primary group-hover:text-white" />
+            <Link key={index} to={service.link} className="block h-full">
+              <Card className="h-full hover:shadow-xl md:hover:shadow-2xl transition-all duration-300 border border-border md:border-2 hover:border-primary hover:-translate-y-1 cursor-pointer group">
+                <CardContent className="p-4 sm:p-5 md:p-6 lg:p-8 space-y-3 sm:space-y-4">
+                  <div className="inline-block p-3 sm:p-3.5 md:p-4 bg-primary/10 rounded-lg sm:rounded-xl group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+                    <Icon
+                      name={service.icon}
+                      className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary group-hover:text-white"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed text-xs sm:text-sm md:text-base">
                     {service.description}
                   </p>
-                  <div className="flex items-center text-primary font-semibold pt-2">
-                    <span className="mr-2">Подробнее</span>
-                    <Icon name="ArrowRight" className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
+                  <div className="flex items-center text-primary font-semibold pt-1 sm:pt-2 text-sm sm:text-base">
+                    <span className="mr-1.5 sm:mr-2">Подробнее</span>
+                    <Icon
+                      name="ArrowRight"
+                      className="h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-2 transition-transform"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -82,102 +103,139 @@ const ServicesMain = () => {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6 mb-12 sm:mb-14 md:mb-16">
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 hover:shadow-lg transition-all">
-            <CardContent className="p-6 text-center space-y-3">
-              <div className="inline-block p-3 bg-primary rounded-xl">
-                <Icon name="Award" className="h-6 w-6 text-white" />
+            <CardContent className="p-4 sm:p-5 md:p-6 text-center space-y-2 sm:space-y-3">
+              <div className="inline-block p-2.5 sm:p-3 bg-primary rounded-lg sm:rounded-xl">
+                <Icon
+                  name="Award"
+                  className="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                />
               </div>
-              <h3 className="text-lg font-bold text-foreground">Опыт с 2016 года</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm sm:text-base md:text-lg font-bold text-foreground">
+                Опыт с 2016 года
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Более 8 лет успешной практики в различных областях права
               </p>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 border-blue-200 hover:shadow-lg transition-all">
-            <CardContent className="p-6 text-center space-y-3">
-              <div className="inline-block p-3 bg-blue-600 rounded-xl">
-                <Icon name="UserCheck" className="h-6 w-6 text-white" />
+            <CardContent className="p-4 sm:p-5 md:p-6 text-center space-y-2 sm:space-y-3">
+              <div className="inline-block p-2.5 sm:p-3 bg-blue-600 rounded-lg sm:rounded-xl">
+                <Icon
+                  name="UserCheck"
+                  className="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                />
               </div>
-              <h3 className="text-lg font-bold text-foreground">Индивидуальный подход</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm sm:text-base md:text-lg font-bold text-foreground">
+                Индивидуальный подход
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Анализируем вашу ситуацию и предлагаем оптимальное решение
               </p>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-green-50 to-green-100/50 border-green-200 hover:shadow-lg transition-all">
-            <CardContent className="p-6 text-center space-y-3">
-              <div className="inline-block p-3 bg-green-600 rounded-xl">
-                <Icon name="Target" className="h-6 w-6 text-white" />
+            <CardContent className="p-4 sm:p-5 md:p-6 text-center space-y-2 sm:space-y-3">
+              <div className="inline-block p-2.5 sm:p-3 bg-green-600 rounded-lg sm:rounded-xl">
+                <Icon
+                  name="Target"
+                  className="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                />
               </div>
-              <h3 className="text-lg font-bold text-foreground">Полное сопровождение</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm sm:text-base md:text-lg font-bold text-foreground">
+                Полное сопровождение
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Ведём дело от начала до конца, держим вас в курсе каждого шага
               </p>
             </CardContent>
           </Card>
 
           <Card className="bg-gradient-to-br from-amber-50 to-amber-100/50 border-amber-200 hover:shadow-lg transition-all">
-            <CardContent className="p-6 text-center space-y-3">
-              <div className="inline-block p-3 bg-amber-600 rounded-xl">
-                <Icon name="FileCheck" className="h-6 w-6 text-white" />
+            <CardContent className="p-4 sm:p-5 md:p-6 text-center space-y-2 sm:space-y-3">
+              <div className="inline-block p-2.5 sm:p-3 bg-amber-600 rounded-lg sm:rounded-xl">
+                <Icon
+                  name="FileCheck"
+                  className="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                />
               </div>
-              <h3 className="text-lg font-bold text-foreground">Прозрачность</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm sm:text-base md:text-lg font-bold text-foreground">
+                Прозрачность
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Честные цены без скрытых комиссий, отчёт на каждом этапе
               </p>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="bg-gradient-to-r from-primary to-primary/90 text-white border-none shadow-2xl">
-          <CardContent className="p-10">
-            <div className="text-center space-y-6">
-              <h3 className="text-2xl lg:text-3xl font-bold">
-                Нужна юридическая помощь?
-              </h3>
-              <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-                Позвоните нам или оставьте заявку — мы свяжемся с вами в течение 15 минут
-              </p>
+        {/* CTA Banner */}
+        <Card className="bg-gradient-to-r from-primary to-primary/90 text-white border-none shadow-lg md:shadow-2xl overflow-hidden">
+          <CardContent className="p-6 sm:p-8 md:p-10 relative">
+            {/* Декоративные элементы */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16 hidden md:block"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12 hidden sm:block"></div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+            <div className="text-center space-y-4 sm:space-y-5 md:space-y-6 relative z-10">
+              <div>
+                <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
+                  Нужна юридическая помощь?
+                </h3>
+                <p className="text-sm sm:text-base md:text-lg text-blue-100 max-w-2xl mx-auto mt-2 sm:mt-3">
+                  Позвоните нам или оставьте заявку — мы свяжемся с вами в
+                  течение 15 минут
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center pt-2 sm:pt-3">
                 <Button
-                  size="lg"
-                  className="bg-white text-primary hover:bg-gray-100 px-8 text-lg font-semibold"
+                  size={isMobile ? "default" : "lg"}
+                  className="bg-white text-primary hover:bg-gray-100 px-6 sm:px-8 text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
                   asChild
                 >
                   <a href="tel:+79931903500">
-                    <Icon name="Phone" className="h-5 w-5 mr-2" />
+                    <Icon name="Phone" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     +7 993 190 35 00
                   </a>
                 </Button>
                 <Button
                   variant="outline"
-                  size="lg"
-                  className="border-2 border-white text-white hover:bg-white hover:text-primary px-8 text-lg font-semibold"
+                  size={isMobile ? "default" : "lg"}
+                  className="border-2 border-white text-white hover:bg-white hover:text-primary px-6 sm:px-8 text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
                   asChild
                 >
                   <a href="#contacts">
-                    <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                    Получить консультацию
+                    <Icon
+                      name="MessageCircle"
+                      className="h-4 w-4 sm:h-5 sm:w-5 mr-2"
+                    />
+                    Бесплатная консультация
                   </a>
                 </Button>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-8 pt-6 text-blue-100">
-                <div className="flex items-center gap-2">
-                  <Icon name="Clock" className="h-5 w-5" />
-                  <span className="font-medium">Работаем 24/7</span>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 pt-4 sm:pt-5 text-blue-100">
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-center">
+                  <Icon name="Clock" className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="font-medium text-xs sm:text-sm">
+                    Круглосуточно
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Icon name="MapPin" className="h-5 w-5" />
-                  <span className="font-medium">г. Новосибирск, ул. Ленина, д. 3</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-center">
+                  <Icon name="MapPin" className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="font-medium text-xs sm:text-sm">
+                    Новосибирск, ул. Ленина, 3
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Icon name="Shield" className="h-5 w-5" />
-                  <span className="font-medium">100% конфиденциальность</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-center">
+                  <Icon name="Shield" className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="font-medium text-xs sm:text-sm">
+                    100% конфиденциальность
+                  </span>
                 </div>
               </div>
             </div>
