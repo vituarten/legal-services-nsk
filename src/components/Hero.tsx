@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 const Hero = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
 
   useEffect(() => {
     const checkDevice = () => {
@@ -13,6 +14,30 @@ const Hero = () => {
     window.addEventListener("resize", checkDevice);
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
+
+  // Функция для отслеживания кликов по телефону
+  const trackPhoneClick = (context: string) => {
+    if (typeof window !== "undefined" && window.ym) {
+      window.ym(106063131, "reachGoal", `phone_click_${context}`);
+    }
+    // Также можно отправлять в GA или другие системы
+    console.log(`Phone clicked from: ${context}`);
+  };
+
+  const handlePhoneClick = (e: React.MouseEvent, context: string) => {
+    e.preventDefault();
+    trackPhoneClick(context);
+
+    // Открываем телефон
+    window.location.href = "tel:+79931903500";
+  };
+
+  const togglePhone = () => {
+    if (!showPhone) {
+      trackPhoneClick("hero_toggle");
+    }
+    setShowPhone(!showPhone);
+  };
 
   return (
     <main
@@ -62,18 +87,23 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Кнопки */}
+            {/* Кнопки с "скрытым" телефоном */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size={isMobile ? "default" : "lg"}
-                className="bg-primary hover:bg-primary/90 px-6 md:px-8"
-                asChild
+                className="bg-primary hover:bg-primary/90 px-6 md:px-8 group relative"
+                onClick={(e) => handlePhoneClick(e, "hero_main")}
               >
-                <a href="tel:+79931903500">
-                  <Icon name="Phone" className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                  +7 993 190 35 00
-                </a>
+                <Icon name="Phone" className="h-4 w-4 md:h-5 md:w-5 mr-2" />
+                <span className="relative">
+                  Позвонить юристу
+                  {/* Скрытый телефон, который показывается при наведении */}
+                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    +7 993 190 35 00
+                  </span>
+                </span>
               </Button>
+
               <Button
                 variant="outline"
                 size={isMobile ? "default" : "lg"}
@@ -82,6 +112,37 @@ const Hero = () => {
               >
                 <a href="#contacts">Бесплатная консультация</a>
               </Button>
+            </div>
+
+            {/* Альтернативный вариант показа телефона */}
+            <div className="pt-2">
+              <button
+                onClick={togglePhone}
+                className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+              >
+                <Icon name={showPhone ? "EyeOff" : "Eye"} className="h-3 w-3" />
+                <span>{showPhone ? "Скрыть телефон" : "Показать телефон"}</span>
+              </button>
+
+              {showPhone && (
+                <div className="mt-2 p-3 bg-primary/5 rounded-lg border border-primary/20 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-foreground">
+                      Телефон:
+                    </span>
+                    <a
+                      href="tel:+79931903500"
+                      className="text-lg font-bold text-primary hover:underline"
+                      onClick={(e) => trackPhoneClick("hero_revealed")}
+                    >
+                      +7 993 190 35 00
+                    </a>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Нажмите для звонка (отслеживается в метрике)
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
