@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 const ServicesMain = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
 
   useEffect(() => {
     const checkDevice = () => {
@@ -15,6 +16,19 @@ const ServicesMain = () => {
     window.addEventListener("resize", checkDevice);
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
+
+  // Функция для отслеживания
+  const trackPhoneClick = (context: string) => {
+    if (typeof window !== "undefined" && window.ym) {
+      window.ym(106063131, "reachGoal", `phone_click_${context}`);
+    }
+  };
+
+  const handlePhoneClick = (e: React.MouseEvent, context: string) => {
+    e.preventDefault();
+    trackPhoneClick(context);
+    window.location.href = "tel:+79931903500";
+  };
 
   const serviceCategories = [
     {
@@ -139,40 +153,51 @@ const ServicesMain = () => {
           ))}
         </div>
 
-        {/* УСИЛЕННЫЙ CTA БАННЕР (Новая версия) */}
+        {/* УСИЛЕННЫЙ CTA БАННЕР С ОТСЛЕЖИВАНИЕМ */}
         <Card className="bg-gradient-to-r from-primary via-primary/95 to-primary/90 text-white border-none shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden relative">
-          {/* Декоративные элементы */}
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-20 translate-x-20"></div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
-
-          <CardContent className="p-6 sm:p-8 md:p-10 relative z-10">
+          <CardContent className="p-6 sm:p-8 md:p-10 relative">
             <div className="text-center space-y-5 sm:space-y-6">
-              {/* Заголовок с эмоциональным акцентом */}
+              {/* Заголовок */}
               <div>
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">
-                  Бесплатная консультация за 15 минут — ваши права под защитой!
+                  ⚖️ Решите проблему сегодня — получите план действий за 15
+                  минут!
                 </h3>
                 <p className="text-sm sm:text-base md:text-lg text-blue-100/90 max-w-2xl mx-auto">
-                  Позвоните нам или оставьте заявку, чтобы получить
-                  профессиональную помощь прямо сейчас.
-                  <span className="block mt-1 font-medium">
-                    15 минут консультации помогут разобраться в вашей ситуации и
-                    определить следующий шаг.
-                  </span>
+                  Не откладывайте решение юридического вопроса. Позвоните сейчас
+                  и получите:
                 </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <div className="text-lg font-bold mb-1">1</div>
+                    <p className="text-sm">Анализ вашей ситуации</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <div className="text-lg font-bold mb-1">2</div>
+                    <p className="text-sm">План действий</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <div className="text-lg font-bold mb-1">3</div>
+                    <p className="text-sm">Расчёт стоимости</p>
+                  </div>
+                </div>
               </div>
 
-              {/* Упрощённые и сильные кнопки */}
+              {/* Кнопки с разным отслеживанием */}
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
                 <Button
                   size={isMobile ? "default" : "lg"}
-                  className="bg-white text-primary hover:bg-gray-50 font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
-                  asChild
+                  className="bg-white text-primary hover:bg-gray-50 font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all group"
+                  onClick={(e) => handlePhoneClick(e, "cta_main")}
                 >
-                  <a href="tel:+79931903500">
-                    <Icon name="Phone" className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
-                    Позвонить сейчас
-                  </a>
+                  <Icon name="Phone" className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
+                  <span className="relative">
+                    СРОЧНЫЙ ЗВОНОК
+                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      +7 993 ••• •• 00
+                    </span>
+                  </span>
                 </Button>
 
                 <Button
@@ -181,41 +206,76 @@ const ServicesMain = () => {
                   className="border-2 border-white text-white hover:bg-white hover:text-primary font-bold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg"
                   asChild
                 >
-                  <a href="#contacts">
+                  <a
+                    href="#contacts"
+                    onClick={() => trackPhoneClick("cta_form")}
+                  >
                     <Icon
                       name="MessageSquare"
                       className="h-5 w-5 sm:h-6 sm:w-6 mr-2"
                     />
-                    Оставить заявку
+                    Записаться на консультацию
                   </a>
                 </Button>
               </div>
 
-              {/* Усиленные гарантии */}
+              {/* Раскрываемый телефон */}
+              <div className="pt-2">
+                <button
+                  onClick={() => {
+                    setShowPhone(!showPhone);
+                    if (!showPhone) trackPhoneClick("phone_reveal");
+                  }}
+                  className="text-xs sm:text-sm text-blue-100/80 hover:text-white transition-colors flex items-center gap-1.5 mx-auto"
+                >
+                  <Icon
+                    name={showPhone ? "EyeOff" : "Eye"}
+                    className="h-3 w-3"
+                  />
+                  <span>
+                    {showPhone
+                      ? "Скрыть телефон"
+                      : "Показать телефон для звонка"}
+                  </span>
+                </button>
+
+                {showPhone && (
+                  <div className="mt-3 p-4 bg-white/10 rounded-xl border border-white/20 animate-in fade-in">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                      <div className="text-left">
+                        <p className="font-medium">Прямой телефон юриста:</p>
+                        <p className="text-xs text-blue-100/70">
+                          Нажмите для звонка
+                        </p>
+                      </div>
+                      <a
+                        href="tel:+79931903500"
+                        className="text-2xl font-bold text-white hover:text-yellow-200 transition-colors"
+                        onClick={() => trackPhoneClick("cta_revealed")}
+                      >
+                        +7 993 190 35 00
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Гарантии */}
               <div className="pt-4 sm:pt-6 border-t border-white/20">
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm text-blue-100">
-                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
-                    <Icon
-                      name="CheckCircle"
-                      className="h-3 w-3 sm:h-4 sm:w-4"
-                    />
-                    <span>Консультация бесплатна</span>
+                  <div className="flex items-center gap-2">
+                    <Icon name="CheckCircle" className="h-4 w-4" />
+                    <span>Бесплатный анализ ситуации</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
-                    <Icon name="Shield" className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Полная конфиденциальность</span>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Shield" className="h-4 w-4" />
+                    <span>Конфиденциально</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
-                    <Icon name="Clock" className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Ответ за 15 минут</span>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Clock" className="h-4 w-4" />
+                    <span>15 минут консультации</span>
                   </div>
                 </div>
-
-                {/* Заключительное сообщение */}
-                <p className="text-xs text-blue-100/70 mt-4 pt-3 border-t border-white/10">
-                  Мы перезвоним вам в течение 15 минут в рабочее время. Ваши
-                  данные защищены.
-                </p>
               </div>
             </div>
           </CardContent>
