@@ -77,6 +77,8 @@ const BusinessBlog = () => {
           </p>
         </div>
 
+        {/* УБРАЛ ФИЛЬТРЫ КАТЕГОРИЙ - они не нужны */}
+
         <div className="max-w-4xl mx-auto mb-16 space-y-4">
           {faqItems.map((item) => {
             const isOpen = openItems.includes(item.id);
