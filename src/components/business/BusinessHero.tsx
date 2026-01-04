@@ -1,9 +1,19 @@
+import { Button } from "@/components/ui/button";
+import Icon from "@/components/ui/icon";
+import { CONTACTS } from "@/config/contacts";
+
 const BusinessHero = () => {
   const handleWhatsAppClick = () => {
+    if (typeof window !== "undefined" && window.ym) {
+      window.ym(106063131, "reachGoal", "whatsapp_click");
+    }
     window.open(`https://wa.me/${CONTACTS.whatsapp}`, "_blank");
   };
 
   const handlePhoneClick = () => {
+    if (typeof window !== "undefined" && window.ym) {
+      window.ym(106063131, "reachGoal", "phone_click");
+    }
     window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, "")}`;
   };
 
@@ -172,3 +182,6 @@ const BusinessHero = () => {
     </section>
   );
 };
+
+// ВАЖНО: Добавить этот экспорт!
+export default BusinessHero;
