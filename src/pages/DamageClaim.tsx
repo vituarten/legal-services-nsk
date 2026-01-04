@@ -9,40 +9,20 @@ import { trackCustomGoal } from "@/utils/metrika";
 
 const DamageClaim = () => {
   const [showForm, setShowForm] = useState(false);
-  const [diagnosisStep, setDiagnosisStep] = useState(0);
-  const [diagnosisAnswers, setDiagnosisAnswers] = useState({});
-  const [daysPassed, setDaysPassed] = useState(5); // Пример: 5 дней с ДТП
-  const [currentHour, setCurrentHour] = useState(0);
-  const [lossAmount, setLossAmount] = useState(0);
-  const [timerSeconds, setTimerSeconds] = useState(90);
+  const [daysPassed, setDaysPassed] = useState(5);
+  const [currentHour, setCurrentHour] = useState(12);
+  const [lossAmount, setLossAmount] = useState(75000);
 
   const seo = getSEOConfig("damageClaim");
 
-  // Таймер для диагностики
+  // Эмуляция прошедшего времени
   useEffect(() => {
-    if (diagnosisStep < 3 && timerSeconds > 0) {
-      const interval = setInterval(() => {
-        setTimerSeconds((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [diagnosisStep, timerSeconds]);
-
-  // Таймер для "часов с ДТП"
-  useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentHour((prev) => prev + 1);
-    }, 10000); // 10 секунд = 1 час
-    return () => clearInterval(interval);
+      setLossAmount((prev) => prev + 625);
+    }, 10000);
+    return () => clearInterval(timer);
   }, []);
-
-  // Расчёт потерь в реальном времени
-  useEffect(() => {
-    const carValue = 1000000; // Пример: машина за 1 млн
-    const dailyLoss = 15000; // Потери в день
-    const totalLoss = daysPassed * dailyLoss + currentHour * 625; // 625 ₽ в час
-    setLossAmount(totalLoss);
-  }, [daysPassed, currentHour]);
 
   const handleConsultation = (source) => {
     trackCustomGoal("damage_claim_consultation", {
@@ -52,49 +32,11 @@ const DamageClaim = () => {
     setShowForm(true);
   };
 
-  const diagnosisQuestions = [
-    {
-      id: 1,
-      text: "Сколько дней прошло с момента ДТП?",
-      options: [
-        { text: "1-3 дня", risk: "Ещё можно всё исправить", value: 1 },
-        { text: "4-7 дней", risk: "Доказательства исчезают", value: 2 },
-        { text: "8+ дней", risk: "КРИТИЧЕСКИЙ срок", value: 3 },
-      ],
-    },
-    {
-      id: 2,
-      text: "Виновник согласен добровольно оплатить ущерб?",
-      options: [
-        { text: "Да, готов платить", risk: "Низкий риск", value: 1 },
-        { text: "Уклоняется/молчит", risk: "Высокий риск", value: 2 },
-        { text: "Отказывается/угрожает", risk: "КРИТИЧЕСКИЙ", value: 3 },
-      ],
-    },
-    {
-      id: 3,
-      text: "Ваш автомобиль уже в ремонте?",
-      options: [
-        { text: "Нет, жду", risk: "Можно взыскать УТС", value: 1 },
-        {
-          text: "Частично отремонтирован",
-          risk: "Потеряли часть УТС",
-          value: 2,
-        },
-        {
-          text: "Полностью отремонтирован",
-          risk: "Потеряли весь УТС",
-          value: 3,
-        },
-      ],
-    },
-  ];
-
   const timelineEvents = [
     { day: 0, title: "День ДТП", status: "safe", loss: "0 ₽" },
     {
       day: 3,
-      title: "Исчезают доказательства",
+      title: "Доказательства исчезают",
       status: "warning",
       loss: "45 000 ₽",
     },
@@ -104,56 +46,9 @@ const DamageClaim = () => {
       status: "danger",
       loss: "105 000 ₽",
     },
-    {
-      day: 15,
-      title: "Точка невозврата УТС",
-      status: "critical",
-      loss: "225 000 ₽",
-    },
-    {
-      day: 30,
-      title: "Банкротство виновника",
-      status: "lost",
-      loss: "450 000 ₽",
-    },
+    { day: 15, title: "Потеря УТС", status: "critical", loss: "225 000 ₽" },
+    { day: 30, title: "Банкротство", status: "lost", loss: "450 000 ₽" },
   ];
-
-  const opponentActions = [
-    { hour: 2, action: "Ищет способы скрыть алкоголь", completed: true },
-    { hour: 6, action: "Договаривается со 'свидетелями'", completed: true },
-    {
-      hour: 12,
-      action: "Снимает деньги со счетов",
-      completed: currentHour >= 12,
-    },
-    {
-      hour: 24,
-      action: "Переоформляет авто на родственников",
-      completed: currentHour >= 24,
-    },
-    { hour: 48, action: "Берёт микрозаймы", completed: currentHour >= 48 },
-    { hour: 72, action: "Начинает банкротство", completed: currentHour >= 72 },
-  ];
-
-  const calculateRiskLevel = () => {
-    const values = Object.values(diagnosisAnswers);
-    const sum = values.reduce((a, b) => a + b, 0);
-    if (sum >= 7)
-      return {
-        level: "КРИТИЧЕСКИЙ",
-        color: "red",
-        text: "Немедленные действия требуются",
-      };
-    if (sum >= 5)
-      return { level: "ВЫСОКИЙ", color: "orange", text: "Срочно нужна защита" };
-    return {
-      level: "СРЕДНИЙ",
-      color: "yellow",
-      text: "Есть риски, нужно действовать",
-    };
-  };
-
-  const risk = calculateRiskLevel();
 
   return (
     <>
@@ -164,386 +59,390 @@ const DamageClaim = () => {
         canonical={seo.canonical}
       />
 
-      {/* ЭКСТРЕННАЯ ДИАГНОСТИКА */}
-      <div className="min-h-screen bg-gradient-to-b from-red-50 via-white to-orange-50 pt-24 pb-16">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50 pt-24 pb-16">
         <div className="container mx-auto px-4">
-          {/* Блок 1: Диагностика */}
-          <div className="max-w-2xl mx-auto mb-20">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-red-100 rounded-full mb-6">
-                <Icon name="AlertTriangle" size={48} className="text-red-600" />
+          {/* Hero с срочностью */}
+          <div className="max-w-5xl mx-auto text-center mb-16">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-red-100 rounded-full mb-6 relative">
+              <Icon name="AlertTriangle" size={48} className="text-red-600" />
+              <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+                {currentHour}ч
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Это <span className="text-red-600">ваша</span> ситуация после
-                ДТП?
-              </h1>
-              <p className="text-xl text-gray-600">
-                Ответьте на 3 вопроса — узнайте, сколько денег вы{" "}
-                <span className="font-bold">уже потеряли</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Взыскание ущерба от ДТП:
+              <span className="text-red-600"> время против вас</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Виновник уже скрывает имущество? Ущерб больше лимита ОСАГО?
+              <br />
+              <span className="font-bold">
+                Каждый день бездействия стоит вам{" "}
+                {Math.round(lossAmount / daysPassed).toLocaleString()} ₽
+              </span>
+            </p>
+
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-6 mb-8 inline-block border-2 border-red-200">
+              <p className="text-2xl font-bold text-red-700 mb-2">
+                ⚠️ Ваши текущие потери: {lossAmount.toLocaleString()} ₽
+              </p>
+              <p className="text-gray-600">
+                и увеличиваются на 625 ₽ каждый час
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-xl border-2 border-red-100">
-              {diagnosisStep < 3 ? (
-                <>
-                  <div className="mb-8">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm text-gray-500">
-                        Вопрос {diagnosisStep + 1} из 3
-                      </span>
-                      <div className="flex items-center text-sm font-medium text-red-600">
-                        <Icon name="Clock" size={16} className="mr-1" />⏳{" "}
-                        {Math.floor(timerSeconds / 60)}:
-                        {String(timerSeconds % 60).padStart(2, "0")}
-                      </div>
-                    </div>
-                    <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-300"
-                        style={{ width: `${((diagnosisStep + 1) / 3) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <h2 className="text-2xl font-bold text-gray-900 mb-8">
-                    {diagnosisQuestions[diagnosisStep].text}
-                  </h2>
-
-                  <div className="space-y-4">
-                    {diagnosisQuestions[diagnosisStep].options.map(
-                      (option, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            setDiagnosisAnswers({
-                              ...diagnosisAnswers,
-                              [diagnosisStep]: option.value,
-                            });
-                            setTimeout(
-                              () => setDiagnosisStep(diagnosisStep + 1),
-                              300,
-                            );
-                            setTimerSeconds(90);
-                          }}
-                          className="w-full text-left p-5 rounded-xl border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 transition-all duration-200"
-                        >
-                          <div className="flex justify-between items-center">
-                            <span className="font-bold text-lg">
-                              {option.text}
-                            </span>
-                            <span
-                              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                option.value === 1
-                                  ? "bg-green-100 text-green-800"
-                                  : option.value === 2
-                                    ? "bg-yellow-100 text-yellow-800"
-                                    : "bg-red-100 text-red-800"
-                              }`}
-                            >
-                              {option.risk}
-                            </span>
-                          </div>
-                        </button>
-                      ),
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-6">
-                  <div
-                    className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 ${
-                      risk.color === "red"
-                        ? "bg-red-100"
-                        : risk.color === "orange"
-                          ? "bg-orange-100"
-                          : "bg-yellow-100"
-                    }`}
-                  >
-                    <Icon
-                      name={
-                        risk.color === "red" ? "AlertOctagon" : "AlertCircle"
-                      }
-                      size={40}
-                      className={`text-${risk.color}-600`}
-                    />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    Уровень риска:{" "}
-                    <span className={`text-${risk.color}-600`}>
-                      {risk.level}
-                    </span>
-                  </h3>
-                  <p className="text-gray-600 mb-8 text-lg">
-                    {risk.text}. Бездействие уже стоило вам{" "}
-                    <span className="font-bold text-red-600">
-                      {lossAmount.toLocaleString()} ₽
-                    </span>
-                  </p>
-                  <Button
-                    size="lg"
-                    className={`bg-${risk.color}-600 hover:bg-${risk.color}-700 text-white text-lg px-8 py-6`}
-                    onClick={() => handleConsultation("diagnosis")}
-                  >
-                    <Icon name="ShieldAlert" size={24} className="mr-3" />
-                    Получить план защиты
-                  </Button>
-                  <p className="text-gray-500 mt-4 text-sm">
-                    Бесплатный анализ документов • План действий за 15 минут
-                  </p>
-                </div>
-              )}
-            </div>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-lg px-8 py-6 shadow-lg"
+              onClick={() => handleConsultation("hero")}
+            >
+              <Icon name="ShieldAlert" size={24} className="mr-2" />
+              Остановить потери — бесплатный анализ
+            </Button>
+            <p className="mt-4 text-gray-500">
+              📞 Звонок через 90 секунд • Анализ документов за 15 минут • 0 ₽
+              предоплаты
+            </p>
           </div>
 
-          {/* Блок 2: Таймлайн потерь */}
-          <div className="max-w-5xl mx-auto mb-20">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-              Часы <span className="text-red-600">тикают</span>: что происходит
-              с каждым днем
+          {/* Таймлайн потерь (новая фишка) */}
+          <div className="max-w-4xl mx-auto mb-16 bg-white rounded-2xl p-6 border-2 border-red-200 shadow-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <Icon name="Clock" className="text-red-600 mr-3" size={28} />
+              Часы тикают: где вы сейчас?
             </h2>
 
             <div className="relative">
-              {/* Линия времени */}
-              <div className="absolute left-0 right-0 top-12 h-1 bg-gray-300 z-0" />
+              <div className="absolute left-0 right-0 top-4 h-2 bg-gray-200" />
 
-              {/* Текущая позиция */}
-              <div
-                className="absolute top-10 w-6 h-6 bg-red-600 rounded-full -ml-3 z-10 animate-pulse"
-                style={{ left: `${(daysPassed / 30) * 100}%` }}
-              >
-                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                  <div className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg">
-                    Вы здесь: {daysPassed} день
-                  </div>
-                  <div className="w-0 h-0 border-l-6 border-r-6 border-t-6 border-l-transparent border-r-transparent border-t-red-600 mx-auto" />
-                </div>
-              </div>
-
-              <div className="flex justify-between relative z-20">
+              <div className="flex justify-between relative">
                 {timelineEvents.map((event, idx) => (
-                  <div
-                    key={idx}
-                    className="flex flex-col items-center w-1/5 px-2"
-                  >
+                  <div key={idx} className="flex flex-col items-center w-1/5">
                     <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 border-4 ${
-                        event.status === "safe"
-                          ? "bg-white border-green-400"
-                          : event.status === "warning"
-                            ? "bg-white border-yellow-400"
-                            : event.status === "danger"
-                              ? "bg-white border-orange-400"
-                              : event.status === "critical"
-                                ? "bg-white border-red-400"
-                                : "bg-gray-100 border-gray-400"
-                      } ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 z-10 border-4 ${
                         daysPassed >= event.day
-                          ? "ring-4 ring-opacity-30 " +
-                            (event.status === "safe"
-                              ? "ring-green-400"
-                              : event.status === "warning"
-                                ? "ring-yellow-400"
-                                : event.status === "danger"
-                                  ? "ring-orange-400"
-                                  : "ring-red-400")
-                          : ""
+                          ? "bg-white border-red-500 ring-4 ring-red-100"
+                          : "bg-gray-100 border-gray-300"
                       }`}
                     >
                       <span
-                        className={`font-bold text-lg ${
-                          daysPassed >= event.day
-                            ? "text-gray-900"
-                            : "text-gray-500"
-                        }`}
+                        className={`font-bold ${daysPassed >= event.day ? "text-red-600" : "text-gray-500"}`}
                       >
                         {event.day}
                       </span>
                     </div>
-                    <div className="text-center">
-                      <h4
-                        className={`font-bold mb-2 ${
-                          daysPassed >= event.day
-                            ? "text-gray-900"
-                            : "text-gray-600"
-                        }`}
+                    <div className="text-center px-1">
+                      <p
+                        className={`text-sm font-bold mb-1 ${daysPassed >= event.day ? "text-red-700" : "text-gray-600"}`}
                       >
                         {event.title}
-                      </h4>
-                      <div
-                        className={`px-3 py-2 rounded-lg ${
-                          daysPassed >= event.day
-                            ? "bg-red-50 border border-red-200"
-                            : "bg-gray-100"
-                        }`}
-                      >
-                        <p
-                          className={`text-sm font-bold ${
-                            daysPassed >= event.day
-                              ? "text-red-700"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          Потеря: {event.loss}
-                        </p>
-                      </div>
+                      </p>
+                      <p className="text-xs text-gray-500">{event.loss}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="text-center mt-16">
-                <div className="inline-block bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl p-1 mb-6">
-                  <div className="bg-white rounded-xl p-6">
-                    <p className="text-2xl font-bold text-gray-900 mb-2">
-                      Ваши потери на {daysPassed}-й день:
-                    </p>
-                    <p className="text-4xl font-bold text-red-600 mb-4">
-                      {lossAmount.toLocaleString()} ₽
-                    </p>
-                    <p className="text-gray-600">
-                      +{Math.round(lossAmount / daysPassed).toLocaleString()} ₽
-                      каждый день
-                    </p>
+              <div
+                className="absolute top-3 w-4 h-4 bg-red-600 rounded-full -ml-2 z-20"
+                style={{ left: `${(daysPassed / 30) * 100}%` }}
+              >
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                  <div className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-bold">
+                    Вы здесь
                   </div>
                 </div>
-                <br />
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-lg px-10 py-6 shadow-lg"
-                  onClick={() => handleConsultation("timeline")}
-                >
-                  <Icon name="StopCircle" size={24} className="mr-3" />
-                  Остановить потери на {daysPassed}-м дне
-                </Button>
               </div>
+            </div>
+
+            <div className="mt-8 p-4 bg-red-50 rounded-xl">
+              <p className="text-center text-gray-700">
+                <span className="font-bold text-red-600">Внимание:</span> Если
+                вы уже на {daysPassed}-м дне, виновник{" "}
+                <span className="font-bold">уже начал скрывать имущество</span>.
+                Завтра будет поздно.
+              </p>
             </div>
           </div>
 
-          {/* Блок 3: Действия виновника */}
-          <div className="max-w-4xl mx-auto mb-20 bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 text-white">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-4">
-                Пока вы читаете это, виновник делает:
-              </h2>
-              <p className="text-gray-300 text-xl">
-                {currentHour < 72
-                  ? `Прошло ${currentHour} часов с ДТП. Вот что уже произошло:`
-                  : "Прошло больше 72 часов — самые опасные сценарии уже в работе"}
-              </p>
-            </div>
-
-            <div className="space-y-4 mb-10">
-              {opponentActions.map((action, idx) => (
-                <div key={idx} className="flex items-start">
-                  <div
-                    className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center mr-4 mt-1 ${
-                      action.completed ? "bg-red-600" : "bg-gray-700"
-                    }`}
-                  >
-                    {action.completed ? (
-                      <Icon name="Check" size={24} />
-                    ) : (
-                      <span className="font-bold">{action.hour}</span>
-                    )}
-                  </div>
-                  <div
-                    className={`flex-1 p-5 rounded-xl ${
-                      action.completed
-                        ? "bg-red-900/30 border-l-4 border-red-500"
-                        : "bg-gray-700/50"
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-medium">
-                        {action.action}
-                      </span>
-                      {action.completed ? (
-                        <span className="bg-red-800 text-red-200 px-3 py-1 rounded-full text-sm">
-                          ✅ Уже сделано
+          {/* Ситуации (из первой версии) */}
+          <div className="max-w-5xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Когда нужно действовать{" "}
+              <span className="text-red-600">немедленно</span>
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: "BanknoteIcon",
+                  title: "Ущерб превышает 400 000 ₽",
+                  desc: "Страховая выплатила максимум, но на ремонт нужно больше",
+                  urgency: "🔥 Высокая: виновник испугается большой суммы",
+                },
+                {
+                  icon: "UserX",
+                  title: "У виновника нет страховки",
+                  desc: "Полиса ОСАГО нет или он просрочен",
+                  urgency: "⚡ Критическая: прячет имущество прямо сейчас",
+                },
+                {
+                  icon: "AlertCircle",
+                  title: "Алкоголь или нарушение ПДД",
+                  desc: "Страховка виновника не покроет ущерб",
+                  urgency: "⚠️ Срочная: пытается скрыть доказательства",
+                },
+                {
+                  icon: "Heart",
+                  title: "Вред здоровью",
+                  desc: "Нужна компенсация лечения и морального вреда",
+                  urgency: "⏳ Высокая: медицинские документы имеют сроки",
+                },
+                {
+                  icon: "Package",
+                  title: "Повреждён груз",
+                  desc: "В аварии пострадали перевозимые вещи или товар",
+                  urgency: "⚡ Критическая: товар теряет срок годности",
+                },
+                {
+                  icon: "Clock",
+                  title: "Простой транспорта",
+                  desc: "Такси или грузовик не работает — теряете доход",
+                  urgency: "💰 Ежедневные потери: считайте упущенную выгоду",
+                },
+              ].map((situation, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-6 rounded-xl border-2 border-red-100 hover:border-red-300 hover:shadow-lg transition-all"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon
+                        name={situation.icon}
+                        size={24}
+                        className="text-red-600"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-lg font-bold text-gray-900">
+                          {situation.title}
+                        </h3>
+                        <span className="text-xs font-bold px-2 py-1 bg-red-100 text-red-700 rounded-full">
+                          {situation.urgency.split(" ")[0]}
                         </span>
-                      ) : (
-                        <span className="bg-gray-600 text-yellow-300 px-3 py-1 rounded-full text-sm">
-                          ⏳ Через {action.hour - currentHour}ч
+                      </div>
+                      <p className="text-gray-600 mb-3">{situation.desc}</p>
+                      <p className="text-sm text-red-600 font-medium">
+                        {situation.urgency}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Процесс (из первой версии, но с акцентом на скорость) */}
+          <div className="max-w-5xl mx-auto mb-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl p-10 text-white">
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              Как мы останавливаем потерю денег
+            </h2>
+            <div className="space-y-6">
+              {[
+                {
+                  num: "01",
+                  title: "Экстренная заморозка активов (24 часа)",
+                  desc: "Срочно подаём ходатайства, чтобы виновник не успел продать имущество",
+                },
+                {
+                  num: "02",
+                  title: "Мгновенный сбор доказательств (48 часов)",
+                  desc: "Находим утерянные записи камер, свидетелей, фиксируем все повреждения до ремонта",
+                },
+                {
+                  num: "03",
+                  title: "Агрессивная досудебная работа (72 часа)",
+                  desc: "Давление через все инстанции: страховая, ГИБДД, угроза уголовной ответственности",
+                },
+                {
+                  num: "04",
+                  title: "Взыскание до копейки (от 30 дней)",
+                  desc: "Добиваемся реального перевода денег на ваш счёт, а не просто решения суда",
+                },
+              ].map((step) => (
+                <div
+                  key={step.num}
+                  className="flex items-start gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6"
+                >
+                  <div className="text-4xl font-bold opacity-50">
+                    {step.num}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                    <p className="opacity-90">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Что мы взыскиваем (из первой версии) */}
+          <div className="max-w-4xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Что мы взыскиваем{" "}
+              <span className="text-green-600">дополнительно</span>
+            </h2>
+            <div className="bg-white rounded-2xl p-8 border-2 border-green-200 shadow-lg">
+              <div className="space-y-4">
+                {[
+                  {
+                    item: "Стоимость ремонта автомобиля",
+                    amount: "по экспертизе",
+                    extra: "Базовое",
+                  },
+                  {
+                    item: "Утрата товарной стоимости (УТС)",
+                    amount: "5-15% от стоимости авто",
+                    extra: "+100-300 тыс. ₽",
+                  },
+                  {
+                    item: "Эвакуатор и хранение",
+                    amount: "фактические расходы",
+                    extra: "+",
+                  },
+                  {
+                    item: "Упущенная выгода (для такси/грузовиков)",
+                    amount: "расчёт по доходам",
+                    extra: "+1 500 ₽/день",
+                  },
+                  {
+                    item: "Моральный вред при вреде здоровью",
+                    amount: "от 100 000 ₽",
+                    extra: "+",
+                  },
+                  {
+                    item: "Расходы на лечение",
+                    amount: "по документам",
+                    extra: "+",
+                  },
+                  {
+                    item: "Судебные расходы и госпошлина",
+                    amount: "полностью",
+                    extra: "Вернём",
+                  },
+                  {
+                    item: "Услуги юриста",
+                    amount: "взыскиваем с ответчика",
+                    extra: "Для вас 0 ₽",
+                  },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-3 border-b border-gray-200 last:border-0"
+                  >
+                    <div>
+                      <span className="text-gray-700 font-medium">
+                        {item.item}
+                      </span>
+                      {item.extra && (
+                        <span className="ml-2 text-green-600 text-sm font-bold">
+                          {item.extra}
                         </span>
                       )}
                     </div>
+                    <span className="text-orange-600 font-bold">
+                      {item.amount}
+                    </span>
                   </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-gray-800/50 rounded-2xl p-6">
-              <h3 className="font-bold text-xl mb-4">
-                Ваши шансы на полную выплату:
-              </h3>
-              <div className="h-6 bg-gray-700 rounded-full overflow-hidden mb-3">
-                <div
-                  className="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 transition-all duration-1000"
-                  style={{ width: `${Math.max(10, 100 - currentHour)}%` }}
-                />
+                ))}
               </div>
-              <div className="flex justify-between text-sm text-gray-300">
-                <span>
-                  Сейчас:{" "}
+              <div className="mt-6 p-4 bg-green-50 rounded-xl border border-green-200">
+                <p className="text-center text-gray-700">
+                  <span className="font-bold text-green-600">Итог:</span>{" "}
+                  Обычный водитель взыскивает только ремонт.
                   <span className="font-bold">
-                    {Math.max(10, 100 - currentHour)}%
+                    {" "}
+                    Наши клиенты получают на 40-150% больше.
                   </span>
-                </span>
-                <span className="text-red-300">
-                  ▼ Упали на {currentHour}% за {currentHour} часов
-                </span>
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Блок 4: Что мы делаем (старый блок, но улучшенный) */}
-          <div className="max-w-5xl mx-auto mb-20">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-              Мы останавливаем этот сценарий за 4 шага
+          {/* Кейсы с акцентом на скорость (комбинация) */}
+          <div className="max-w-4xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Что было бы, если бы они{" "}
+              <span className="text-red-600">ждали</span>
             </h2>
-
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
               {[
                 {
-                  step: "01",
-                  title: "Экстренная заморозка активов",
-                  desc: "В течение 24 часов подаём ходатайство о запрете виновнику продавать имущество",
-                  icon: "Freeze",
+                  title: "Mercedes после лобового столкновения",
+                  situation:
+                    "Виновник без страховки, начал продавать квартиру на 7-й день",
+                  action: "Мы подали заявление о заморозке сделки на 5-й день",
+                  result:
+                    "Взыскали 2 127 000 ₽, квартира виновника под арестом",
+                  saved: "Спасено: 2 127 000 ₽",
+                  time: "Начали на 5-й день",
                 },
                 {
-                  step: "02",
-                  title: "Сбор неопровержимых доказательств",
-                  desc: "Находим утерянные записи камер, свидетелей, фиксируем все повреждения",
-                  icon: "Search",
+                  title: "Повреждение груза электроники",
+                  situation: "Виновник планировал банкротство через 20 дней",
+                  action:
+                    "Арестовали счета и запретили банкротство на 15-й день",
+                  result:
+                    "Взыскали 2 640 000 ₽, деньги переведены до банкротства",
+                  saved: "Спасено: 2 640 000 ₽",
+                  time: "Начали на 15-й день",
                 },
                 {
-                  step: "03",
-                  title: "Давление через все инстанции",
-                  desc: "Параллельно работаем со страховой, ГИБДД, судом и приставами",
-                  icon: "Scale",
+                  title: "Такси — простой 45 дней",
+                  situation: "Виновник сменил работу и уволился на 10-й день",
+                  action: "Подали иск и арестовали зарплату на 8-й день",
+                  result: "Взыскали 312 000 ₽, удержали из последней зарплаты",
+                  saved: "Спасено: 312 000 ₽",
+                  time: "Начали на 8-й день",
                 },
-                {
-                  step: "04",
-                  title: "Взыскание до последней копейки",
-                  desc: "Добиваемся реального перевода денег на ваш счёт, а не просто решения суда",
-                  icon: "Banknote",
-                },
-              ].map((step, idx) => (
+              ].map((case_item, index) => (
                 <div
-                  key={idx}
-                  className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl border-2 border-gray-200 hover:border-orange-300 hover:shadow-xl transition-all"
+                  key={index}
+                  className="bg-white p-6 rounded-xl border-2 border-blue-200 hover:shadow-lg transition-all"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                      <span className="text-white font-bold text-xl">
-                        {step.step}
-                      </span>
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {case_item.title}
+                    </h3>
+                    <span className="bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1 rounded-full">
+                      {case_item.time}
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-red-50 rounded-lg">
+                      <p className="text-red-700 font-medium">
+                        ⚠️ Что было бы:
+                      </p>
+                      <p className="text-red-600">{case_item.situation}</p>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">
-                        {step.title}
-                      </h3>
-                      <p className="text-gray-600">{step.desc}</p>
+                    <div className="p-3 bg-green-50 rounded-lg">
+                      <p className="text-green-700 font-medium">
+                        ✅ Что сделали:
+                      </p>
+                      <p className="text-green-600">{case_item.action}</p>
+                    </div>
+                    <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+                      <div>
+                        <p className="text-2xl font-bold text-green-600">
+                          {case_item.saved}
+                        </p>
+                        <p className="text-gray-600">{case_item.result}</p>
+                      </div>
+                      <Icon
+                        name="CheckCircle"
+                        size={32}
+                        className="text-green-500"
+                      />
                     </div>
                   </div>
                 </div>
@@ -551,108 +450,86 @@ const DamageClaim = () => {
             </div>
           </div>
 
-          {/* Блок 5: Финальный выбор */}
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-10 text-white mb-10">
-              <Icon name="Crosshair" size={64} className="mx-auto mb-6" />
-              <h2 className="text-3xl font-bold mb-6">Выбор за вами:</h2>
+          {/* Финальный CTA с срочностью */}
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl p-10 text-white mb-8">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-6">
+                <Icon name="Shield" size={40} />
+              </div>
+              <h2 className="text-3xl font-bold mb-4">
+                У вас ещё есть шанс всё исправить
+              </h2>
+              <p className="text-xl mb-8 opacity-90">
+                Но он уменьшается на 625 ₽ каждый час
+              </p>
 
-              <div className="grid md:grid-cols-2 gap-6 mb-10">
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
-                  <div className="text-5xl font-bold mb-4">⏳</div>
-                  <h3 className="text-xl font-bold mb-3">Ждать и надеяться</h3>
-                  <ul className="text-left space-y-2 text-white/90">
-                    <li className="flex items-center">
-                      <Icon name="X" size={16} className="mr-2 text-red-300" />
-                      Виновник скроет все активы
-                    </li>
-                    <li className="flex items-center">
-                      <Icon name="X" size={16} className="mr-2 text-red-300" />
-                      Потеряете УТС (100-300 тыс. ₽)
-                    </li>
-                    <li className="flex items-center">
-                      <Icon name="X" size={16} className="mr-2 text-red-300" />
-                      Получите "бумажное" решение суда
-                    </li>
-                  </ul>
-                  <div className="mt-6 text-2xl font-bold text-red-200">
-                    Итог: -{Math.round(lossAmount * 2).toLocaleString()} ₽
-                  </div>
+              <div className="grid md:grid-cols-3 gap-6 mb-10">
+                <div className="bg-white/20 p-4 rounded-xl">
+                  <div className="text-3xl font-bold">98%</div>
+                  <div>дел выигрываем</div>
                 </div>
-
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 border-2 border-yellow-300">
-                  <div className="text-5xl font-bold mb-4">⚡</div>
-                  <h3 className="text-xl font-bold mb-3">Действовать сейчас</h3>
-                  <ul className="text-left space-y-2 text-white/90">
-                    <li className="flex items-center">
-                      <Icon
-                        name="Check"
-                        size={16}
-                        className="mr-2 text-green-300"
-                      />
-                      Заморозим имущество виновника
-                    </li>
-                    <li className="flex items-center">
-                      <Icon
-                        name="Check"
-                        size={16}
-                        className="mr-2 text-green-300"
-                      />
-                      Сохраним УТС (дополнительные 15%)
-                    </li>
-                    <li className="flex items-center">
-                      <Icon
-                        name="Check"
-                        size={16}
-                        className="mr-2 text-green-300"
-                      />
-                      Доведём до реальных денег на счёте
-                    </li>
-                  </ul>
-                  <div className="mt-6 text-2xl font-bold text-green-300">
-                    Итог: +{Math.round(lossAmount * 1.5).toLocaleString()} ₽
-                  </div>
+                <div className="bg-white/20 p-4 rounded-xl">
+                  <div className="text-3xl font-bold">0 ₽</div>
+                  <div>предоплаты от вас</div>
+                </div>
+                <div className="bg-white/20 p-4 rounded-xl">
+                  <div className="text-3xl font-bold">24ч</div>
+                  <div>до заморозки активов виновника</div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 inline-block">
-                <p className="text-gray-900 text-xl mb-4">
-                  <span className="font-bold">Бесплатно</span> проанализируем
-                  ваши документы и покажем,
-                  <span className="text-orange-600 font-bold">
-                    {" "}
-                    какую именно сумму можно спасти
-                  </span>
-                </p>
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-xl px-10 py-6"
-                  onClick={() => handleConsultation("final")}
-                >
-                  <Icon name="Shield" size={28} className="mr-3" />
-                  Получить план спасения денег
-                </Button>
-                <p className="text-gray-600 mt-4 text-sm">
-                  Консультация юриста • Расчёт суммы • Пошаговый план • 0 ₽
-                </p>
-              </div>
+              <Button
+                size="lg"
+                className="bg-white text-red-600 hover:bg-gray-100 text-xl px-10 py-6 font-bold shadow-2xl"
+                onClick={() => handleConsultation("final")}
+              >
+                <Icon name="Phone" size={28} className="mr-3" />
+                Бесплатный анализ моей ситуации
+              </Button>
+              <p className="mt-6 text-sm opacity-75">
+                📄 Проверим документы • 📊 Посчитаем реальную сумму • ⚖️
+                Расскажем про риски
+              </p>
             </div>
 
-            <div className="bg-gray-100 rounded-2xl p-8">
-              <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600">98%</div>
-                  <div className="text-gray-700">дел выигрываем в суде</div>
+            <div className="bg-gray-100 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                Почему нельзя ждать "ещё немного"?
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4 text-left">
+                <div className="flex items-start">
+                  <Icon
+                    name="X"
+                    size={20}
+                    className="text-red-500 mr-3 mt-1 flex-shrink-0"
+                  />
+                  <span>Виновник успеет продать/подарить имущество</span>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">0 ₽</div>
-                  <div className="text-gray-700">предоплаты от клиента</div>
+                <div className="flex items-start">
+                  <Icon
+                    name="X"
+                    size={20}
+                    className="text-red-500 mr-3 mt-1 flex-shrink-0"
+                  />
+                  <span>Потеряете УТС (15% от стоимости авто)</span>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600">15+</div>
-                  <div className="text-gray-700">
-                    лет специализируемся на ДТП
-                  </div>
+                <div className="flex items-start">
+                  <Icon
+                    name="X"
+                    size={20}
+                    className="text-red-500 mr-3 mt-1 flex-shrink-0"
+                  />
+                  <span>Свидетели забудут детали, камеры сотрут записи</span>
+                </div>
+                <div className="flex items-start">
+                  <Icon
+                    name="X"
+                    size={20}
+                    className="text-red-500 mr-3 mt-1 flex-shrink-0"
+                  />
+                  <span>
+                    Виновник оформит банкротство — взыскать будет не с кого
+                  </span>
                 </div>
               </div>
             </div>
