@@ -55,7 +55,7 @@ const BusinessContacts = () => {
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           <Card className="bg-white shadow-xl">
             <CardContent className="p-8">
-              <form id="business-contact-form" name="business-contact-form" onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">
                     Название компании *

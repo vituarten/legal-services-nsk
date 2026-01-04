@@ -202,7 +202,7 @@ const Contacts = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form id="contacts-page-form" name="contacts-page-form" onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
                       Ваше имя *

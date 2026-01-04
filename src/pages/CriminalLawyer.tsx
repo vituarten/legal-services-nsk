@@ -199,7 +199,7 @@ export default function CriminalLawyer() {
             <div className="max-w-2xl mx-auto">
               <h2 className="text-4xl font-bold text-center mb-4">Получите консультацию</h2>
               <p className="text-center text-muted-foreground mb-8 text-lg">Разберём вашу ситуацию и предложим стратегию защиты</p>
-              <form id="criminal-lawyer-form" name="criminal-lawyer-form" onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-8 space-y-4">
+              <form onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-8 space-y-4">
                 <input
                   type="text"
                   placeholder="Ваше имя"

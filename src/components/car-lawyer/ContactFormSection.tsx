@@ -71,7 +71,7 @@ export default function ContactFormSection() {
           <Card className="shadow-xl">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold mb-6">Заявка на консультацию</h3>
-              <form id="car-lawyer-consultation-form" name="car-lawyer-consultation-form" onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="name">Ваше имя</Label>
                   <Input

@@ -152,7 +152,7 @@ export default function FamilyLawyer() {
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="text-4xl font-bold mb-4">Получите бесплатную консультацию</h2>
               <p className="text-xl mb-8 opacity-90">Перезвоним в течение 15 минут и разберём вашу ситуацию</p>
-              <form id="family-lawyer-form" name="family-lawyer-form" onSubmit={handleSubmit} className="bg-white text-foreground rounded-xl p-8 space-y-4">
+              <form onSubmit={handleSubmit} className="bg-white text-foreground rounded-xl p-8 space-y-4">
                 <input
                   type="text"
                   placeholder="Ваше имя"

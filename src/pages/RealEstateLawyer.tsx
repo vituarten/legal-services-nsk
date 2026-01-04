@@ -177,7 +177,7 @@ export default function RealEstateLawyer() {
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="text-4xl font-bold mb-4">Получите бесплатную консультацию</h2>
               <p className="text-xl mb-8 opacity-90">Разберём вашу ситуацию и предложим решение</p>
-              <form id="real-estate-lawyer-form" name="real-estate-lawyer-form" onSubmit={handleSubmit} className="bg-white text-foreground rounded-xl p-8 space-y-4">
+              <form onSubmit={handleSubmit} className="bg-white text-foreground rounded-xl p-8 space-y-4">
                 <input
                   type="text"
                   placeholder="Ваше имя"
