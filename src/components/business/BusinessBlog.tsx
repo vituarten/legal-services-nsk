@@ -1,151 +1,84 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import { useState } from "react";
 
 const BusinessBlog = () => {
-  const [openItems, setOpenItems] = useState<string[]>(["1"]);
-
-  const faqItems = [
+  const articles = [
     {
-      id: "1",
-      question: "Как происходит работа по арбитражным спорам?",
-      answer:
-        "Работа строится по алгоритму: 1) Бесплатный анализ вашей ситуации, 2) Разработка индивидуальной стратегии защиты, 3) Подготовка всех процессуальных документов, 4) Полное сопровождение в суде, 5) Контроль исполнения решения.",
-      category: "Арбитражные споры",
+      title: "Как защитить бизнес от необоснованных исков",
+      category: "Арбитраж",
+      date: "15 декабря 2024",
+      image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=600&fit=crop"
     },
     {
-      id: "2",
-      question: "Сколько стоит юридическое сопровождение бизнеса?",
-      answer:
-        "Предлагаю прозрачное ценообразование: 1) Бесплатная первичная консультация, 2) Фиксированная стоимость за конкретную услугу, 3) Гибкая система оплаты в зависимости от сложности задачи, 4) Возможность поэтапной оплаты.",
-      category: "Стоимость",
+      title: "Налоговая проверка: как подготовиться и избежать штрафов",
+      category: "Налоги",
+      date: "12 декабря 2024",
+      image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop"
     },
     {
-      id: "3",
-      question: "Занимаетесь ли вы договорным правом?",
-      answer:
-        "Да, специализируюсь на договорной работе: 1) Разработка и проверка договоров любой сложности, 2) Анализ договорных рисков, 3) Составление дополнительных соглашений, 4) Претензионная работа по нарушенным договорам.",
-      category: "Договорное право",
-    },
-    {
-      id: "4",
-      question: "Можно ли решить вопрос удаленно?",
-      answer:
-        "Да, большинство вопросов решаются дистанционно. Использую: 1) Онлайн-консультации по видеосвязи, 2) Электронный документооборот, 3) Цифровые подписи, 4) Облачное хранилище для документов.",
-      category: "Формат работы",
-    },
-    {
-      id: "5",
-      question: "Какие гарантии вы предоставляете?",
-      answer:
-        "Гарантирую: 1) Полную конфиденциальность, 2) Прозрачное ценообразование без скрытых платежей, 3) Персональное внимание к вашему делу, 4) Регулярные отчеты о проделанной работе, 5) Оперативную связь в рабочие часы.",
-      category: "Гарантии",
-    },
-    {
-      id: "6",
-      question: "Как быстро вы приступаете к работе?",
-      answer:
-        "1) Первичный ответ на заявку — в течение 1 часа, 2) Бесплатный анализ ситуации — в день обращения, 3) Начало работы — сразу после заключения договора, 4) Срочные вопросы — рассматриваю в приоритетном порядке.",
-      category: "Сроки",
-    },
+      title: "Банкротство компании: пошаговая инструкция 2024",
+      category: "Банкротство",
+      date: "10 декабря 2024",
+      image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&h=600&fit=crop"
+    }
   ];
 
-  const toggleItem = (id: string) => {
-    setOpenItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-    );
-  };
-
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-12">
-          <div className="inline-flex items-center gap-2 bg-blue-50 rounded-full px-6 py-2 mb-4">
-            <Icon name="HelpCircle" size={20} className="text-blue-600" />
-            <span className="text-sm font-semibold text-blue-900 uppercase tracking-wider">
-              Частые вопросы
-            </span>
+          <div className="inline-block">
+            <div className="flex items-center gap-2 bg-blue-100 rounded-full px-6 py-2 mb-4">
+              <Icon name="BookOpen" size={20} className="text-blue-600" />
+              <span className="text-sm font-semibold text-blue-900">Блог для бизнеса</span>
+            </div>
           </div>
-
           <h2 className="text-4xl font-bold text-slate-900">
-            Ответы на вопросы
+            Полезные статьи и новости
           </h2>
-
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Объясняю сложные юридические вопросы простым языком
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            Актуальная информация о законодательстве и судебной практике
           </p>
         </div>
 
-        {/* УБРАЛ ФИЛЬТРЫ КАТЕГОРИЙ - они не нужны */}
-
-        <div className="max-w-4xl mx-auto mb-16 space-y-4">
-          {faqItems.map((item) => {
-            const isOpen = openItems.includes(item.id);
-
-            return (
-              <Card
-                key={item.id}
-                className="border border-slate-200 hover:border-blue-300 transition-colors"
-              >
-                <button
-                  onClick={() => toggleItem(item.id)}
-                  className="w-full text-left px-6 py-4 hover:bg-blue-50/50 transition-colors"
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full mr-3">
-                        {item.category}
-                      </span>
-                      <h3 className="text-lg font-semibold text-slate-900 inline">
-                        {item.question}
-                      </h3>
-                    </div>
-                    <Icon
-                      name={isOpen ? "ChevronUp" : "ChevronDown"}
-                      className="h-5 w-5 text-blue-600"
-                    />
-                  </div>
-                </button>
-
-                {isOpen && (
-                  <CardContent className="px-6 pb-6 pt-2">
-                    <div className="text-slate-700 leading-relaxed bg-blue-50/30 rounded-lg p-5 border border-blue-100">
-                      {item.answer}
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
-            );
-          })}
+        <div className="grid md:grid-cols-3 gap-8">
+          {articles.map((article, index) => (
+            <Card key={index} className="overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={article.image} 
+                  alt={article.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    {article.category}
+                  </span>
+                </div>
+              </div>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
+                  <Icon name="Calendar" size={16} />
+                  <span>{article.date}</span>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">
+                  {article.title}
+                </h3>
+                <Button variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
+                  Читать статью
+                  <Icon name="ArrowRight" className="h-4 w-4 ml-2" />
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        <div className="text-center">
-          <div className="inline-flex items-center gap-3 bg-blue-50 rounded-full px-6 py-3 mb-8">
-            <Icon name="Target" size={20} className="text-blue-600" />
-            <span className="text-slate-700 font-medium">
-              Специализируюсь на арбитражных спорах, договорном и корпоративном
-              праве
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-              Задать вопрос в WhatsApp
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-blue-600 text-blue-600 hover:bg-blue-50"
-            >
-              <Icon name="Phone" className="h-5 w-5 mr-2" />
-              Позвонить для консультации
-            </Button>
-          </div>
+        <div className="text-center mt-12">
+          <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
+            Все статьи блога
+            <Icon name="ArrowRight" className="h-5 w-5 ml-2" />
+          </Button>
         </div>
       </div>
     </section>

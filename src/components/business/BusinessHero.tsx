@@ -3,43 +3,42 @@ import Icon from "@/components/ui/icon";
 import { CONTACTS } from "@/config/contacts";
 
 const BusinessHero = () => {
-  const handleWhatsAppClick = () => {
-    if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", "whatsapp_click");
+  const handlePhoneClick = () => {
+    if (typeof window !== 'undefined' && window.ym) {
+      window.ym(106063131, 'reachGoal', 'phone_click');
     }
-    window.open(`https://wa.me/${CONTACTS.whatsapp}`, "_blank");
+    window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, '')}`;
   };
 
-  const handlePhoneClick = () => {
-    if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", "phone_click");
+  const handleWhatsAppClick = () => {
+    if (typeof window !== 'undefined' && window.ym) {
+      window.ym(106063131, 'reachGoal', 'whatsapp_click');
     }
-    window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, "")}`;
+    window.open(`https://wa.me/${CONTACTS.whatsapp}`, '_blank');
   };
 
   return (
     <section className="relative min-h-[90vh] pt-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-20"></div>
-
+      
       <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="inline-block">
             <div className="flex items-center gap-2 bg-blue-600/30 backdrop-blur-sm border border-blue-400/30 rounded-full px-6 py-2 mb-6">
               <Icon name="Building2" size={20} />
-              <span className="text-sm font-semibold">
-                Для юридических лиц и ИП
-              </span>
+              <span className="text-sm font-semibold">Для юридических лиц и ИП</span>
             </div>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
             Юридическая защита
-            <span className="block mt-2 text-blue-400">интересов бизнеса</span>
+            <span className="block mt-2 text-blue-400">
+              интересов бизнеса
+            </span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Арбитражные споры • Договорное право • Корпоративное право •
-            Абонентское обслуживание
+            Арбитражные споры • Договорное право • Налоговые споры • Банкротство • Корпоративное право
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
@@ -64,38 +63,35 @@ const BusinessHero = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12 max-w-3xl mx-auto">
             <div className="text-center">
+              <div className="text-4xl font-bold text-blue-400 mb-2">15+</div>
+              <div className="text-sm text-blue-200">лет опыта</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-blue-400 mb-2">500+</div>
+              <div className="text-sm text-blue-200">компаний</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-blue-400 mb-2">92%</div>
+              <div className="text-sm text-blue-200">выигранных дел</div>
+            </div>
+            <div className="text-center">
               <div className="text-4xl font-bold text-blue-400 mb-2">24/7</div>
-              <div className="text-sm text-blue-200">поддержка</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">1 час</div>
-              <div className="text-sm text-blue-200">ответ на заявку</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">100%</div>
-              <div className="text-sm text-blue-200">конфиденциальность</div>
-            </div>
-            <div className="text-center">
-              <Icon
-                name="Zap"
-                className="h-10 w-10 text-blue-400 mx-auto mb-2"
-              />
-              <div className="text-sm text-blue-200">быстрое решение</div>
+              <div className="text-sm text-blue-200">на связи</div>
             </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 pt-8 text-blue-100">
             <div className="flex items-center gap-2">
-              <Icon name="GraduationCap" size={20} />
-              <span>Высшее образование</span>
+              <Icon name="Shield" size={20} />
+              <span>Конфиденциальность</span>
             </div>
             <div className="flex items-center gap-2">
               <Icon name="FileCheck" size={20} />
-              <span>Фиксированная цена</span>
+              <span>Договор</span>
             </div>
             <div className="flex items-center gap-2">
-              <Icon name="Target" size={20} />
-              <span>Специализация</span>
+              <Icon name="Clock" size={20} />
+              <span>Быстрые решения</span>
             </div>
           </div>
         </div>
