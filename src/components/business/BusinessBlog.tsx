@@ -1,16 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { useState } from "react";
 
 // Название компонента: BusinessFAQ
 
 const BusinessFAQ = () => {
+  const [openItems, setOpenItems] = useState<string[]>(["1"]);
+
   const faqItems = [
     {
       id: "1",
@@ -54,57 +51,21 @@ const BusinessFAQ = () => {
         "1) Первичный ответ на заявку — в течение 1 часа, 2) Бесплатный анализ ситуации — в день обращения, 3) Начало работы — сразу после заключения договора, 4) Срочные вопросы (арест счетов и др.) — рассматриваю в приоритетном порядке. Работаю без бюрократических задержек.",
       category: "Сроки",
     },
-    {
-      id: "7",
-      question: "Вы работаете только в Калуге?",
-      answer:
-        "Основная практика в Калужской области, но также работаю с клиентами по всей России дистанционно. Имею опыт ведения дел в арбитражных судах различных регионов. Для очных встреч доступен офис в Калуге, для остальных случаев — эффективные онлайн-форматы работы.",
-      category: "География",
-    },
-    {
-      id: "8",
-      question: "Что входит в юридическое сопровождение бизнеса?",
-      answer:
-        "Базовый комплекс услуг включает: 1) Консультации по правовым вопросам, 2) Проверку и составление договоров, 3) Претензионную работу, 4) Правовой анализ ситуаций, 5) Помощь в переговорах с контрагентами. При необходимости расширяю пакет услуг под ваши конкретные задачи.",
-      category: "Юридическое сопровождение",
-    },
-    {
-      id: "9",
-      question: "Занимаетесь ли вы корпоративными спорами?",
-      answer:
-        "Да, помогаю в разрешении корпоративных конфликтов: 1) Споры между учредителями/акционерами, 2) Защита прав миноритарных участников, 3) Оспаривание решений органов управления, 4) Выход из состава участников. Работаю как на досудебной стадии, так и в судебном порядке.",
-      category: "Корпоративное право",
-    },
   ];
+
+  const toggleItem = (id: string) => {
+    setOpenItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
 
   const categories = [
     { name: "Все вопросы", count: faqItems.length },
-    {
-      name: "Арбитражные споры",
-      count: faqItems.filter((item) => item.category === "Арбитражные споры")
-        .length,
-    },
-    {
-      name: "Договорное право",
-      count: faqItems.filter((item) => item.category === "Договорное право")
-        .length,
-    },
-    {
-      name: "Корпоративное право",
-      count: faqItems.filter((item) => item.category === "Корпоративное право")
-        .length,
-    },
-    {
-      name: "Юридическое сопровождение",
-      count: faqItems.filter(
-        (item) => item.category === "Юридическое сопровождение",
-      ).length,
-    },
-    {
-      name: "Формат работы",
-      count: faqItems.filter((item) => item.category === "Формат работы")
-        .length,
-    },
+    { name: "Арбитражные споры", count: 1 },
+    { name: "Договорное право", count: 1 },
+    { name: "Стоимость услуг", count: 1 },
+    { name: "Формат работы", count: 1 },
+    { name: "Гарантии", count: 1 },
   ];
 
   return (
@@ -127,89 +88,104 @@ const BusinessFAQ = () => {
           </p>
         </div>
 
-        {/* Категории FAQ - обновленные */}
+        {/* Категории FAQ */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {categories.map((category, idx) => (
-            <Button
+            <button
               key={idx}
-              variant="outline"
-              className="rounded-full px-5 py-2 border-2 border-blue-100 text-slate-700 hover:border-blue-600 hover:bg-blue-50 hover:text-blue-700 transition-all"
+              className="rounded-full px-5 py-2 border-2 border-blue-100 text-slate-700 hover:border-blue-600 hover:bg-blue-50 hover:text-blue-700 transition-all bg-white text-sm font-medium"
             >
               {category.name}
               <span className="ml-2 bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 text-xs font-bold">
                 {category.count}
               </span>
-            </Button>
+            </button>
           ))}
         </div>
 
-        {/* Аккордеон с вопросами */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <Accordion type="single" collapsible className="space-y-4">
-            {faqItems.map((item) => (
+        {/* Простой аккордеон без сторонних библиотек */}
+        <div className="max-w-4xl mx-auto mb-16 space-y-4">
+          {faqItems.map((item) => {
+            const isOpen = openItems.includes(item.id);
+
+            return (
               <Card
                 key={item.id}
-                className="border border-slate-200 hover:border-blue-300 transition-colors"
+                className="border border-slate-200 hover:border-blue-300 transition-colors overflow-hidden"
               >
-                <AccordionItem value={item.id} className="border-0">
-                  <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-blue-50/50">
-                    <div className="flex items-start gap-4 text-left">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                        <Icon
-                          name="HelpCircle"
-                          className="h-5 w-5 text-blue-600"
-                        />
+                <button
+                  onClick={() => toggleItem(item.id)}
+                  className="w-full text-left px-6 py-4 hover:bg-blue-50/50 transition-colors"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                      <Icon
+                        name="HelpCircle"
+                        className="h-5 w-5 text-blue-600"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                          {item.category}
+                        </span>
                       </div>
-                      <div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                            {item.category}
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-semibold text-slate-900">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-semibold text-slate-900 pr-4">
                           {item.question}
                         </h3>
+                        <div className="flex-shrink-0">
+                          <Icon
+                            name={isOpen ? "ChevronUp" : "ChevronDown"}
+                            className="h-5 w-5 text-blue-600"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-6 pt-2">
+                  </div>
+                </button>
+
+                {isOpen && (
+                  <CardContent className="px-6 pb-6 pt-2">
                     <div className="pl-14">
                       <div className="text-slate-700 leading-relaxed bg-blue-50/30 rounded-lg p-5 border border-blue-100">
                         {item.answer}
                       </div>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  </CardContent>
+                )}
               </Card>
-            ))}
-          </Accordion>
+            );
+          })}
         </div>
 
-        {/* Обновленная статистика */}
+        {/* Статистика */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mb-16">
           <div className="text-center p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <Icon name="Clock" className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon name="Clock" className="h-6 w-6 text-blue-600" />
+            </div>
             <div className="text-2xl font-bold text-blue-600 mb-1">1 час</div>
-            <div className="text-sm text-slate-600">Среднее время ответа</div>
+            <div className="text-sm text-slate-600">Ответ на заявку</div>
           </div>
           <div className="text-center p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <Icon
-              name="Shield"
-              className="h-8 w-8 text-blue-600 mx-auto mb-3"
-            />
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon name="Shield" className="h-6 w-6 text-blue-600" />
+            </div>
             <div className="text-2xl font-bold text-blue-600 mb-1">100%</div>
             <div className="text-sm text-slate-600">Конфиденциальность</div>
           </div>
           <div className="text-center p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <Icon name="Zap" className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon name="Zap" className="h-6 w-6 text-blue-600" />
+            </div>
             <div className="text-2xl font-bold text-blue-600 mb-1">24/7</div>
             <div className="text-sm text-slate-600">Для срочных вопросов</div>
           </div>
           <div className="text-center p-6 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <Icon
-              name="CheckCircle"
-              className="h-8 w-8 text-blue-600 mx-auto mb-3"
-            />
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Icon name="CheckCircle" className="h-6 w-6 text-blue-600" />
+            </div>
             <div className="text-2xl font-bold text-blue-600 mb-1">Фикс</div>
             <div className="text-sm text-slate-600">Цена в договоре</div>
           </div>
@@ -217,7 +193,7 @@ const BusinessFAQ = () => {
 
         {/* CTA секция */}
         <Card className="bg-gradient-to-r from-blue-600 to-blue-800 text-white border-0 shadow-2xl overflow-hidden">
-          <CardContent className="p-10">
+          <CardContent className="p-8 md:p-10">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">
