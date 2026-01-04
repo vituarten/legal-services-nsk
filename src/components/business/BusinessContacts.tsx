@@ -18,19 +18,12 @@ const BusinessContacts = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", "business_form_submit");
-    }
-
     const text = `Заявка с сайта (Бизнес):\n\nКомпания: ${formData.company}\nКонтактное лицо: ${formData.name}\nТелефон: ${formData.phone}\nEmail: ${formData.email}\nСообщение: ${formData.message}`;
     const whatsappUrl = `https://wa.me/${CONTACTS.whatsapp}?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, "_blank");
   };
 
   const handlePhoneClick = () => {
-    if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", "phone_click");
-    }
     window.location.href = `tel:${CONTACTS.phone.replace(/[^\d+]/g, "")}`;
   };
 
@@ -50,19 +43,14 @@ const BusinessContacts = () => {
             Получите консультацию для вашего бизнеса
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Оставьте заявку, и мы свяжемся с вами в течение 15 минут
+            Оставьте заявку, и мы свяжемся с вами в течение 1 часа
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           <Card className="bg-white shadow-xl">
             <CardContent className="p-8">
-              <form
-                id="business-contact-form"
-                name="business-contact-form"
-                onSubmit={handleSubmit}
-                className="space-y-6"
-              >
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">
                     Название компании *
@@ -145,11 +133,15 @@ const BusinessContacts = () => {
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg py-6"
                 >
                   <Icon name="Send" size={20} className="mr-2" />
-                  Отправить заявку
+                  Получить бесплатную консультацию
                 </Button>
 
                 <p className="text-xs text-slate-500 text-center">
                   Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                  <br />
+                  <span className="text-blue-600 font-semibold">
+                    Мы свяжемся с вами в течение 1 часа!
+                  </span>
                 </p>
               </form>
             </CardContent>
@@ -230,35 +222,35 @@ const BusinessContacts = () => {
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Icon
-                      name="CheckCircle2"
-                      className="text-green-600 flex-shrink-0 mt-1"
+                      name="GraduationCap"
+                      className="text-blue-600 flex-shrink-0 mt-1"
                       size={20}
                     />
                     <div className="text-slate-700">
-                      <strong>Опыт работы с бизнесом:</strong> успешное
-                      сопровождение компаний
+                      <strong>Высшее юридическое образование:</strong>{" "}
+                      профильные специалисты
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Icon
-                      name="CheckCircle2"
-                      className="text-green-600 flex-shrink-0 mt-1"
+                      name="Shield"
+                      className="text-blue-600 flex-shrink-0 mt-1"
                       size={20}
                     />
                     <div className="text-slate-700">
-                      <strong>Индивидуальный подход:</strong> персональная
-                      стратегия для каждого клиента
+                      <strong>Полная конфиденциальность:</strong> NDA по вашему
+                      запросу
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Icon
-                      name="CheckCircle2"
-                      className="text-green-600 flex-shrink-0 mt-1"
+                      name="FileCheck"
+                      className="text-blue-600 flex-shrink-0 mt-1"
                       size={20}
                     />
                     <div className="text-slate-700">
-                      <strong>Прозрачность:</strong> договор с четкими условиями
-                      и гарантиями
+                      <strong>Прозрачные условия:</strong> фиксированная цена в
+                      договоре
                     </div>
                   </div>
                 </div>
@@ -271,5 +263,4 @@ const BusinessContacts = () => {
   );
 };
 
-// ВАЖНО: Добавьте эту строку в самом конце файла!
 export default BusinessContacts;
