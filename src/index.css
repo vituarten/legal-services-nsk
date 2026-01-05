@@ -47,6 +47,14 @@
   .border-border {
     border-color: hsl(var(--border));
   }
+  .from-primary {
+    --tw-gradient-from: hsl(var(--primary)) var(--tw-gradient-from-position);
+    --tw-gradient-to: hsl(var(--primary) / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  .to-primary\/90 {
+    --tw-gradient-to: hsl(var(--primary) / 0.9) var(--tw-gradient-to-position);
+  }
 }
 
 @layer base {
