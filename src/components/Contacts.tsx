@@ -95,8 +95,8 @@ ${formData.message}
     {
       icon: "Mail",
       title: "Email",
-      value: "vituarten@icloud.com",
-      link: "mailto:vituarten@icloud.com",
+      value: "112@юридический-сервис.рф",
+      link: "mailto:112@юридический-сервис.рф",
     },
     {
       icon: "MapPin",
@@ -239,7 +239,7 @@ ${formData.message}
                     type="email" 
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="your@email.com" 
+                    placeholder="112@юридический-сервис.рф" 
                   />
                 </div>
 

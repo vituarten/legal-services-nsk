@@ -49,7 +49,7 @@ export default function ContactPage() {
     {
       icon: "Mail",
       title: "Email",
-      content: ["vituarten@icloud.com"],
+      content: ["112@юридический-сервис.рф"],
       action: "vituartem6397@yandex.ru",
     },
     {

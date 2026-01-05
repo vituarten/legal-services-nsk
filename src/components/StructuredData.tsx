@@ -40,7 +40,7 @@ const StructuredData = () => {
     "logo": "https://юридический-сервис.рф/logo.png",
     "image": "https://юридический-сервис.рф/og-image.jpg",
     "telephone": "+7 (999) 452-35-00",
-    "email": "info@юридический-сервис.рф",
+    "email": "112@юридический-сервис.рф",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "ул. Ленина, 1",

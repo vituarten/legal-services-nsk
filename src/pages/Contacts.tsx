@@ -99,8 +99,8 @@ const Contacts = () => {
     {
       icon: "Mail",
       title: "Электронная почта",
-      content: ["vituarten@icloud.com", ""],
-      action: "mailto:vituarten@icloud.com",
+      content: ["112@юридический-сервис.рф", ""],
+      action: "mailto:112@юридический-сервис.рф",
     },
     {
       icon: "Clock",

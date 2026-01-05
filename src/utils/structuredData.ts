@@ -56,7 +56,7 @@ export const getOrganizationSchema = (): OrganizationSchema => ({
   url: 'https://юридический-сервис.рф',
   logo: 'https://юридический-сервис.рф/logo.png',
   telephone: '+7 (495) 123-45-67',
-  email: 'info@юридический-сервис.рф',
+  email: '112@юридический-сервис.рф',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Москва',

@@ -98,9 +98,9 @@ const Footer = () => {
                 <Icon name="Phone" className="h-4 w-4 group-hover:scale-110 transition-transform" />
                 <span>+7 993 190 35 00</span>
               </a>
-              <a href="mailto:vituarten@icloud.com" className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group">
+              <a href="mailto:112@юридический-сервис.рф" className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors group">
                 <Icon name="Mail" className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                <span>vituarten@icloud.com</span>
+                <span>112@юридический-сервис.рф</span>
               </a>
               <div className="flex items-start space-x-2 text-muted-foreground">
                 <Icon name="MapPin" className="h-4 w-4 mt-0.5 flex-shrink-0" />

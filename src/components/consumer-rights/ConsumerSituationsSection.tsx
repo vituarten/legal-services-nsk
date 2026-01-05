@@ -512,10 +512,10 @@ export default function FamilyLawyer() {
                       <span className="text-lg font-semibold">Email:</span>
                     </div>
                     <a
-                      href="mailto:info@example.ru"
+                      href="mailto:112@юридический-сервис.рф"
                       className="text-xl text-gray-700 hover:text-blue-600"
                     >
-                      info@example.ru
+                      112@юридический-сервис.рф
                     </a>
                   </div>
 

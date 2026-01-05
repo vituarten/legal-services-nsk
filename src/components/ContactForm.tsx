@@ -127,7 +127,7 @@ const ContactForm = () => {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="your@email.com"
+            placeholder="112@юридический-сервис.рф"
           />
         </div>
 

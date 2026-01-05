@@ -102,7 +102,7 @@ const BusinessContacts = () => {
                   </label>
                   <Input
                     type="email"
-                    placeholder="info@company.ru"
+                    placeholder="112@юридический-сервис.рф"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     className="border-slate-300"
