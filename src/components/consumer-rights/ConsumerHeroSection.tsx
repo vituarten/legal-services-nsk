@@ -34,7 +34,7 @@ export default function ConsumerHeroSection({ onPhoneClick, onWhatsAppClick }: C
               Получить консультацию
             </Button>
           </a>
-          <a href="tel:+79994523500" onClick={onPhoneClick}>
+          <a href="tel:+7 (383) 235-95-05" onClick={onPhoneClick}>
             <Button size="lg" variant="outline" className="text-lg px-8">
               <Icon name="Phone" className="mr-2" size={20} />
               +7 (999) 452-35-00

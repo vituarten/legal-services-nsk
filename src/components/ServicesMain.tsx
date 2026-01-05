@@ -148,7 +148,7 @@ const ServicesMain = () => {
                   className="bg-white text-primary hover:bg-gray-100 px-8 text-lg font-semibold"
                   asChild
                 >
-                  <a href="tel:+79931903500">
+                  <a href="tel:+7 (383) 235-95-05">
                     <Icon name="Phone" className="h-5 w-5 mr-2" />
                     +7 993 190 35 00
                   </a>

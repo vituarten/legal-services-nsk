@@ -12,7 +12,7 @@ const GuiltDetermination = () => {
       source: 'page',
       action: 'phone_call'
     });
-    window.location.href = 'tel:+79994523500';
+    window.location.href = 'tel:+7 (383) 235-95-05';
   };
   
   const openModal = handleConsultation;
@@ -47,9 +47,9 @@ const GuiltDetermination = () => {
                   className="bg-yellow-600 hover:bg-yellow-700 text-white"
                   asChild
                 >
-                  <a href="tel:+79994523500">
+                  <a href="tel:+7 (383) 235-95-05">
                     <Icon name="Phone" className="mr-2" />
-                    +7 999 452 35 00
+                    +7 (383) 235-95-05
                   </a>
                 </Button>
                 <Button 
@@ -57,7 +57,7 @@ const GuiltDetermination = () => {
                   className="bg-blue-500 hover:bg-blue-600 text-white"
                   asChild
                 >
-                  <a href="https://t.me/+79931903500" target="_blank">
+                  <a href="https://t.me/+7 (383) 235-95-05" target="_blank">
                     <Icon name="Send" className="mr-2" />
                     Telegram
                   </a>
@@ -285,7 +285,7 @@ const GuiltDetermination = () => {
                 <Button 
                   size="lg"
                   className="bg-yellow-800 text-white hover:bg-yellow-900 font-semibold"
-                  onClick={() => window.location.href = 'tel:+79931903500'}
+                  onClick={() => window.location.href = 'tel:+7 (383) 235-95-05'}
                 >
                   <Icon name="Phone" className="mr-2" />
                   Позвонить сейчас

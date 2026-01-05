@@ -50,7 +50,7 @@ const CTASection = ({ onConsultationClick }: CTASectionProps) => {
               ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ
             </button>
             <a
-              href="https://t.me/+79931903500"
+              href="https://t.me/+7 (383) 235-95-05"
               target="_blank"
               className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors flex items-center gap-2"
             >

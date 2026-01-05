@@ -77,7 +77,7 @@ export default function BankruptcyLawyer() {
                     </a>
                   </Button>
                   <Button size="lg" variant="outline" className="text-lg" asChild>
-                    <a href="tel:+79931903500">
+                    <a href="tel:+7 (383) 235-95-05">
                       <Icon name="Phone" className="h-5 w-5 mr-2" />
                       +7 993 190 35 00
                     </a>

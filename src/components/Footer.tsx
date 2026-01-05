@@ -87,7 +87,7 @@ const Footer = () => {
             <h3 className="font-semibold text-foreground text-lg">Контакты</h3>
             <div className="space-y-3 text-sm">
               <a 
-                href="tel:+79931903500"
+                href="tel:+7 (383) 235-95-05"
                 onClick={() => {
                   if (typeof window !== 'undefined' && window.ym) {
                     window.ym(106063131, 'reachGoal', 'phone_click');

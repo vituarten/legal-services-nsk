@@ -74,7 +74,7 @@ export default function CriminalLawyer() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" className="text-lg bg-red-600 hover:bg-red-700" asChild>
-                    <a href="tel:+79931903500">
+                    <a href="tel:+7 (383) 235-95-05">
                       <Icon name="Phone" className="h-5 w-5 mr-2" />
                       Срочный вызов адвоката
                     </a>
@@ -185,7 +185,7 @@ export default function CriminalLawyer() {
             <h2 className="text-3xl font-bold mb-4">Вас задержали или вызвали на допрос?</h2>
             <p className="text-xl mb-8 opacity-90">Не давайте показаний без адвоката! Звоните прямо сейчас — выезжаем немедленно</p>
             <Button size="lg" className="text-lg bg-white text-red-600 hover:bg-gray-100" asChild>
-              <a href="tel:+79931903500">
+              <a href="tel:+7 (383) 235-95-05">
                 <Icon name="Phone" className="h-5 w-5 mr-2" />
                 +7 993 190 35 00
               </a>

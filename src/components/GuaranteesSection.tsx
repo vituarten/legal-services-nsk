@@ -84,7 +84,7 @@ const GuaranteesSection = () => {
                 className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-10"
                 asChild
               >
-                <a href="tel:+79931903500">
+                <a href="tel:+7 (383) 235-95-05">
                   <Icon name="Phone" size={24} className="mr-2" />
                   +7 993 190 35 00
                 </a>
@@ -93,10 +93,10 @@ const GuaranteesSection = () => {
                 size="lg"
                 variant="outline"
                 className="border-2 border-white text-white hover:bg-white hover:text-blue-600 text-lg px-10"
-                onClick={() => window.open('tel:+79994523500', '_self')}
+                onClick={() => window.open('tel:+7 (383) 235-95-05', '_self')}
               >
                 <Icon name="Phone" size={24} className="mr-2" />
-                +7 999 452 35 00
+                +7 (383) 235-95-05
               </Button>
             </div>
 

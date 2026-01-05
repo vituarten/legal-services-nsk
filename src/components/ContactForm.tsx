@@ -61,7 +61,7 @@ const ContactForm = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button 
-            onClick={() => window.open('tel:+79994523500', '_self')}
+            onClick={() => window.open('tel:+7 (383) 235-95-05', '_self')}
             className="bg-primary hover:bg-primary/90"
           >
             <Icon name="Phone" className="h-4 w-4 mr-2" />
@@ -87,7 +87,7 @@ const ContactForm = () => {
         </p>
         <div className="flex items-center mt-3 p-3 bg-accent/10 rounded-lg">
           <Icon name="Phone" className="h-5 w-5 text-accent mr-2" />
-          <span className="font-semibold text-accent">+7 999 452 35 00</span>
+          <span className="font-semibold text-accent">+7 (383) 235-95-05</span>
           <span className="text-sm text-muted-foreground ml-2">— звоните прямо сейчас</span>
         </div>
       </div>
@@ -113,7 +113,7 @@ const ContactForm = () => {
               type="tel"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="+7 999 123 45 67"
+              placeholder="+7 (383) 235-95-05"
               required
             />
           </div>

@@ -213,7 +213,7 @@ export default function FamilyLawyer() {
                     className="text-lg"
                     asChild
                   >
-                    <a href="tel:+79931903500">
+                    <a href="tel:+7 (383) 235-95-05">
                       <Icon name="Phone" className="h-5 w-5 mr-2" />
                       Срочная консультация
                     </a>

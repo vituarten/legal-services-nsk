@@ -113,7 +113,7 @@ export default function SMSAuthModal({ open, onClose, onSuccess }: SMSAuthModalP
                 <label className="text-sm font-medium">Номер телефона</label>
                 <Input
                   type="tel"
-                  placeholder="+7 999 123-45-67"
+                  placeholder="+7 (383) 235-95-05"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   disabled={loading}

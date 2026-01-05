@@ -176,7 +176,7 @@ const ConsumerCases = () => {
                     className="w-full bg-primary hover:bg-primary/90 group-hover:shadow-lg transition-all"
                     asChild
                   >
-                    <a href="tel:+79931903500">
+                    <a href="tel:+7 (383) 235-95-05">
                       <Icon name="Phone" className="h-4 w-4 mr-2" />
                       +7 993 190 35 00
                     </a>
@@ -207,7 +207,7 @@ const ConsumerCases = () => {
                   className="border-2 border-primary text-primary hover:bg-primary hover:text-white flex-shrink-0"
                   asChild
                 >
-                  <a href="tel:+79931903500">
+                  <a href="tel:+7 (383) 235-95-05">
                     <Icon name="Phone" className="h-4 w-4 mr-2" />
                     Связаться
                   </a>

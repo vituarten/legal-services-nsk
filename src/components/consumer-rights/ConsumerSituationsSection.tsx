@@ -464,11 +464,11 @@ export default function FamilyLawyer() {
                   <p className="text-gray-600 text-sm">
                     Или позвоните нам прямо сейчас:
                     <a
-                      href="tel:+79931903500"
+                      href="tel:+7 (383) 235-95-05"
                       className="block text-xl font-bold text-blue-600 mt-2"
                     >
                       <Icon name="Phone" className="h-5 w-5 inline mr-2" />
-                      +7 (993) 190-35-00
+                      +7 (383) 235-95-05
                     </a>
                   </p>
                 </div>
@@ -496,10 +496,10 @@ export default function FamilyLawyer() {
                       <span className="text-lg font-semibold">Телефон:</span>
                     </div>
                     <a
-                      href="tel:+79931903500"
+                      href="tel:+7 (383) 235-95-05"
                       className="text-2xl font-bold text-gray-900 hover:text-blue-600"
                     >
-                      +7 (993) 190-35-00
+                      +7 (383) 235-95-05
                     </a>
                   </div>
 

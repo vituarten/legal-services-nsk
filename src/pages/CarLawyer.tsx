@@ -33,7 +33,7 @@ export default function CarLawyer() {
             "name": "Автоюрист по возврату денег за автомобиль",
             "description": "Юридическая помощь при покупке проблемных автомобилей. Возврат денег и компенсации до 300%.",
             "url": "https://example.com/car-lawyer",
-            "telephone": "+79994523500",
+            "telephone": "+7 (383) 235-95-05",
             "priceRange": "Бесплатная консультация",
             "areaServed": {
               "@type": "Country",

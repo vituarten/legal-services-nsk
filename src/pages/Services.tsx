@@ -285,10 +285,10 @@ const Services = () => {
                     variant="outline"
                     size="lg"
                     className="border-2 border-white text-white hover:bg-white hover:text-primary"
-                    onClick={() => window.open('tel:+79994523500', '_self')}
+                    onClick={() => window.open('tel:+7 (383) 235-95-05', '_self')}
                   >
                     <Icon name="Phone" className="h-5 w-5 mr-2" />
-                    +7 999 452 35 00
+                    +7 (383) 235-95-05
                   </Button>
                 </div>
 

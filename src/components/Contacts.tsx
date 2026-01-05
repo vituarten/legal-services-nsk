@@ -83,13 +83,13 @@ ${formData.message}
     {
       icon: "Phone",
       title: "Телефон",
-      value: "+7 (993) 190-35-00",
-      link: "tel:+79931903500",
+      value: "+7 (383) 235-95-05",
+      link: "tel:+7 (383) 235-95-05",
     },
     {
       icon: "MessageCircle",
       title: "WhatsApp",
-      value: "+7 (993) 190-35-00",
+      value: "+7 (383) 235-95-05",
       link: "https://wa.me/79931903500",
     },
     {

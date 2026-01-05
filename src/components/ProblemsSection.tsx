@@ -85,7 +85,7 @@ const ProblemsSection = () => {
             className="bg-red-600 hover:bg-red-700 text-white text-lg px-10 py-6 shadow-2xl animate-pulse"
             asChild
           >
-            <a href="tel:+79931903500">
+            <a href="tel:+7 (383) 235-95-05">
               <Icon name="Phone" size={24} className="mr-2" />
               +7 993 190 35 00
             </a>

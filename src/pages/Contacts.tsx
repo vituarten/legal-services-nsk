@@ -63,7 +63,7 @@ const Contacts = () => {
       
       toast.success("Заявка отправлена! Мы свяжемся с вами в ближайшее время");
     } catch (error) {
-      toast.error("Ошибка отправки. Попробуйте позвонить по телефону +7 999 452 35 00");
+      toast.error("Ошибка отправки. Попробуйте позвонить по телефону +7 (383) 235-95-05");
     } finally {
       setIsSubmitting(false);
     }
@@ -94,7 +94,7 @@ const Contacts = () => {
       icon: "Phone",
       title: "Телефоны",
       content: ["+7 (999) 452-35-00"],
-      action: "tel:+79994523500",
+      action: "tel:+7 (383) 235-95-05",
     },
     {
       icon: "Mail",
@@ -138,11 +138,11 @@ const Contacts = () => {
               </p>
               <div className="space-y-3">
                 <Button
-                  onClick={() => window.open('tel:+79994523500', '_self')}
+                  onClick={() => window.open('tel:+7 (383) 235-95-05', '_self')}
                   className="w-full bg-primary hover:bg-primary/90"
                 >
                   <Icon name="Phone" className="h-4 w-4 mr-2" />
-                  Позвонить сейчас: +7 999 452 35 00
+                  Позвонить сейчас: +7 (383) 235-95-05
                 </Button>
                 <Button
                   onClick={() => setIsSubmitted(false)}
@@ -183,7 +183,7 @@ const Contacts = () => {
             className="bg-primary hover:bg-primary/90"
             asChild
           >
-            <a href="tel:+79931903500">
+            <a href="tel:+7 (383) 235-95-05">
               <Icon name="Phone" className="h-5 w-5 mr-2" />
               +7 993 190 35 00
             </a>
@@ -381,7 +381,7 @@ const Contacts = () => {
                 <p className="text-primary-foreground/80 mb-4">
                   Звоните прямо сейчас, мы работаем до 19:00
                 </p>
-                <a href="tel:+79994523500">
+                <a href="tel:+7 (383) 235-95-05">
                   <Button size="lg" variant="secondary" className="w-full">
                     +7 (999) 452-35-00
                   </Button>

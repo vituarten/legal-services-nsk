@@ -187,7 +187,7 @@ const ConsumerProtectionInfo = () => {
                   ))}
                 </ul>
                 <Button className="w-full mt-4" asChild>
-                  <a href="tel:+79931903500">
+                  <a href="tel:+7 (383) 235-95-05">
                     <Icon name="Phone" className="h-4 w-4 mr-2" />
                     +7 993 190 35 00
                   </a>
@@ -214,7 +214,7 @@ const ConsumerProtectionInfo = () => {
                   ))}
                 </ul>
                 <Button className="w-full mt-4" asChild>
-                  <a href="tel:+79931903500">
+                  <a href="tel:+7 (383) 235-95-05">
                     <Icon name="Phone" className="h-4 w-4 mr-2" />
                     Заказать услугу
                   </a>
@@ -238,7 +238,7 @@ const ConsumerProtectionInfo = () => {
                   ))}
                 </ul>
                 <Button className="w-full mt-4" asChild>
-                  <a href="tel:+79931903500">
+                  <a href="tel:+7 (383) 235-95-05">
                     <Icon name="Phone" className="h-4 w-4 mr-2" />
                     Заказать услугу
                   </a>
