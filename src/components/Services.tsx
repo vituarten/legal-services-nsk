@@ -2,10 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ServiceModal from "./ServiceModal";
 import { useModal } from "@/hooks/useModal";
 
 const Services = () => {
+  const navigate = useNavigate();
   const [selectedService, setSelectedService] = useState<any>(null);
   const { consultationModal } = useModal();
   const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
@@ -50,6 +52,7 @@ const Services = () => {
       title: "Взыскание долгов",
       description: "Взыскание задолженности, работа с должниками",
       category: ["popular", "business", "citizens"],
+      link: "/debt-collection",
     },
     {
       icon: "FileText",
@@ -92,14 +95,15 @@ const Services = () => {
     {
       icon: "Building",
       title: "Земельное право",
+      description: "Оформление земельных участков, споры по межеванию",
+      category: ["realestate"],
+    },
     {
       icon: "Droplets",
       title: "Возмещение ущерба от потопов",
       description: "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями и УК",
       category: ["popular", "citizens", "realestate"],
-    },
-      description: "Оформление земельных участков, споры по межеванию",
-      category: ["realestate"],
+      link: "/flood-damage",
     },
   ];
 
@@ -174,13 +178,23 @@ const Services = () => {
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">{service.description}</p>
                 <div className="flex flex-col gap-3 pt-2">
-                  <Button
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
-                    onClick={() => consultationModal.open()}
-                  >
-                    <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
-                    ЗАКАЗАТЬ УСЛУГУ
-                  </Button>
+                  {service.link ? (
+                    <Button
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => navigate(service.link)}
+                    >
+                      <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
+                      УЗНАТЬ БОЛЬШЕ
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => consultationModal.open()}
+                    >
+                      <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
+                      ЗАКАЗАТЬ УСЛУГУ
+                    </Button>
+                  )}
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
