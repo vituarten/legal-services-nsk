@@ -433,7 +433,7 @@ export default function FamilyLawyer() {
                   />
                   <input
                     type="tel"
-                    placeholder="+7 (___) ___-__-__"
+                    placeholder="+7 (383) 235-95-05"
                     value={formData.phone}
                     onChange={(e) =>
                       setFormData({ ...formData, phone: e.target.value })

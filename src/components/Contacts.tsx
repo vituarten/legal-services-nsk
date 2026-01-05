@@ -226,7 +226,7 @@ ${formData.message}
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="+7 (___) ___-__-__" 
+                      placeholder="+7 (383) 235-95-05" 
                       required
                     />
                   </div>
