@@ -92,6 +92,12 @@ const Services = () => {
     {
       icon: "Building",
       title: "Земельное право",
+    {
+      icon: "Droplets",
+      title: "Возмещение ущерба от потопов",
+      description: "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями и УК",
+      category: ["popular", "citizens", "realestate"],
+    },
       description: "Оформление земельных участков, споры по межеванию",
       category: ["realestate"],
     },
