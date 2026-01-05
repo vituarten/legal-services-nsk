@@ -491,8 +491,8 @@ const DTPLanding = () => {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 mb-1">Телефон</p>
-                          <a href="tel:+7 (383) 235-95-05" className="text-lg font-semibold text-gray-900 hover:text-blue-600">
-                            +7 (383) 235-95-05
+                          <a href="tel:+79994523500" className="text-lg font-semibold text-gray-900 hover:text-blue-600">
+                            +7 999 452 35 00
                           </a>
                         </div>
                       </div>
@@ -504,7 +504,7 @@ const DTPLanding = () => {
                         <div>
                           <p className="text-sm text-gray-500 mb-1">Telegram</p>
                           <a 
-                            href="https://t.me/+7 (383) 235-95-05" 
+                            href="https://t.me/+79931903500" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-lg font-semibold text-gray-900 hover:text-blue-600"
@@ -545,7 +545,7 @@ const DTPLanding = () => {
                           asChild
                           className="flex-1 bg-blue-600 hover:bg-blue-700"
                         >
-                          <a href="tel:+7 (383) 235-95-05">
+                          <a href="tel:+79994523500">
                             <Icon name="Phone" className="mr-2" size={20} />
                             Позвонить
                           </a>
@@ -554,7 +554,7 @@ const DTPLanding = () => {
                           asChild
                           className="flex-1 bg-blue-500 hover:bg-blue-600"
                         >
-                          <a href="https://t.me/+7 (383) 235-95-05" target="_blank" rel="noopener noreferrer">
+                          <a href="https://t.me/+79931903500" target="_blank" rel="noopener noreferrer">
                             <Icon name="Send" className="mr-2" size={20} />
                             Telegram
                           </a>

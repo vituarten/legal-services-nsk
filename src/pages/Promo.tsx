@@ -37,7 +37,7 @@ export default function Promo() {
                 Написать в WhatsApp
               </Button>
             </a>
-            <a href="tel:+7 (383) 235-95-05">
+            <a href="tel:+79994523500">
               <Button size="lg" variant="outline" className="text-lg px-8">
                 <Icon name="Phone" className="mr-2" size={20} />
                 Позвонить
@@ -294,7 +294,7 @@ export default function Promo() {
                 Написать в WhatsApp
               </Button>
             </a>
-            <a href="tel:+7 (383) 235-95-05">
+            <a href="tel:+79994523500">
               <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary">
                 <Icon name="Phone" className="mr-2" size={20} />
                 Позвонить

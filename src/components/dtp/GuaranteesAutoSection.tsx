@@ -126,7 +126,7 @@ const GuaranteesAutoSection: React.FC<GuaranteesAutoSectionProps> = ({ onConsult
                   Бесплатная консультация
                 </button>
                 <a
-                  href="tel:+7 (383) 235-95-05"
+                  href="tel:+79994523500"
                   className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-orange-600 text-lg px-10 py-4 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
                 >
                   <Icon name="Phone" size={24} />

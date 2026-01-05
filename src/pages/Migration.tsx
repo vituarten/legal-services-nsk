@@ -156,7 +156,7 @@ const Migration = () => {
                 Бесплатная консультация
               </Button>
               <a
-                href="tel:+7 (383) 235-95-05"
+                href="tel:+79994523500"
                 className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-orange-600 text-orange-600 hover:bg-orange-50 text-lg px-8 py-6 rounded-lg font-bold transition-colors"
               >
                 <Icon name="Phone" size={24} />
@@ -306,7 +306,7 @@ const Migration = () => {
                     Заказать консультацию
                   </Button>
                   <a
-                    href="tel:+7 (383) 235-95-05"
+                    href="tel:+79994523500"
                     className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white text-white hover:bg-white hover:text-orange-600 text-lg px-8 py-3 rounded-lg font-bold transition-colors"
                   >
                     <Icon name="Phone" size={24} />

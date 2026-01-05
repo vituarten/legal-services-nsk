@@ -75,7 +75,7 @@ const ConsumerProtection = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" asChild className="bg-primary hover:bg-primary/90">
-                    <a href="tel:+7 (383) 235-95-05" onClick={handlePhoneClick}>
+                    <a href="tel:+79931903500" onClick={handlePhoneClick}>
                       <Icon name="Phone" className="h-5 w-5 mr-2" />
                       +7 993 190 35 00
                     </a>
@@ -83,10 +83,10 @@ const ConsumerProtection = () => {
                   <Button 
                     variant="outline" 
                     size="lg"
-                    onClick={() => { handlePhoneClick(); window.open('tel:+7 (383) 235-95-05', '_self'); }}
+                    onClick={() => { handlePhoneClick(); window.open('tel:+79994523500', '_self'); }}
                   >
                     <Icon name="Phone" className="h-5 w-5 mr-2" />
-                    +7 (383) 235-95-05
+                    +7 999 452 35 00
                   </Button>
                 </div>
               </div>
@@ -122,7 +122,7 @@ const ConsumerProtection = () => {
                       className="bg-primary hover:bg-primary/90 text-white"
                       asChild
                     >
-                      <a href="tel:+7 (383) 235-95-05">
+                      <a href="tel:+79931903500">
                         <Icon name="Phone" className="h-5 w-5 mr-2" />
                         +7 993 190 35 00
                       </a>
@@ -131,10 +131,10 @@ const ConsumerProtection = () => {
                       variant="outline"
                       size="lg"
                       className="border-2 border-primary text-primary hover:bg-primary hover:text-white"
-                      onClick={() => window.open('tel:+7 (383) 235-95-05', '_self')}
+                      onClick={() => window.open('tel:+79994523500', '_self')}
                     >
                       <Icon name="Phone" className="h-5 w-5 mr-2" />
-                      +7 (383) 235-95-05
+                      +7 999 452 35 00
                     </Button>
                   </div>
 

@@ -110,7 +110,7 @@ const Privacy = () => {
                   <strong>ЮрСервис НСК</strong>
                 </p>
                 <p className="mb-2">
-                  Телефон: <a href="tel:+7 (383) 235-95-05" className="text-primary hover:underline">+7 (999) 452-35-00</a>
+                  Телефон: <a href="tel:+79994523500" className="text-primary hover:underline">+7 (999) 452-35-00</a>
                 </p>
                 <p className="mb-2">
                   Email: <a href="mailto:info@jurservice-nsk.ru" className="text-primary hover:underline">info@jurservice-nsk.ru</a>

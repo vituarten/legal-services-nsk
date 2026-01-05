@@ -391,10 +391,10 @@ export default function Pricing() {
               сейчас!
             </p>
             <a
-              href="tel:+7 (383) 235-95-05"
+              href="tel:+79931903500"
               className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors"
             >
-              +7 (383) 235-95-05
+              +7 (993) 190-35-00
             </a>
           </div>
         </div>

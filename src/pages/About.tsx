@@ -128,7 +128,7 @@ const About = () => {
             className="bg-primary hover:bg-primary/90"
             asChild
           >
-            <a href="tel:+7 (383) 235-95-05">
+            <a href="tel:+79931903500">
               <Icon name="Phone" className="h-5 w-5 mr-2" />
               +7 993 190 35 00
             </a>

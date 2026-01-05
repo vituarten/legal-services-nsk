@@ -83,20 +83,20 @@ ${formData.message}
     {
       icon: "Phone",
       title: "Телефон",
-      value: "+7 (383) 235-95-05",
-      link: "tel:+7 (383) 235-95-05",
+      value: "+7 (993) 190-35-00",
+      link: "tel:+79931903500",
     },
     {
       icon: "MessageCircle",
       title: "WhatsApp",
-      value: "+7 (383) 235-95-05",
+      value: "+7 (993) 190-35-00",
       link: "https://wa.me/79931903500",
     },
     {
       icon: "Mail",
       title: "Email",
-      value: "112@юридический-сервис.рф",
-      link: "mailto:112@юридический-сервис.рф",
+      value: "vituarten@icloud.com",
+      link: "mailto:vituarten@icloud.com",
     },
     {
       icon: "MapPin",
@@ -226,7 +226,7 @@ ${formData.message}
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="+7 (383) 235-95-05" 
+                      placeholder="+7 (___) ___-__-__" 
                       required
                     />
                   </div>
@@ -239,7 +239,7 @@ ${formData.message}
                     type="email" 
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="112@юридический-сервис.рф" 
+                    placeholder="your@email.com" 
                   />
                 </div>
 

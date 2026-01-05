@@ -89,7 +89,7 @@ const BusinessContacts = () => {
                   <Input
                     required
                     type="tel"
-                    placeholder="+7 (383) 235-95-05"
+                    placeholder="+7 999 123 45 67"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     className="border-slate-300"
@@ -102,7 +102,7 @@ const BusinessContacts = () => {
                   </label>
                   <Input
                     type="email"
-                    placeholder="112@юридический-сервис.рф"
+                    placeholder="info@company.ru"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     className="border-slate-300"

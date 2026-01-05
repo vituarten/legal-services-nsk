@@ -182,9 +182,9 @@ const DTPLawyerChoice = () => {
                   className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
                   asChild
                 >
-                  <a href="tel:+7 (383) 235-95-05">
+                  <a href="tel:+79994523500">
                     <Icon name="Phone" size={20} className="mr-2" />
-                    +7 (383) 235-95-05
+                    +7 999 452 35 00
                   </a>
                 </Button>
                 <Button 
@@ -192,7 +192,7 @@ const DTPLawyerChoice = () => {
                   className="bg-blue-500 hover:bg-blue-600 text-white font-semibold"
                   asChild
                 >
-                  <a href="https://t.me/+7 (383) 235-95-05" target="_blank">
+                  <a href="https://t.me/+79931903500" target="_blank">
                     <Icon name="Send" size={20} className="mr-2" />
                     Telegram
                   </a>
