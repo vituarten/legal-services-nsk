@@ -34,7 +34,6 @@ const Services = () => {
       title: "Автоюрист. Споры по ДТП",
       description: "Взыскание ущерба по ОСАГО, споры со страховыми, защита от лишения прав, административные дела",
       category: ["popular", "citizens"],
-      price: "от 18 000₽",
       duration: "2-12 месяцев",
       link: "/dtp-lawyer"
     },
@@ -43,7 +42,6 @@ const Services = () => {
       title: "Семейный юрист",
       description: "Развод, раздел имущества, алименты, опека, споры по детям",
       category: ["popular", "citizens"],
-      price: "от 15 000₽",
       duration: "1-3 месяца",
       link: "/family-lawyer"
     },
@@ -52,7 +50,6 @@ const Services = () => {
       title: "Банкротство физических лиц",
       description: "Процедура банкротства для граждан, списание долгов, защита имущества от кредиторов",
       category: ["popular", "bankruptcy", "citizens"],
-      price: "от 50 000₽",
       duration: "6-12 месяцев",
       link: "/bankruptcy-lawyer"
     },
@@ -61,7 +58,6 @@ const Services = () => {
       title: "Миграционные споры",
       description: "Получение РВП, ВНЖ, гражданства, защита от депортации, миграционный учёт",
       category: ["popular", "citizens"],
-      price: "от 20 000₽",
       duration: "2-6 месяцев",
       link: "/migration"
     },
@@ -70,7 +66,6 @@ const Services = () => {
       title: "Уголовная защита",
       description: "Защита в уголовных делах, представительство в суде, обжалование приговоров",
       category: ["popular", "citizens"],
-      price: "от 30 000₽",
       duration: "3-24 месяца",
       link: "/criminal-lawyer"
     },
@@ -79,7 +74,6 @@ const Services = () => {
       title: "Недвижимость и перепланировки",
       description: "Сделки с недвижимостью, узаконивание перепланировок, споры с соседями",
       category: ["popular", "realestate"],
-      price: "от 20 000₽",
       duration: "1-4 месяца",
       link: "/real-estate-lawyer"
     },
@@ -88,7 +82,6 @@ const Services = () => {
       title: "Взыскание долгов",
       description: "Взыскание задолженности, работа с должниками, исполнительное производство",
       category: ["popular", "citizens"],
-      price: "от 15 000₽",
       duration: "2-6 месяцев"
     },
     {
@@ -96,7 +89,6 @@ const Services = () => {
       title: "Защита прав потребителей",
       description: "Возврат некачественного товара, споры с продавцами и услугами",
       category: ["popular", "citizens"],
-      price: "от 10 000₽",
       duration: "1-6 месяцев",
       link: "/consumer-protection"
     },
@@ -105,7 +97,6 @@ const Services = () => {
       title: "Споры с застройщиками",
       description: "Защита прав дольщиков, взыскание неустойки, возврат средств",
       category: ["popular", "realestate", "citizens"],
-      price: "от 25 000₽",
       duration: "6-18 месяцев"
     },
     {
@@ -113,7 +104,6 @@ const Services = () => {
       title: "Составление документов",
       description: "Подготовка договоров, исков, жалоб, анализ документации, правовая экспертиза",
       category: ["citizens"],
-      price: "от 5 000₽",
       duration: "1-5 дней"
     },
     {
@@ -121,7 +111,6 @@ const Services = () => {
       title: "Трудовое право",
       description: "Защита трудовых прав, взыскание заработной платы, восстановление на работе",
       category: ["citizens"],
-      price: "от 8 000₽",
       duration: "1-8 месяцев"
     },
     {
@@ -129,7 +118,6 @@ const Services = () => {
       title: "Банкротство юридических лиц",
       description: "Ликвидация предприятий, банкротство организаций, процедура несостоятельности",
       category: ["bankruptcy"],
-      price: "от 80 000₽",
       duration: "12-24 месяца"
     },
     {
@@ -137,7 +125,6 @@ const Services = () => {
       title: "Земельное право",
       description: "Оформление земельных участков, споры по межеванию, аренда земли",
       category: ["realestate"],
-      price: "от 15 000₽",
       duration: "1-6 месяцев"
     },
   ];
@@ -238,7 +225,6 @@ const Services = () => {
                 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Стоимость:</span>
                     <Badge variant="secondary" className="text-lg font-semibold text-primary">
                       {service.price}
                     </Badge>
