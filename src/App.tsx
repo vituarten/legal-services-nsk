@@ -25,6 +25,7 @@ const DTPLawyerChoice = lazy(() => import("@/pages/DTPLawyerChoice"));
 const GuiltDetermination = lazy(() => import("@/pages/GuiltDetermination"));
 const InsuranceDispute = lazy(() => import("@/pages/InsuranceDispute"));
 const DamageClaim = lazy(() => import("@/pages/DamageClaim"));
+const DamageClaimB = lazy(() => import("@/pages/DamageClaimB"));
 const LicenseAlcohol = lazy(() => import("@/pages/LicenseAlcohol"));
 const IllegalFine = lazy(() => import("@/pages/IllegalFine"));
 const BadRepair = lazy(() => import("@/pages/BadRepair"));
@@ -82,6 +83,7 @@ function AppContent() {
               <Route path="/dtp-lawyer/guilt-determination" element={<GuiltDetermination />} />
               <Route path="/dtp-lawyer/insurance-dispute" element={<InsuranceDispute />} />
               <Route path="/dtp-lawyer/damage-claim" element={<DamageClaim />} />
+              <Route path="/dtp-lawyer/damage-claim-b" element={<DamageClaimB />} />
               <Route path="/dtp-lawyer/license-alcohol" element={<LicenseAlcohol />} />
               <Route path="/dtp-lawyer/illegal-fine" element={<IllegalFine />} />
               <Route path="/dtp-lawyer/bad-repair" element={<BadRepair />} />
