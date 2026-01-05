@@ -91,12 +91,6 @@ const Services = () => {
     },
     {
       icon: "Building",
-      title: "Банкротство юридических лиц",
-      description: "Ликвидация предприятий, банкротство организаций",
-      category: ["bankruptcy", "business"],
-    },
-    {
-      icon: "MapPin",
       title: "Земельное право",
       description: "Оформление земельных участков, споры по межеванию",
       category: ["realestate"],
