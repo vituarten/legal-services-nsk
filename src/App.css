@@ -38,3 +38,61 @@
 .read-the-docs {
   color: #888;
 }
+/* ===== УЛУЧШЕННАЯ АНИМАЦИЯ ДЛЯ DETAILS ===== */
+/* Плавное открытие/закрытие */
+details {
+  transition: all 0.3s ease;
+}
+
+details[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+details[open] summary ~ * {
+  animation: sweep 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-fill-mode: both;
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+    filter: blur(1px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-5px) scale(0.99);
+    filter: blur(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Стили для иконки стрелки */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary {
+  list-style: none;
+  cursor: pointer;
+  position: relative;
+}
+
+details summary:after {
+  content: "▼";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+details[open] summary:after {
+  transform: translateY(-50%) rotate(180deg);
+}
