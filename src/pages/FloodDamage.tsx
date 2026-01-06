@@ -9,6 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   CheckCircle,
   Shield,
@@ -25,6 +27,12 @@ import {
   Download,
   XCircle,
   ChevronRight,
+  Mail,
+  ArrowRight,
+  Trophy,
+  BadgeCheck,
+  ExternalLink,
+  Star,
 } from "lucide-react";
 
 declare global {
@@ -42,6 +50,9 @@ declare global {
 // Инициализация Яндекс.Метрики
 const initYandexMetrika = () => {
   if (typeof window === "undefined") return;
+
+  // Если уже инициализирован
+  if (window.ym) return;
 
   (function (m: any, e: any, t: any, r: any, i: any, k: any, a: any) {
     m[i] =
@@ -74,554 +85,537 @@ const initYandexMetrika = () => {
       site_type: "legal_services",
       service_type: "flood_damage",
       region: "novosibirsk",
+      page_type: "landing",
     },
   });
 };
 
-// Функции для отправки целей
+// Функции для целей
 const reachGoal = (targetName: string, params?: Record<string, any>) => {
   if (typeof window === "undefined" || !window.ym) return;
   window.ym(106063131, "reachGoal", targetName, params);
+  console.log(`🎯 Яндекс.Метрика: цель "${targetName}" отправлена`, params);
 };
 
 const hitPageView = (url: string) => {
   if (typeof window === "undefined" || !window.ym) return;
-  window.ym(106063131, "hit", url);
+  window.ym(106063131, "hit", url, { title: document.title });
 };
 
 export default function FloodDamagePage() {
   const [showExitPopup, setShowExitPopup] = useState(false);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
 
-  // Инициализация Метрики и отслеживание страницы
+  // Инициализация и отслеживание
   useEffect(() => {
     initYandexMetrika();
     hitPageView(window.location.pathname);
 
-    // Exit-intent popup
+    // Exit-intent
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY < 0) {
-        reachGoal("exit_intent_shown");
+      if (e.clientY < 0 && !showExitPopup) {
+        reachGoal("exit_intent_triggered", {
+          time_on_page: Math.round(performance.now() / 1000),
+        });
         setShowExitPopup(true);
       }
     };
 
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
-  }, []);
+  }, [showExitPopup]);
 
-  // Обработчики для целей
-  const handleConsultationClick = () => {
-    reachGoal("free_consultation_request", { location: "hero" });
-    // Здесь ваш код открытия формы
+  // Обработчики конверсий
+  const handleMainCta = (source: string) => {
+    reachGoal("main_cta_click", {
+      button_location: source,
+      page_section: "hero",
+    });
+    // Здесь логика открытия формы
   };
 
-  const handlePhoneClick = () => {
-    reachGoal("phone_call_click", { phone: "+73832359505" });
+  const handlePhoneCall = () => {
+    reachGoal("phone_call_initiated", {
+      phone: "+73832359505",
+      context: "direct_click",
+    });
   };
 
-  const handleDownloadClick = () => {
-    reachGoal("document_download", { file_name: "Шаблон_претензии.pdf" });
+  const handleDownloadTemplate = () => {
+    reachGoal("template_downloaded", {
+      file_type: "pretension_template",
+      source: "main_button",
+    });
+
     // Скачивание файла
     const link = document.createElement("a");
     link.href = "/templates/pretension-template.pdf";
-    link.download = "Шаблон_досудебной_претензии_при_заливе.pdf";
+    link.download = "Шаблон_досудебной_претензии_ЮрСервис_НСК.pdf";
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleSecondaryCta = (location: string) => {
-    reachGoal("secondary_cta_click", { location });
-    // Здесь ваш код для вторичного CTA
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    reachGoal("contact_form_submitted", {
+      form_type: "consultation_request",
+      name_length: name.length,
+      email_provider: email.includes("@") ? email.split("@")[1] : "unknown",
+    });
+
+    // Ваша логика отправки формы
+    console.log("Форма отправлена:", { name, email });
+
+    // Сброс формы
+    setName("");
+    setEmail("");
+  };
+
+  const handleFreeAnalysis = () => {
+    reachGoal("free_analysis_requested", {
+      offer_type: "document_analysis",
+      context: "middle_page",
+    });
   };
 
   return (
     <>
       <Helmet>
         <title>
-          Затопили квартиру в Новосибирске? Возмещение ущерба с 2016 года | +7
-          (383) 235-95-05
+          Затопили квартиру в Новосибирске? Возмещение ущерба с 2016 года |
+          ЮрСервис НСК
         </title>
         <meta
           name="description"
-          content="Вас затопили соседи или УК? Профессиональное взыскание ущерба с 2016 года. Работаем без предоплаты. Вернем деньги за ремонт, штраф 50% и моральный вред. Звоните: +7 (383) 235-95-05"
+          content="Вас затопили соседи или УК? Профессиональное взыскание ущерба с 2016 года. Работаем без предоплаты. Вернем деньги за ремонт, штраф 50% и моральный вред. ☎ +7 (383) 235-95-05"
+        />
+        <meta
+          name="keywords"
+          content="затопили квартиру новосибирск, возмещение ущерба от потопа, взыскание ущерба от залива, юрист по потопам, залили соседи, управляющая компания виновата"
+        />
+        <link
+          rel="canonical"
+          href="https://юридический-сервис.рф/затопление-квартиры"
         />
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50 py-16 md:py-24">
-        <div className="container mx-auto px-4">
+      <section className="relative min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
+
+        <div className="container relative z-10 mx-auto px-4 py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              <span className="block">Вас затопили</span>
-              <span className="block text-primary">соседи или УК?</span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-gray-700 mb-8">
-              <span className="font-bold">
-                Специализируемся на взыскании ущерба с потопа
-              </span>{" "}
-              — работаем с 2016 года в Новосибирске
-            </p>
-
-            <p className="text-2xl md:text-3xl font-bold text-gray-900 mb-10">
-              Вернем деньги за ремонт + штраф 50% + моральный вред
-            </p>
-
-            {/* Телефон */}
-            <div className="mb-12">
-              <a
-                href="tel:+73832359505"
-                onClick={handlePhoneClick}
-                className="inline-flex items-center justify-center text-3xl md:text-4xl font-bold text-gray-900 hover:text-primary transition-colors bg-white px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl border-2 border-primary/20"
-              >
-                <Phone className="mr-4 h-10 w-10" />
-                +7 (383) 235-95-05
-              </a>
-              <p className="text-gray-600 mt-3 text-lg">
-                Звоните — первая консультация бесплатно
-              </p>
+            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <BadgeCheck className="h-4 w-4" />
+              Специализация с 2016 года
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                onClick={handleConsultationClick}
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-white text-lg px-10 py-7 shadow-lg hover:shadow-xl"
-              >
-                <Zap className="mr-3" />
-                Бесплатная консультация юриста
-              </Button>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+              <span className="block text-slate-900">Вас затопили</span>
+              <span className="block text-blue-600 mt-2">соседи или УК?</span>
+            </h1>
 
-              <Button
-                onClick={handleDownloadClick}
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-7 border-2"
-              >
-                <Download className="mr-3" />
-                Скачать шаблон претензии
-              </Button>
+            <p className="text-xl md:text-2xl text-slate-700 mb-8 leading-relaxed">
+              <span className="font-semibold">
+                Вернем деньги за ремонт + штраф 50% + моральный вред.
+              </span>
+              <br />
+              Работаем без предоплаты — платите только после получения ваших
+              денег.
+            </p>
+
+            {/* Ключевые показатели */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-2xl mx-auto">
+              <div className="bg-white p-4 rounded-xl shadow-sm border">
+                <div className="text-2xl font-bold text-blue-600">8 лет</div>
+                <div className="text-sm text-slate-600">специализации</div>
+              </div>
+              <div className="bg-white p-4 rounded-xl shadow-sm border">
+                <div className="text-2xl font-bold text-blue-600">95%</div>
+                <div className="text-sm text-slate-600">успешных дел</div>
+              </div>
+              <div className="bg-white p-4 rounded-xl shadow-sm border">
+                <div className="text-2xl font-bold text-blue-600">1-3 мес</div>
+                <div className="text-sm text-slate-600">средний срок</div>
+              </div>
+              <div className="bg-white p-4 rounded-xl shadow-sm border">
+                <div className="text-2xl font-bold text-blue-600">0 ₽</div>
+                <div className="text-sm text-slate-600">предоплата</div>
+              </div>
+            </div>
+
+            {/* Телефон и CTA */}
+            <div className="space-y-6">
+              <div>
+                <a
+                  href="tel:+73832359505"
+                  onClick={handlePhoneCall}
+                  className="inline-flex items-center justify-center text-2xl md:text-3xl font-bold text-slate-900 hover:text-blue-600 transition-colors bg-white px-8 py-5 rounded-xl shadow-lg hover:shadow-xl border-2 border-blue-200"
+                >
+                  <Phone className="mr-4 h-7 w-7" />
+                  +7 (383) 235-95-05
+                </a>
+                <p className="text-slate-600 mt-3 text-lg">
+                  Звоните — первая консультация бесплатно
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  onClick={() => handleMainCta("hero_primary")}
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-10 py-6 shadow-lg hover:shadow-xl"
+                >
+                  <Zap className="mr-3 h-5 w-5" />
+                  Бесплатная консультация юриста
+                </Button>
+
+                <Button
+                  onClick={handleDownloadTemplate}
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 py-6 border-2"
+                >
+                  <Download className="mr-3 h-5 w-5" />
+                  Скачать шаблон претензии
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Проблемы и ошибки */}
-      <section className="py-16 bg-white">
+      {/* Блок "Проблемы" */}
+      <section className="py-16 bg-slate-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Почему 83% людей <span className="text-red-600">теряют деньги</span>{" "}
-            при самостоятельном взыскании?
-          </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Почему самостоятельное взыскание{" "}
+              <span className="text-red-600">часто проваливается</span>?
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              7 критических ошибок, из-за которых люди теряют до 70% положенной
+              компенсации
+            </p>
+          </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 icon: AlertTriangle,
-                title: "Ошибка в акте",
-                desc: "УК составляет поверхностный акт, упуская 60% повреждений",
+                title: "Неполный акт",
+                desc: "УК фиксирует только видимые повреждения, упуская скрытые дефекты, которые проявятся через месяц",
+                color: "red",
               },
               {
                 icon: FileText,
                 title: "Слабая экспертиза",
-                desc: "Самостоятельная оценка легко оспаривается в суде",
+                desc: "Самостоятельная или дешёвая оценка не имеет юридической силы и легко оспаривается в суде",
+                color: "amber",
               },
               {
                 icon: Clock,
                 title: "Пропуск сроков",
-                desc: "Незнание процедур ведет к потере права на взыскание",
+                desc: "Незнание процессуальных сроков приводит к потере права на взыскание неустойки и штрафов",
+                color: "blue",
               },
               {
                 icon: Scale,
-                title: "Только ущерб",
-                desc: "Не требуют штраф 50%, моральный вред и судебные расходы",
+                title: 'Только "ущерб"',
+                desc: "Требуют только стоимость ремонта, забывая про штраф 50%, моральный вред и судебные расходы",
+                color: "purple",
               },
             ].map((item, idx) => (
               <Card
                 key={idx}
-                className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow"
+                className="group hover:shadow-lg transition-shadow duration-300"
               >
                 <CardContent className="p-6">
-                  <item.icon className="h-12 w-12 text-red-500 mb-4" />
-                  <h3 className="font-bold text-xl mb-3">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
+                  <div
+                    className={`inline-flex p-3 rounded-lg mb-4 bg-${item.color}-100 text-${item.color}-700`}
+                  >
+                    <item.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-bold text-xl mb-3 text-slate-900">
+                    {item.title}
+                  </h3>
+                  <p className="text-slate-600">{item.desc}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Гарантии */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Мы берем на себя все риски
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: Calendar,
-                value: "8 лет",
-                title: "специализации",
-                desc: "Работаем только с заливами с 2016 года",
-              },
-              {
-                icon: CheckCircle,
-                title: "Оплата по результату",
-                desc: "Платите только после получения ваших денег",
-              },
-              {
-                icon: Shield,
-                title: "Штраф 50% в вашу пользу",
-                desc: "Добьемся в суде по Закону о защите прав потребителей",
-              },
-              {
-                icon: Users,
-                title: "Знание местных судов",
-                desc: "Работаем со всеми районными судами Новосибирска",
-              },
-            ].map((item, idx) => (
-              <Card
-                key={idx}
-                className={`text-center border-t-4 ${idx === 0 ? "border-t-blue-500" : idx === 1 ? "border-t-green-500" : idx === 2 ? "border-t-amber-500" : "border-t-purple-500"} pt-6 hover:shadow-md`}
-              >
-                <CardContent>
-                  <item.icon
-                    className={`h-12 w-12 ${idx === 0 ? "text-blue-500" : idx === 1 ? "text-green-500" : idx === 2 ? "text-amber-500" : "text-purple-500"} mx-auto mb-4`}
-                  />
-                  {item.value && (
-                    <p className="text-4xl font-black text-gray-900">
-                      {item.value}
-                    </p>
-                  )}
-                  <p className="text-xl font-bold mt-2">{item.title}</p>
-                  <p className="text-gray-600 mt-2">{item.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="text-center mt-12">
+            <Button
+              onClick={() => handleMainCta("problems_block")}
+              variant="outline"
+              className="border-blue-600 text-blue-600 hover:bg-blue-50"
+            >
+              Избежать этих ошибок
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Расчет компенсации */}
+      {/* Блок "Расчет компенсации" */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Из чего складывается ваша{" "}
-            <span className="text-primary">итоговая компенсация</span>
-          </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Что можно взыскать кроме стоимости ремонта?
+            </h2>
+            <p className="text-lg text-slate-600">
+              Полный перечень компенсаций по закону
+            </p>
+          </div>
 
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
               {[
                 {
-                  title: "Прямой ущерб",
-                  desc: "Ремонт потолка, стен, пола, замена имущества",
-                  amount: "Основа расчета",
+                  title: "Прямой имущественный ущерб",
+                  desc: "Восстановительный ремонт потолка, стен, пола, замена испорченной мебели, техники, личных вещей",
+                  amount: "Основа расчёта",
+                  icon: Home,
+                  color: "blue",
                 },
                 {
-                  title: "Неустойка",
-                  desc: "3% от суммы ущерба за каждый день просрочки",
-                  amount: "+ 3% в месяц",
+                  title: "Неустойка за просрочку",
+                  desc: "3% от суммы ущерба за каждый день задержки выплат после получения вашего требования",
+                  amount: "≈ +15-30%",
+                  icon: Calendar,
+                  color: "green",
                 },
                 {
-                  title: "Штраф 50%",
-                  desc: "Взыскивается в вашу пользу, если дело дошло до суда",
-                  amount: "+ 50% к ущербу",
+                  title: "Штраф 50% в вашу пользу",
+                  desc: 'По Закону "О защите прав потребителей", если виновник не удовлетворил требование добровольно',
+                  amount: "+50%",
+                  icon: Scale,
+                  color: "amber",
                 },
                 {
-                  title: "Моральный вред",
-                  desc: "Компенсация за стресс и нарушение покоя",
-                  amount: "+ 10-100 тыс. ₽",
+                  title: "Компенсация морального вреда",
+                  desc: "За пережитый стресс, нарушение покоя, неудобства и ухудшение условий проживания",
+                  amount: "+10-150 тыс. ₽",
+                  icon: Users,
+                  color: "purple",
                 },
                 {
-                  title: "Судебные расходы",
-                  desc: "Оценка, госпошлина, наши услуги",
-                  amount: "Полное возмещение",
+                  title: "Все судебные расходы",
+                  desc: "Стоимость независимой экспертизы, госпошлина, услуги представителя, почтовые расходы",
+                  amount: "Полный возврат",
+                  icon: FileText,
+                  color: "red",
                 },
                 {
                   title: "Проценты по ст. 395 ГК РФ",
-                  desc: "За время пользования вашими деньгами",
-                  amount: "+ по ставке ЦБ",
+                  desc: "За неправомерное пользование чужими денежными средствами за весь период просрочки",
+                  amount: "По ключевой ставке ЦБ",
+                  icon: Trophy,
+                  color: "cyan",
                 },
               ].map((item, idx) => (
                 <Card
                   key={idx}
-                  className="p-6 border-l-4 border-l-primary hover:shadow-lg transition-shadow"
+                  className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                 >
-                  <CardContent className="p-0">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-bold text-lg">{item.title}</h3>
-                      <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-lg text-sm whitespace-nowrap">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className={`p-3 rounded-lg bg-${item.color}-100`}>
+                        <item.icon
+                          className={`h-6 w-6 text-${item.color}-700`}
+                        />
+                      </div>
+                      <span
+                        className={`bg-${item.color}-100 text-${item.color}-700 font-bold px-3 py-1 rounded-lg text-sm`}
+                      >
                         {item.amount}
                       </span>
                     </div>
-                    <p className="text-gray-600">{item.desc}</p>
+                    <h3 className="font-bold text-lg mb-3 text-slate-900">
+                      {item.title}
+                    </h3>
+                    <p className="text-slate-600 text-sm">{item.desc}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-8 text-center">
-              <p className="text-2xl font-bold">
-                Итог:{" "}
-                <span className="text-primary">
-                  Финальная сумма может в 1.5-2 раза превышать стоимость ремонта
-                </span>
-              </p>
-              <p className="text-gray-600 mt-2">
-                Наша задача — добиться каждой позиции в суде
-              </p>
-              <Button
-                onClick={() => handleSecondaryCta("compensation_block")}
-                className="mt-6 bg-primary hover:bg-primary/90"
-              >
-                Рассчитать мою компенсацию
-              </Button>
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-2xl p-8 text-center">
+              <div className="max-w-2xl mx-auto">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Итоговая сумма может в{" "}
+                  <span className="text-blue-600">1.5-2 раза превышать</span>{" "}
+                  первоначальную оценку ущерба
+                </h3>
+                <p className="text-slate-600 mb-6">
+                  Наша задача — последовательно взыскать каждую из этих позиций
+                  в суде
+                </p>
+                <Button
+                  onClick={handleFreeAnalysis}
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  Бесплатно рассчитать мою компенсацию
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Процесс работы */}
-      <section className="py-16 bg-gray-50">
+      {/* Блок "Процесс работы" */}
+      <section className="py-16 bg-slate-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-4">
-            Ваше спокойствие — наша работа
-          </h2>
-          <p className="text-center text-gray-600 mb-10 text-lg">
-            Минимум вашего участия, максимум результата
-          </p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Как мы работаем: минимум вашего участия
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Вы занимаетесь своими делами — мы возвращаем ваши деньги
+            </p>
+          </div>
 
           <div className="max-w-4xl mx-auto">
-            {[
-              {
-                step: "1",
-                title: "Консультация и стратегия",
-                desc: "Анализируем вашу ситуацию, определяем всех виновников, разрабатываем план действий. Бесплатно.",
-              },
-              {
-                step: "2",
-                title: "Экспертиза и фиксация",
-                desc: "Наш оценщик выезжает на объект, составляет детальный отчет об ущербе, который принимают суды.",
-              },
-              {
-                step: "3",
-                title: "Досудебная работа",
-                desc: "Готовим официальные претензии всем ответственным лицам. Фиксируем факт обращения.",
-              },
-              {
-                step: "4",
-                title: "Судебное представительство",
-                desc: "Ведем всё дело в суде. Вам не нужно присутствовать. Готовим все документы и ходатайства.",
-              },
-              {
-                step: "5",
-                title: "Исполнение решения",
-                desc: "Контролируем выплаты, работаем с приставами. Вы получаете деньги — мы получаем оплату.",
-              },
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-start mb-8 last:mb-0">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl mr-6">
-                  {item.step}
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <div className="relative">
+              {/* Временная линия */}
+              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-blue-200 hidden md:block" />
 
-      {/* Кто виноват */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Кто отвечает за потоп и когда?
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-2xl font-semibold mb-6 flex items-center">
-                <Scale className="mr-3 text-primary" /> Правовая оценка:
-              </h3>
-
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-bold">
-                      Собственник квартиры сверху
-                    </span>
-                    <p className="text-gray-600">
-                      Отвечает за всё, что происходит после отключающих кранов:
-                      неисправные краны, стиральные машины, оставленные
-                      открытыми вентили.
-                    </p>
+              {[
+                {
+                  step: "01",
+                  title: "Бесплатная консультация и стратегия",
+                  desc: "Анализируем вашу ситуацию, документы, определяем всех виновников. Составляем пошаговый план действий с прогнозом сроков и суммы.",
+                  icon: Shield,
+                },
+                {
+                  step: "02",
+                  title: "Экспертиза и юридическая фиксация",
+                  desc: "Организуем независимую экспертизу ущерба с участием виновника. Составляем все необходимые акты и документы с соблюдением процессуальных норм.",
+                  icon: FileText,
+                },
+                {
+                  step: "03",
+                  title: "Досудебная работа и претензии",
+                  desc: "Подготавливаем и направляем официальные претензии всем ответственным лицам. Ведём переговоры, фиксируем факты обращения и ответы.",
+                  icon: Mail,
+                },
+                {
+                  step: "04",
+                  title: "Судебное представительство",
+                  desc: "Составляем и подаём исковое заявление со всеми требованиями. Полностью представляем ваши интересы в суде — вам не нужно присутствовать.",
+                  icon: Scale,
+                },
+                {
+                  step: "05",
+                  title: "Исполнение решения и выплаты",
+                  desc: "Контролируем исполнение судебного решения, работаем с судебными приставами. Вы получаете деньги на счёт — мы получаем оплату.",
+                  icon: CheckCircle,
+                },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="relative flex flex-col md:flex-row items-start mb-12 last:mb-0"
+                >
+                  <div className="flex-shrink-0 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xl mb-4 md:mb-0 md:mr-8 z-10">
+                    {item.step}
                   </div>
+                  <Card className="flex-grow">
+                    <CardContent className="p-6">
+                      <div className="flex items-center mb-4">
+                        <div className="p-2 bg-blue-100 rounded-lg mr-4">
+                          <item.icon className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900">
+                          {item.title}
+                        </h3>
+                      </div>
+                      <p className="text-slate-600">{item.desc}</p>
+                    </CardContent>
+                  </Card>
                 </div>
-
-                <div className="flex items-start">
-                  <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-bold">Управляющая компания (УК)</span>
-                    <p className="text-gray-600">
-                      Виновата, если протечка из общедомового имущества: стояки
-                      до первого крана, крыша, общие коммуникации.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="font-bold">Застройщик/подрядчик</span>
-                    <p className="text-gray-600">
-                      Несет ответственность при строительном браке:
-                      некачественные трубы, нарушение технологии монтажа.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-
-            <Card className="bg-amber-50 border-amber-200">
-              <CardContent className="p-6">
-                <h3 className="text-2xl font-semibold mb-4 text-amber-800">
-                  Важно знать:
-                </h3>
-                <ul className="space-y-3 text-amber-800">
-                  <li className="flex items-start">
-                    <AlertTriangle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>
-                      Даже если виноваты арендаторы — иск к собственнику
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <AlertTriangle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>
-                      УК платит в 3% случаев добровольно — готовьтесь к суду
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <AlertTriangle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>
-                      Срок исковой давности — 3 года с момента обнаружения
-                      ущерба
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <AlertTriangle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>
-                      Без акта о заливе и экспертизы суд откажет во взыскании
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
 
-      {/* Психологические боли и решения */}
-      <section className="py-16 bg-gradient-to-r from-blue-50 to-cyan-50">
+      {/* CTA Форма */}
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Мы понимаем вашу ситуацию и знаем как решить
-          </h2>
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-6">
+              Получите бесплатный анализ вашей ситуации
+            </h2>
+            <p className="text-lg mb-10 opacity-90">
+              Оставьте контакты, и наш юрист свяжется с вами в течение 15 минут
+            </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="border-l-4 border-l-red-500">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4 flex items-center">
-                  <AlertTriangle className="mr-3 text-red-500" /> Ваши проблемы
-                  и боли:
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    "Паника и растерянность в первый момент",
-                    "Гнев на соседей, которые отказываются платить",
-                    "Страх конфликта и испорченных отношений",
-                    "Ощущение беспомощности перед УК и бюрократией",
-                    "Тревога о стоимости ремонта и потере имущества",
-                    "Усталость от бумажной волокиты и судов",
-                    "Неверие в справедливость и систему",
-                  ].map((item, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <ChevronRight className="h-5 w-5 text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-green-500">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4 flex items-center">
-                  <CheckCircle className="mr-3 text-green-500" /> Наши решения:
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    "Четкий план действий в первые 24 часа",
-                    "Ведем все переговоры за вас — никаких конфликтов",
-                    "Берем на себя весь стресс общения с виновником",
-                    "Знаем все лазейки УК и как их закрыть",
-                    "Финансовая защита — вы не тратитесь на ремонт",
-                    "Полная документальная поддержка",
-                    "Восстановление справедливости и вашего спокойствия",
-                  ].map((item, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <ChevronRight className="h-5 w-5 text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-primary to-primary/90 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Не дайте ущербу стать «недоказанным»
-          </h2>
-          <p className="text-xl mb-10 max-w-2xl mx-auto opacity-90">
-            С каждым днём сложнее зафиксировать последствия. Виновники находят
-            оправдания, а сроки исковой давности — идут.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button
-              onClick={handleConsultationClick}
-              size="lg"
-              className="bg-white text-primary hover:bg-gray-100 text-lg px-10 py-7"
+            <form
+              onSubmit={handleFormSubmit}
+              className="space-y-4 bg-white/10 backdrop-blur-sm p-8 rounded-2xl"
             >
-              <Phone className="mr-3" />
-              Получить консультацию
-            </Button>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-white">
+                    Ваше имя
+                  </Label>
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Иван Иванов"
+                    className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-white">
+                    Телефон или Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="+7 (___) ___-__-__ или email"
+                    className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                    required
+                  />
+                </div>
+              </div>
 
-            <a
-              href="tel:+73832359505"
-              onClick={handlePhoneClick}
-              className="text-2xl font-bold hover:opacity-90 transition-opacity"
-            >
-              +7 (383) 235-95-05
-            </a>
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full bg-white text-blue-600 hover:bg-blue-50 text-lg py-6"
+              >
+                <Phone className="mr-3 h-5 w-5" />
+                Получить консультацию юриста
+              </Button>
+
+              <p className="text-sm opacity-75">
+                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+              </p>
+            </form>
+
+            <div className="mt-10">
+              <a
+                href="tel:+73832359505"
+                onClick={handlePhoneCall}
+                className="inline-flex items-center text-2xl font-bold hover:opacity-90 transition-opacity"
+              >
+                <Phone className="mr-3 h-7 w-7" />
+                +7 (383) 235-95-05
+              </a>
+              <p className="mt-2 opacity-80">Звоните прямо сейчас</p>
+            </div>
           </div>
-
-          <p className="mt-8 text-white/80">
-            <strong>Спецпредложение:</strong> Оставьте заявку сегодня — получите
-            бесплатный анализ ваших документов.
-          </p>
         </div>
       </section>
 
@@ -630,40 +624,39 @@ export default function FloodDamagePage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-center">
-              Уже уходите? Заберите полезный документ!
+              Уходите? Заберите полезный документ!
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p className="mb-4">
-              Мы подготовили для вас{" "}
-              <strong>бесплатный шаблон досудебной претензии</strong> с
+            <p className="mb-6 text-slate-600">
+              Мы подготовили <strong>шаблон досудебной претензии</strong> с
               комментариями юриста. Это обязательный первый шаг для взыскания
               ущерба.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <Button
                 onClick={() => {
                   reachGoal("exit_popup_download");
-                  handleDownloadClick();
+                  handleDownloadTemplate();
                   setShowExitPopup(false);
                 }}
-                className="w-full bg-primary"
+                className="w-full"
               >
-                <Download className="mr-2" />
-                Скачать шаблон претензии
+                <Download className="mr-2 h-5 w-5" />
+                Скачать шаблон бесплатно
               </Button>
 
               <Button
                 onClick={() => {
                   reachGoal("exit_popup_consultation");
-                  handleConsultationClick();
                   setShowExitPopup(false);
+                  // Здесь можно вызвать функцию открытия формы
                 }}
                 variant="outline"
                 className="w-full"
               >
-                Нужна консультация юриста
+                Нужна помощь юриста
               </Button>
 
               <Button
