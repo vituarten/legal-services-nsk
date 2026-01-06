@@ -94,7 +94,9 @@
     /* @apply border-border; */
   }
   body {
-    @apply bg-background text-foreground;
+    /* @apply bg-background text-foreground; */
+    background: white;      <-- ВМЕСТО bg-background
+    color: black;          <-- ВМЕСТО text-foreground
   }
 }
 
