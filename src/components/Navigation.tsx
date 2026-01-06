@@ -1,4 +1,4 @@
-// Navigation.tsx - обновленная версия
+// Navigation.tsx - финальная версия
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -48,60 +48,54 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
       >
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            {/* Логотип для взыскания */}
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="relative">
-                <Icon name="Swords" className="h-8 w-8 text-red-400" />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
-              </div>
-              <div className="text-left">
-                <div className="text-xl font-black text-white tracking-tight">
-                  ВЗЫСКАНИЕ ДОЛГОВ
-                </div>
-                <div className="text-xs text-gray-300 font-medium">
-                  ЮрСервис НСК • Для бизнеса
-                </div>
-              </div>
+            {/* Логотип - ОРИГИНАЛЬНЫЙ */}
+            <Link to="/" className="flex items-center space-x-2">
+              <Icon name="Scale" className="h-8 w-8 text-red-400" />
+              <span className="text-xl font-bold text-white">ЮрСервис НСК</span>
             </Link>
 
-            {/* Навигация для конверсии */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a
-                href="#action"
-                className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
-                onClick={() => {
-                  const element = document.getElementById("action");
-                  element?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                Начать взыскание
-              </a>
-              <a
-                href="#documents"
-                className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
-                onClick={() => {
-                  const element = document.getElementById("documents");
-                  element?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                Бесплатные документы
-              </a>
-              <a
-                href="#cases"
-                className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
-                onClick={() => {
-                  const element = document.getElementById("cases");
-                  element?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                Реальные кейсы
-              </a>
+            {/* Навигация для страницы взыскания */}
+            <nav className="hidden md:flex items-center space-x-6">
+              {/* Основные ссылки сайта */}
+              {menuItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="text-white/80 hover:text-cyan-300 font-medium transition-colors hover:scale-105"
+                >
+                  {item.name}
+                </Link>
+              ))}
 
-              {/* ГОРОДСКОЙ ТЕЛЕФОН */}
-              <div className="ml-4 pl-4 border-l border-white/30">
+              {/* Специальные ссылки для страницы взыскания */}
+              <div className="ml-2 pl-2 border-l border-white/30 flex items-center space-x-4">
+                <a
+                  href="#action"
+                  className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById("action");
+                    element?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Начать взыскание
+                </a>
+                <a
+                  href="#documents"
+                  className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById("documents");
+                    element?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Документы
+                </a>
+
+                {/* ГОРОДСКОЙ ТЕЛЕФОН */}
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 shadow-lg hover:shadow-red-500/25"
+                  className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 shadow-lg hover:shadow-red-500/25 ml-2"
                   asChild
                 >
                   <a href="tel:+738322359505" className="flex items-center">
@@ -139,6 +133,19 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
           {isMenuOpen && (
             <div className="md:hidden pt-4 pb-6 border-t border-white/20">
               <nav className="flex flex-col space-y-4">
+                {/* Основные ссылки сайта */}
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="text-white hover:text-cyan-300 font-medium py-2 px-4 bg-white/10 rounded-lg"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+
+                {/* Специальные ссылки для страницы взыскания */}
                 <a
                   href="#action"
                   className="text-white hover:text-cyan-300 font-medium py-2 px-4 bg-white/10 rounded-lg"
@@ -172,6 +179,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                 >
                   Реальные кейсы
                 </a>
+
                 <Button
                   className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 mt-4"
                   asChild
@@ -181,7 +189,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                     className="flex items-center justify-center"
                   >
                     <Icon name="Phone" className="h-4 w-4 mr-2" />
-                    Экстренный звонок: +7 (383) 235-95-05
+                    +7 (383) 235-95-05
                   </a>
                 </Button>
               </nav>
@@ -238,7 +246,6 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
               <span>г. Новосибирск, ул. Ленина, д. 3</span>
             </div>
             <Button className="bg-primary hover:bg-primary/90" asChild>
-              {/* ЗАМЕНА НА ГОРОДСКОЙ НОМЕР */}
               <a href="tel:+738322359505">
                 <Icon name="Phone" className="h-4 w-4 mr-2" />
                 +7 (383) 235-95-05
@@ -278,7 +285,6 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                 </Link>
               ))}
               <Button className="w-full bg-primary hover:bg-primary/90" asChild>
-                {/* ЗАМЕНА НА ГОРОДСКОЙ НОМЕР */}
                 <a href="tel:+738322359505">
                   <Icon name="Phone" className="h-4 w-4 mr-2" />
                   +7 (383) 235-95-05
