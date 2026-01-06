@@ -86,9 +86,9 @@ const Contacts = () => {
         window.ym(106063131, "reachGoal", "main_form_submit");
       }
 
-      const message = `📋 Новая заявка с главной страницы:\n\n👤 Имя: ${formData.name}\n📞 Телефон: ${formData.phone}\n📅 ${new Date().toLocaleString()}`;
+      const message = `📋 Новая заявка с сайта:\n\n👤 Имя: ${formData.name}\n📞 Телефон: ${formData.phone}\n📅 ${new Date().toLocaleString()}`;
 
-      console.log("Заявка с главной:", message);
+      console.log("Заявка:", message);
 
       await new Promise((resolve) => setTimeout(resolve, 600));
 
@@ -111,16 +111,6 @@ const Contacts = () => {
       className="py-12 sm:py-16 bg-gradient-to-b from-background to-white"
     >
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
-            Контакты и быстрая заявка
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Юридическая помощь в Новосибирске. Свяжитесь с нами или оставьте
-            заявку — мы перезвоним через 15 минут
-          </p>
-        </div>
-
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Левая колонка - Контакты */}
           <div className="lg:col-span-2">
@@ -205,90 +195,95 @@ const Contacts = () => {
             </div>
           </div>
 
-          {/* Правая колонка - Форма */}
+          {/* Правая колонка - Форма (sticky) */}
           <div>
-            <Card className="bg-gradient-to-br from-primary/5 via-white to-primary/5 border-primary/30 shadow-xl h-full">
-              <CardContent className="p-6">
-                <div className="text-center mb-6">
-                  <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <Icon name="MessageSquare" className="h-7 w-7 text-white" />
-                  </div>
-                  <h3 className="font-bold text-foreground text-xl mb-2">
-                    Бесплатная консультация
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Оставьте номер телефона — юрист свяжется с вами
-                  </p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">
-                      Ваше имя
-                    </label>
-                    <Input
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Иван Иванов"
-                      className="w-full py-3 px-4 border-border focus:border-primary"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">
-                      Телефон *
-                    </label>
-                    <Input
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+7 (999) 123-45-67"
-                      className="w-full py-3 px-4 border-border focus:border-primary"
-                      required
-                    />
-                  </div>
-
-                  <div className="pt-2">
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white text-base font-semibold py-4 shadow-lg hover:shadow-xl transition-all"
-                    >
-                      {isSubmitting ? (
-                        <div className="flex items-center justify-center gap-3">
-                          <Icon
-                            name="Loader2"
-                            className="h-5 w-5 animate-spin"
-                          />
-                          Отправляем...
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center gap-3">
-                          <Icon name="Phone" className="h-5 w-5" />
-                          Получить консультацию
-                        </div>
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="text-center pt-2">
-                    <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+            <div className="sticky top-6">
+              <Card className="bg-gradient-to-br from-primary/5 via-white to-primary/5 border-primary/30 shadow-xl h-full">
+                <CardContent className="p-6">
+                  <div className="text-center mb-6">
+                    <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary/80 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                       <Icon
-                        name="ShieldCheck"
-                        className="h-4 w-4 text-green-500"
+                        name="MessageSquare"
+                        className="h-7 w-7 text-white"
                       />
-                      <span>
-                        Конфиденциально • Без спама • Первая консультация
-                        бесплатно
-                      </span>
+                    </div>
+                    <h3 className="font-bold text-foreground text-xl mb-2">
+                      Бесплатная консультация
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Оставьте номер телефона — юрист свяжется с вами
                     </p>
                   </div>
-                </form>
-              </CardContent>
-            </Card>
+
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-foreground">
+                        Ваше имя
+                      </label>
+                      <Input
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Иван Иванов"
+                        className="w-full py-3 px-4 border-border focus:border-primary"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-foreground">
+                        Телефон *
+                      </label>
+                      <Input
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="+7 (999) 123-45-67"
+                        className="w-full py-3 px-4 border-border focus:border-primary"
+                        required
+                      />
+                    </div>
+
+                    <div className="pt-2">
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white text-base font-semibold py-4 shadow-lg hover:shadow-xl transition-all"
+                      >
+                        {isSubmitting ? (
+                          <div className="flex items-center justify-center gap-3">
+                            <Icon
+                              name="Loader2"
+                              className="h-5 w-5 animate-spin"
+                            />
+                            Отправляем...
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center gap-3">
+                            <Icon name="Phone" className="h-5 w-5" />
+                            Получить консультацию
+                          </div>
+                        )}
+                      </Button>
+                    </div>
+
+                    <div className="text-center pt-2">
+                      <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+                        <Icon
+                          name="ShieldCheck"
+                          className="h-4 w-4 text-green-500"
+                        />
+                        <span>
+                          Конфиденциально • Без спама • Первая консультация
+                          бесплатно
+                        </span>
+                      </p>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
 
