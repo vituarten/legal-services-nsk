@@ -28,34 +28,35 @@ const Services = () => {
     { id: "bankruptcy", label: "БАНКРОТСТВО" },
   ];
 
+  // ВСЕ услуги имеют link - ЭТО ВАЖНО!
   const allServices = [
     {
       icon: "Users",
       title: "Семейный юрист",
       description: "Развод, раздел имущества, алименты, опека",
       category: ["popular", "citizens"],
-      link: "/family-lawyer", // ← ДОБАВЬТЕ
+      link: "/family-lawyer",
     },
     {
       icon: "TrendingDown",
       title: "Банкротство физических лиц",
       description: "Процедура банкротства для граждан, списание долгов",
       category: ["popular", "bankruptcy", "citizens"],
-      link: "/bankruptcy-lawyer", // ← ДОБАВЬТЕ
+      link: "/bankruptcy-lawyer",
     },
     {
       icon: "Home",
       title: "Недвижимость и перепланировки",
       description: "Сделки с недвижимостью, узаконивание перепланировок",
       category: ["popular", "realestate"],
-      link: "/real-estate-lawyer", // ← ДОБАВЬТЕ
+      link: "/real-estate-lawyer",
     },
     {
       icon: "CreditCard",
       title: "Взыскание долгов",
       description: "Взыскание задолженности, работа с должниками",
       category: ["popular", "business", "citizens"],
-      link: "/debt-collection", // ← УЖЕ ЕСТЬ
+      link: "/debt-collection",
     },
     {
       icon: "FileText",
@@ -63,28 +64,28 @@ const Services = () => {
       description:
         "Подготовка договоров, анализ документации, правовая экспертиза",
       category: ["popular", "business", "citizens"],
-      link: "/document-analysis", // ← ДОБАВЬТЕ
+      link: "/document-analysis",
     },
     {
       icon: "Shield",
       title: "Представительство и защита в суде",
       description: "Представительство интересов в судах всех инстанций",
       category: ["popular", "business", "citizens"],
-      link: "/court-representation", // ← ДОБАВЬТЕ
+      link: "/court-representation",
     },
     {
       icon: "ShieldCheck",
       title: "Защита прав потребителей",
       description: "Возврат некачественного товара, споры с продавцами",
       category: ["popular", "citizens"],
-      link: "/consumer-protection", // ← ДОБАВЬТЕ
+      link: "/consumer-protection",
     },
     {
       icon: "Car",
       title: "Автоюрист. Споры по ДТП",
       description: "Взыскание ущерба, представительство в суде по автоавариям",
       category: ["popular", "citizens"],
-      link: "/car-lawyer", // ← ДОБАВЬТЕ
+      link: "/car-lawyer",
     },
     {
       icon: "Building",
@@ -137,8 +138,6 @@ const Services = () => {
       className="py-20 bg-background"
       role="region"
       aria-labelledby="services-heading"
-      itemScope
-      itemType="https://schema.org/Service"
     >
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-8">
@@ -189,23 +188,14 @@ const Services = () => {
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">{service.description}</p>
                 <div className="flex flex-col gap-3 pt-2">
-                  {service.link ? (
-                    <Button
-                      className="w-full bg-primary hover:bg-primary/90 text-white"
-                      onClick={() => navigate(service.link)}
-                    >
-                      <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
-                      УЗНАТЬ БОЛЬШЕ
-                    </Button>
-                  ) : (
-                    <Button
-                      className="w-full bg-primary hover:bg-primary/90 text-white"
-                      onClick={() => consultationModal.open()}
-                    >
-                      <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
-                      ЗАКАЗАТЬ УСЛУГУ
-                    </Button>
-                  )}
+                  {/* ВСЕГДА показываем "УЗНАТЬ БОЛЬШЕ" */}
+                  <Button
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    onClick={() => navigate(service.link)}
+                  >
+                    <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
+                    УЗНАТЬ БОЛЬШЕ
+                  </Button>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
