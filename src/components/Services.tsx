@@ -1,24 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// src/components/business/Services.tsx
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ServiceModal from "./ServiceModal";
-import { useModal } from "@/hooks/useModal";
 
 const Services = () => {
   const navigate = useNavigate();
-  const [selectedService, setSelectedService] = useState<any>(null);
-  const { consultationModal } = useModal();
-  const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
   const [activeTab, setActiveTab] = useState("popular");
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisibleCards(new Array(services.length).fill(true));
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   const tabs = [
     { id: "popular", label: "ПОПУЛЯРНЫЕ" },
@@ -28,7 +16,6 @@ const Services = () => {
     { id: "bankruptcy", label: "БАНКРОТСТВО" },
   ];
 
-  // УДАЛЕНА услуга "Банкротство юридических лиц"
   const allServices = [
     {
       icon: "Users",
@@ -64,14 +51,14 @@ const Services = () => {
       description:
         "Подготовка договоров, анализ документации, правовая экспертиза",
       category: ["popular", "business", "citizens"],
-      link: "/services",
+      link: "/document-services",
     },
     {
       icon: "Shield",
       title: "Представительство и защита в суде",
       description: "Представительство интересов в судах всех инстанций",
       category: ["popular", "business", "citizens"],
-      link: "/services",
+      link: "/court-representation",
     },
     {
       icon: "ShieldCheck",
@@ -93,27 +80,26 @@ const Services = () => {
       description:
         "Защита прав дольщиков, взыскание неустойки, возврат средств",
       category: ["popular", "realestate", "citizens"],
-      link: "/real-estate-lawyer",
+      link: "/disputes-with-developers",
     },
     {
       icon: "Briefcase",
       title: "Трудовое право",
       description: "Защита трудовых прав, взыскание заработной платы",
       category: ["citizens"],
-      link: "/services",
+      link: "/labor-law",
     },
     {
       icon: "Building",
       title: "Земельное право",
       description: "Оформление земельных участков, споры по межеванию",
       category: ["realestate"],
-      link: "/real-estate-lawyer",
+      link: "/land-law",
     },
     {
       icon: "Droplets",
       title: "Возмещение ущерба от потопов",
-      description:
-        "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями и УК",
+      description: "Взыскание ущерба от залития квартиры, оценка повреждений",
       category: ["popular", "citizens", "realestate"],
       link: "/flood-damage",
     },
@@ -133,24 +119,15 @@ const Services = () => {
   const services = getFilteredServices();
 
   return (
-    <section
-      id="services"
-      className="py-20 bg-background"
-      role="region"
-      aria-labelledby="services-heading"
-      itemScope
-      itemType="https://schema.org/Service"
-    >
+    <section id="services" className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center space-y-4 mb-8">
-          <h2
-            id="services-heading"
-            className="text-3xl lg:text-4xl font-bold text-foreground"
-          >
-            Наши услуги
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Профессиональная юридическая помощь по всем направлениям права
+        <div className="text-center mb-12">
+          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            Услуги юристов в Новосибирске
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Найдите нужную услугу. Под каждой — детальное описание, порядок
+            работы и примеры из практики.
           </p>
         </div>
 
@@ -159,9 +136,9 @@ const Services = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+              className={`px-6 py-3 text-sm font-medium rounded-lg transition-all ${
                 activeTab === tab.id
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-white shadow-lg"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
@@ -170,117 +147,73 @@ const Services = () => {
           ))}
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card
+            <div
               key={index}
-              className={`hover:shadow-lg hover:-translate-y-2 transition-all duration-500 border-border transform ${
-                visibleCards[index]
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
+              className="group bg-white rounded-2xl border border-border p-8 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+              onClick={() => navigate(service.link)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && navigate(service.link)}
             >
-              <CardHeader className="space-y-4 pb-4">
-                <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                  <Icon name={service.icon} className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">{service.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">{service.description}</p>
-                <div className="flex flex-col gap-3 pt-2">
-                  {service.link ? (
-                    <Button
-                      className="w-full bg-primary hover:bg-primary/90 text-white"
-                      onClick={() => navigate(service.link)}
-                    >
-                      <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
-                      УЗНАТЬ БОЛЬШЕ
-                    </Button>
-                  ) : (
-                    <Button
-                      className="w-full bg-primary hover:bg-primary/90 text-white"
-                      onClick={() => consultationModal.open()}
-                    >
-                      <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
-                      ЗАКАЗАТЬ УСЛУГУ
-                    </Button>
-                  )}
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => window.open("tel:+79994523500", "_self")}
-                    >
-                      <Icon name="Phone" className="h-4 w-4 mr-1" />
-                      Позвонить
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => setSelectedService(service)}
-                    >
-                      Подробнее
-                    </Button>
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                    <Icon
+                      name={service.icon}
+                      className="h-6 w-6 text-primary"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      {service.title}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {service.description}
+                    </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-primary font-semibold text-sm group-hover:text-primary/80 transition-colors">
+                    Подробнее об услуге
+                  </span>
+                  <Icon
+                    name="ArrowRight"
+                    className="h-4 w-4 text-primary transform group-hover:translate-x-1 transition-transform"
+                  />
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-8 mb-8">
-            <h3 className="text-2xl font-bold mb-4">Нужна срочная помощь?</h3>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90"
-                onClick={() => consultationModal.open()}
-              >
-                <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ
-              </Button>
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground">
-                  или звоните прямо сейчас
-                </div>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => window.open("tel:+79994523500", "_self")}
-                  className="border-2 border-accent text-accent hover:bg-accent hover:text-white font-bold"
-                >
-                  <Icon name="Phone" className="h-5 w-5 mr-2" />
-                  +7 999 452 35 00
-                </Button>
-              </div>
-            </div>
-            <div className="flex justify-center items-center gap-6 mt-6 text-sm text-muted-foreground">
-              <div className="flex items-center">
-                <Icon name="Clock" className="h-4 w-4 mr-1" />
-                24/7 прием звонков
-              </div>
-              <div className="flex items-center">
-                <Icon name="MapPin" className="h-4 w-4 mr-1" />
-                Выезд в любой район НСК
-              </div>
-              <div className="flex items-center">
-                <Icon name="Shield" className="h-4 w-4 mr-1" />
-                Конфиденциальность
+        <div className="text-center mt-16 pt-8 border-t border-border">
+          <p className="text-lg text-muted-foreground mb-4">
+            Не нашли свою ситуацию в списке?
+          </p>
+          <p className="text-sm text-muted-foreground mb-6 max-w-xl mx-auto">
+            Опишите проблему по телефону, и юрист подскажет, как её решить
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => window.open("tel:+73832359505", "_self")}
+              className="border-primary text-primary hover:bg-primary hover:text-white px-8"
+            >
+              <Icon name="Phone" className="h-5 w-5 mr-2" />
+              Позвонить юристу
+            </Button>
+            <div className="text-center sm:text-left">
+              <div className="text-lg font-bold">+7 (383) 235-95-05</div>
+              <div className="text-sm text-muted-foreground">
+                Новосибирск, городской
               </div>
             </div>
           </div>
         </div>
-
-        <ServiceModal
-          service={selectedService}
-          isOpen={!!selectedService}
-          onClose={() => setSelectedService(null)}
-        />
       </div>
     </section>
   );
