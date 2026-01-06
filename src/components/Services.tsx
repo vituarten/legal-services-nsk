@@ -10,253 +10,340 @@ const Services = () => {
   // Самые частые проблемы с иконками
   const commonProblems = [
     {
-      text: "🚗 ДТП и страховые",
-      desc: "Мало выплатили, спор о вине",
+      text: "🚗 ДТП и авто",
+      problems: [
+        "Страховая мало платит",
+        "Лишают прав",
+        "Штраф ГИБДД",
+        "Спор о вине в ДТП",
+      ],
       link: "/dtp-lawyer",
+      color: "border-blue-200 hover:border-blue-300 bg-blue-50",
     },
     {
-      text: "💸 Долги и кредиты",
-      desc: "Коллекторы, банкротство",
-      link: "/bankruptcy-lawyer",
+      text: "💸 Деньги и долги",
+      problems: [
+        "Должник не отдаёт",
+        "Кредиты/коллекторы",
+        "Банкротство",
+        "Навязали страховку",
+      ],
+      link: "/debt-collection",
+      color: "border-red-200 hover:border-red-300 bg-red-50",
     },
     {
-      text: "💧 Затопили соседи",
-      desc: "Вернём деньги на ремонт",
-      link: "/flood-damage",
+      text: "🏠 Жильё и квартиры",
+      problems: [
+        "Затопили соседи",
+        "Застройщик обманул",
+        "Споры с УК",
+        "Перепланировка",
+      ],
+      link: "/real-estate-lawyer",
+      color: "border-green-200 hover:border-green-300 bg-green-50",
     },
     {
-      text: "👨‍👩‍👦 Развод и дети",
-      desc: "Раздел имущества, алименты",
+      text: "👨‍👩‍👦 Семья и дети",
+      problems: [
+        "Развод и имущество",
+        "Алименты",
+        "Споры о детях",
+        "Наследство",
+      ],
       link: "/family-lawyer",
+      color: "border-pink-200 hover:border-pink-300 bg-pink-50",
     },
     {
-      text: "💼 Не платят зарплату",
-      desc: "Вернём все невыплаты",
+      text: "💼 Работа",
+      problems: [
+        "Не платят зарплату",
+        "Уволили незаконно",
+        "Травма на производстве",
+        "Дискриминация",
+      ],
       link: "/labor-law",
+      color: "border-yellow-200 hover:border-yellow-300 bg-yellow-50",
     },
     {
-      text: "🏠 Проблемы с квартирой",
-      desc: "Застройщик обманул",
-      link: "/disputes-with-developers",
-    },
-    { text: "🚫 Лишают прав", desc: "За алкоголь, ДТП", link: "/dtp-lawyer" },
-    {
-      text: "📄 Нужен юрист в суд",
-      desc: "Представительство",
-      link: "/court-representation",
-    },
-    {
-      text: "🛒 Купил бракованный товар",
-      desc: "Вернём деньги",
+      text: "🛒 Покупки и услуги",
+      problems: [
+        "Бракованный товар",
+        "Обманули в магазине",
+        "Некачественная услуга",
+        "Туроператор сорвал отпуск",
+      ],
       link: "/consumer-protection",
-    },
-    {
-      text: "⚖️ Споры с УК/ТСЖ",
-      desc: "Коммунальные платежи",
-      link: "/housing-disputes",
-    },
-    {
-      text: "📉 Навязали страховку",
-      desc: "Вернём деньги",
-      link: "/consumer-protection",
-    },
-    {
-      text: "👴 Споры о наследстве",
-      desc: "Раздел с родственниками",
-      link: "/family-lawyer",
+      color: "border-purple-200 hover:border-purple-300 bg-purple-50",
     },
   ];
 
+  // Все конкретные ситуации для поиска
+  const allProblems = [
+    { text: "Страховая мало платит за ДТП", link: "/dtp-lawyer" },
+    { text: "Лишают прав за алкоголь", link: "/dtp-lawyer" },
+    { text: "Штраф ГИБДД незаконный", link: "/dtp-lawyer" },
+    { text: "Должник не отдаёт деньги", link: "/debt-collection" },
+    { text: "Коллекторы звонят", link: "/bankruptcy-lawyer" },
+    { text: "Не могу платить кредиты", link: "/bankruptcy-lawyer" },
+    { text: "Затопили соседи сверху", link: "/flood-damage" },
+    {
+      text: "Застройщик сдал квартиру с дефектами",
+      link: "/disputes-with-developers",
+    },
+    { text: "Развод с разделом имущества", link: "/family-lawyer" },
+    { text: "Не платят алименты", link: "/family-lawyer" },
+    { text: "Не платят зарплату 3 месяца", link: "/labor-law" },
+    { text: "Уволили без выплат", link: "/labor-law" },
+    { text: "Купил бракованный телефон", link: "/consumer-protection" },
+    { text: "Навязали услугу в банке", link: "/consumer-protection" },
+    { text: "Нужен юрист в суд", link: "/court-representation" },
+    { text: "Спор о наследстве", link: "/family-lawyer" },
+  ];
+
+  // Фильтрация для поиска
+  const searchResults = searchQuery
+    ? allProblems
+        .filter((p) => p.text.toLowerCase().includes(searchQuery.toLowerCase()))
+        .slice(0, 6)
+    : [];
+
   return (
     <div className="space-y-12">
-      {/* Шаг 1: Главный вопрос */}
+      {/* ШАГ 1: Главный вопрос */}
       <div className="text-center">
         <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          Какая у вас проблема?
+          Какую проблему нужно решить?
         </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Выберите ситуацию — расскажем, как решаем
+        <p className="text-xl text-gray-600 mb-10">
+          Найдите свою ситуацию или выберите категорию
         </p>
 
-        {/* Поиск */}
-        <div className="max-w-2xl mx-auto mb-10">
+        {/* Поиск с умными подсказками */}
+        <div className="max-w-2xl mx-auto">
           <div className="relative">
             <input
               type="text"
-              placeholder="Введите проблему: например, 'затопили', 'штраф ГИБДД', 'долги'"
+              placeholder="Начните вводить проблему..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+              className="w-full px-6 py-5 text-lg border-2 border-gray-300 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all"
             />
-            <Icon
-              name="Search"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-            />
+            <div className="absolute right-5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              )}
+              <Icon name="Search" className="h-5 w-5 text-gray-400" />
+            </div>
           </div>
 
-          {searchQuery && (
-            <div className="mt-4 text-left">
-              <p className="text-gray-600 mb-2">Возможно, вы ищете:</p>
-              {commonProblems
-                .filter(
-                  (p) =>
-                    p.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    p.desc.toLowerCase().includes(searchQuery.toLowerCase()),
-                )
-                .slice(0, 3)
-                .map((p, i) => (
+          {/* Результаты поиска */}
+          {searchResults.length > 0 && (
+            <div className="mt-4 bg-white border border-gray-200 rounded-xl shadow-lg p-4 animate-in fade-in">
+              <div className="text-sm text-gray-500 mb-2">Нашли в базе:</div>
+              <div className="space-y-2">
+                {searchResults.map((problem, idx) => (
                   <button
-                    key={i}
-                    onClick={() => navigate(p.link)}
-                    className="block w-full p-3 text-left hover:bg-gray-50 rounded-lg mb-1"
+                    key={idx}
+                    onClick={() => {
+                      navigate(problem.link);
+                      setSearchQuery("");
+                    }}
+                    className="block w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors"
                   >
-                    <div className="font-medium">{p.text}</div>
-                    <div className="text-sm text-gray-500">{p.desc}</div>
+                    <div className="font-medium text-gray-900">
+                      {problem.text}
+                    </div>
+                    <div className="text-sm text-primary mt-1 flex items-center">
+                      Смотреть решение
+                      <Icon name="ArrowRight" className="h-3 w-3 ml-1" />
+                    </div>
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {searchQuery && searchResults.length === 0 && (
+            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl text-center">
+              <p className="text-gray-700 mb-3">
+                Такой ситуации нет в базе, но мы всё равно поможем
+              </p>
+              <Button
+                onClick={() => window.open("tel:+73832359505", "_self")}
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/5"
+              >
+                <Icon name="Phone" className="h-4 w-4 mr-2" />
+                Расскажите о проблеме по телефону
+              </Button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Шаг 2: Сетка проблем */}
+      {/* ШАГ 2: Категории проблем */}
       <div>
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Выберите свою ситуацию
+        <h2 className="text-2xl font-bold text-center mb-8">
+          Или выберите категорию проблемы
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {commonProblems.map((problem, idx) => (
-            <button
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {commonProblems.map((category, idx) => (
+            <div
               key={idx}
-              onClick={() => navigate(problem.link)}
-              className="p-5 bg-white rounded-xl border border-gray-200 hover:border-primary hover:shadow-md transition-all text-left group"
+              className={`rounded-2xl border-2 p-6 transition-all duration-300 hover:shadow-lg ${category.color}`}
             >
-              <div className="flex items-start gap-3">
-                <div className="text-2xl">{problem.text.split(" ")[0]}</div>
-                <div className="flex-1">
-                  <div className="font-bold text-gray-900 text-lg mb-1">
-                    {problem.text.split(" ").slice(1).join(" ")}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="text-3xl">{category.text.split(" ")[0]}</div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {category.text.split(" ").slice(1).join(" ")}
+                </h3>
+              </div>
+
+              <div className="space-y-2 mb-6">
+                {category.problems.map((problem, pIdx) => (
+                  <div key={pIdx} className="text-gray-700 text-sm pl-2">
+                    • {problem}
                   </div>
-                  <div className="text-gray-600 text-sm">{problem.desc}</div>
-                  <div className="mt-3 text-primary font-medium flex items-center">
-                    Узнать, как решить
-                    <Icon
-                      name="ArrowRight"
-                      className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform"
-                    />
-                  </div>
+                ))}
+              </div>
+
+              <Button
+                onClick={() => navigate(category.link)}
+                variant="outline"
+                className="w-full border-gray-300 hover:border-primary hover:bg-primary/5"
+              >
+                Смотреть решения по этой категории
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ШАГ 3: Как мы работаем (без дублирования) */}
+      <div className="bg-gray-50 rounded-2xl p-8 md:p-10">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-10">
+            Как мы решаем проблемы
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "MessageCircle",
+                title: "Консультация и анализ",
+                items: [
+                  "Бесплатная консультация 15 мин",
+                  "Анализ ваших документов",
+                  "Оценка перспектив дела",
+                  "Честный ответ: сможем ли помочь",
+                ],
+              },
+              {
+                icon: "FileText",
+                title: "Подготовка и стратегия",
+                items: [
+                  "Разрабатываем план действий",
+                  "Готовим все документы",
+                  "Составляем претензии, иски",
+                  "Рассчитываем точную стоимость",
+                ],
+              },
+              {
+                icon: "Scale",
+                title: "Решение и результат",
+                items: [
+                  "Ведём переговоры за вас",
+                  "Представляем интересы в суде",
+                  "Контролируем исполнение",
+                  "Добиваемся результата",
+                ],
+              },
+            ].map((step, idx) => (
+              <div key={idx} className="bg-white rounded-xl p-6 shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Icon name={step.icon} className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold mb-4">{step.title}</h3>
+                <ul className="space-y-2">
+                  {step.items.map((item, iIdx) => (
+                    <li
+                      key={iIdx}
+                      className="flex items-start gap-2 text-gray-600"
+                    >
+                      <Icon
+                        name="Check"
+                        className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0"
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ЕДИНСТВЕННЫЙ CTA - без дублирования */}
+      <div className="text-center">
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-blue-50 rounded-2xl p-10 border border-primary/20">
+          <div className="max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6">
+              <Icon name="Clock" className="h-4 w-4" />
+              Первые 15 минут консультации — бесплатно
+            </div>
+
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Расскажите о проблеме
+            </h2>
+            <p className="text-xl text-gray-700 mb-8">
+              Юрист выслушает, проанализирует и скажет точную стоимость решения
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Button
+                size="lg"
+                onClick={() => window.open("tel:+73832359505", "_self")}
+                className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-6 text-lg shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <Icon name="Phone" className="h-6 w-6 mr-3" />
+                Позвонить и рассказать о проблеме
+              </Button>
+
+              <div className="text-left">
+                <div className="text-2xl font-black text-gray-900">
+                  +7 (383) 235-95-05
+                </div>
+                <div className="text-gray-600 text-sm">
+                  Новосибирск • с 8:00 до 22:00
                 </div>
               </div>
-            </button>
-          ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <div className="inline-flex flex-col items-center">
-            <p className="text-gray-600 mb-4">
-              Не нашли свою ситуацию в списке?
-            </p>
-            <Button
-              onClick={() => window.open("tel:+73832359505", "_self")}
-              className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white px-8 py-6 text-lg"
-            >
-              <Icon name="Phone" className="h-5 w-5 mr-3" />
-              Бесплатно проконсультироваться
-            </Button>
-            <p className="text-sm text-gray-500 mt-4">
-              Первые 15 минут консультации — бесплатно
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Шаг 3: Как работает */}
-      <div className="bg-gray-50 rounded-2xl p-10">
-        <h2 className="text-3xl font-bold text-center mb-10">
-          Как мы работаем
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {[
-            {
-              step: "01",
-              title: "Расскажите о проблеме",
-              desc: "Позвоните или оставьте заявку. Юрист выслушает и сразу скажет, сможем ли помочь.",
-              icon: "MessageCircle",
-              color: "bg-blue-100 text-blue-600",
-            },
-            {
-              step: "02",
-              title: "Анализ и план",
-              desc: "Изучим ваши документы, подготовим стратегию и назовём точную стоимость.",
-              icon: "FileText",
-              color: "bg-green-100 text-green-600",
-            },
-            {
-              step: "03",
-              title: "Решаем вашу проблему",
-              desc: "Возьмём на себя все переговоры, документы и судебные процессы. Вы только получаете результат.",
-              icon: "CheckCircle",
-              color: "bg-purple-100 text-purple-600",
-            },
-          ].map((item, i) => (
-            <div key={i} className="text-center space-y-4">
-              <div
-                className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${item.color} font-bold text-lg`}
-              >
-                {item.step}
-              </div>
-              <h3 className="text-xl font-bold">{item.title}</h3>
-              <p className="text-gray-600">{item.desc}</p>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Финальный CTA */}
-      <div className="text-center">
-        <div className="bg-gradient-to-r from-primary/5 to-blue-50 rounded-2xl p-10 border border-primary/20">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Просто позвоните
-          </h2>
-          <p className="text-xl text-gray-700 mb-8">
-            Не ищите сложные решения. Расскажите о проблеме — мы всё объясним.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button
-              size="lg"
-              onClick={() => window.open("tel:+73832359505", "_self")}
-              className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-6 text-lg shadow-lg"
-            >
-              <Icon name="Phone" className="h-6 w-6 mr-3" />
-              Позвонить юристу
-            </Button>
-
-            <div className="text-left">
-              <div className="text-2xl font-black text-gray-900">
-                +7 (383) 235-95-05
-              </div>
-              <div className="text-gray-600 text-sm">
-                Новосибирск • Работаем с 8:00 до 22:00
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10 pt-8 border-t border-gray-200">
+              {[
+                { text: "Анализ документов перед работой" },
+                { text: "Оплата за результат в некоторых случаях" },
+                { text: "Конфиденциальность гарантирована" },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 text-gray-600"
+                >
+                  <Icon
+                    name="CheckCircle"
+                    className="h-5 w-5 text-green-500 flex-shrink-0"
+                  />
+                  <span className="text-sm">{item.text}</span>
+                </div>
+              ))}
             </div>
-          </div>
-
-          <div className="mt-10 pt-8 border-t border-gray-200">
-            <p className="text-gray-600">
-              ⚡{" "}
-              <span className="font-semibold">
-                Первая консультация 15 минут — бесплатно
-              </span>
-              <br />
-              📄 <span className="font-semibold">Анализ документов</span> перед
-              началом работы
-              <br />
-              🛡️ <span className="font-semibold">Конфиденциально</span> — ваши
-              данные в безопасности
-            </p>
           </div>
         </div>
       </div>
