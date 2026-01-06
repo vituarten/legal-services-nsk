@@ -166,6 +166,40 @@ export default function DebtCollection() {
     },
   ];
 
+  // Виды долгов и их особенности
+  const debtTypes = [
+    {
+      title: "Договорные долги",
+      description: "По договорам займа, поставки, подряда",
+      features: [
+        "Срок давности: 3 года",
+        "Нужен договор или расписка",
+        "Легче доказать в суде",
+      ],
+      color: "bg-green-50 border-green-200",
+    },
+    {
+      title: "Внедоговорные",
+      description: "Вред имуществу, причинение убытков",
+      features: [
+        "Сложнее доказать",
+        "Нужна причинно-следственная связь",
+        "Требуется экспертиза",
+      ],
+      color: "bg-yellow-50 border-yellow-200",
+    },
+    {
+      title: "Просроченные",
+      description: "Срок исковой давности истек или истекает",
+      features: [
+        "Есть способы восстановить срок",
+        "Нужны доказательства перерыва",
+        "Срочные меры",
+      ],
+      color: "bg-red-50 border-red-200",
+    },
+  ];
+
   const advantages = [
     {
       icon: "Percent",
@@ -215,6 +249,30 @@ export default function DebtCollection() {
       time: "14 месяцев",
       situation: "Корпоративный спор. Работали в рамках банкротства должника.",
       difficulties: ["Банкротное дело", "Конкурсные кредиторы"],
+    },
+  ];
+
+  // FAQ
+  const faq = [
+    {
+      question: "Что делать, если у меня нет расписки?",
+      answer:
+        "Расписка — не единственное доказательство. Переписка в мессенджерах, свидетельские показания, банковские переводы, записи разговоров — всё это можно использовать в суде. Мы поможем собрать доказательную базу.",
+    },
+    {
+      question: "А если должник уже банкротится?",
+      answer:
+        "Это критический срок! Нужно срочно включаться в реестр кредиторов. У нас есть опыт работы в банкротных делах — знаем, как защитить ваши интересы даже на этой стадии.",
+    },
+    {
+      question: "Сколько времени занимает взыскание?",
+      answer:
+        "В 70% случаев — 2-3 месяца (досудебное урегулирование). Если дело доходит до суда — 4-8 месяцев. Срочные меры (арест счетов) — 72 часа.",
+    },
+    {
+      question: "Что если у должника ничего нет?",
+      answer:
+        'В 85% случаев у "бедных" должников находятся активы: доли в бизнесе, машины на родственников, счета в других банках, будущие доходы. Мы знаем, где искать.',
     },
   ];
 
@@ -398,6 +456,158 @@ export default function DebtCollection() {
                   </div>
                 </Card>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Виды долгов и их особенности */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-blue-700 font-medium mb-4">
+                <Icon name="BookOpen" className="h-5 w-5 mr-2" />
+                Правовая грамотность
+              </div>
+              <h2 className="text-4xl font-bold mb-4">
+                Виды долгов и их особенности
+              </h2>
+              <p className="text-lg text-gray-600">
+                Понимание природы долга увеличивает шансы на возврат
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {debtTypes.map((type, i) => (
+                <Card key={i} className={`p-6 border-2 ${type.color}`}>
+                  <h3 className="text-xl font-bold mb-3">{type.title}</h3>
+                  <p className="text-gray-700 mb-4">{type.description}</p>
+                  <div className="space-y-2">
+                    {type.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-center">
+                        <Icon
+                          name="ChevronRight"
+                          className="h-4 w-4 text-blue-600 mr-2"
+                        />
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            <div className="mt-12 max-w-3xl mx-auto">
+              <Card className="p-6 bg-blue-50 border-blue-200">
+                <div className="flex items-start">
+                  <Icon
+                    name="Info"
+                    className="h-6 w-6 text-blue-700 mr-3 mt-1 flex-shrink-0"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                      Срок исковой давности — 3 года, но:
+                    </h4>
+                    <p className="text-blue-800 text-sm">
+                      Срок прерывается, если должник признал долг (заплатил хоть
+                      100 рублей, ответил на претензию, подписал акт сверки).
+                      После этого 3 года начинаются заново. Даже "просроченные"
+                      долги часто можно вернуть.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* С чем мы НЕ работаем */}
+        <section className="py-20 bg-red-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center px-4 py-2 bg-white rounded-full text-red-700 font-medium mb-4 border border-red-200">
+                  <Icon name="AlertTriangle" className="h-5 w-5 mr-2" />
+                  Честно об ограничениях
+                </div>
+                <h2 className="text-4xl font-bold mb-4">
+                  С чем мы НЕ работаем
+                </h2>
+                <p className="text-lg text-gray-700">
+                  Чтобы не тратить ваше и наше время
+                </p>
+              </div>
+
+              <Card className="p-8 bg-white">
+                <div className="space-y-6">
+                  <div className="flex items-start">
+                    <Icon
+                      name="XCircle"
+                      className="h-6 w-6 text-red-600 mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Исполнительные листы
+                      </h3>
+                      <p className="text-gray-700">
+                        Если у вас уже есть решение суда и исполнительный лист —
+                        вам нужен специалист по работе с приставами. Мы
+                        занимаемся{" "}
+                        <span className="font-semibold">
+                          досудебным и судебным взысканием
+                        </span>
+                        , но не исполнением уже вынесенных решений.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <Icon
+                      name="XCircle"
+                      className="h-6 w-6 text-red-600 mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Корпоративные споры (ООО vs ООО)
+                      </h3>
+                      <p className="text-gray-700">
+                        Мы работаем с долгами между{" "}
+                        <span className="font-semibold">
+                          физическими лицами
+                        </span>
+                        . Если ООО должно ООО — это не наша специализация. Наш
+                        фокус: человек должен человеку.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <Icon
+                      name="XCircle"
+                      className="h-6 w-6 text-red-600 mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Долги менее 50 000 ₽
+                      </h3>
+                      <p className="text-gray-700">
+                        Если сумма меньше, судебные издержки могут превысить
+                        сумму возврата. Мы работаем со значимыми для клиента
+                        суммами — от 50 000 ₽.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-blue-50 rounded-lg border border-blue-200 mt-6">
+                    <div className="font-semibold text-blue-900 mb-2">
+                      Если ваша ситуация подходит:
+                    </div>
+                    <p className="text-blue-800">
+                      Вернем деньги в 85-90% случаев. Работаем за результат.
+                      Первая консультация — бесплатно.
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </div>
           </div>
         </section>
@@ -620,6 +830,33 @@ export default function DebtCollection() {
                 <Icon name="AlertTriangle" className="h-5 w-5 mr-2" />
                 Ваш случай сложнее? Это наша специализация
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">Частые вопросы</h2>
+              <p className="text-lg text-gray-600">
+                То, о чем спрашивают перед обращением
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {faq.map((item, i) => (
+                <Card key={i} className="p-6 hover:shadow-md transition-shadow">
+                  <h3 className="text-lg font-semibold mb-3 flex items-start">
+                    <Icon
+                      name="HelpCircle"
+                      className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    {item.question}
+                  </h3>
+                  <p className="text-gray-700">{item.answer}</p>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
