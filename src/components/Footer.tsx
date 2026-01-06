@@ -23,19 +23,13 @@ const Footer = () => {
     alert("Мы перезвоним вам в течение 15 минут!");
   };
 
-  const trackSocialClick = (network: string) => {
-    if (typeof window !== "undefined" && window.ym) {
-      window.ym(106063131, "reachGoal", `social_${network}`);
-    }
-  };
-
   return (
     <footer className="bg-gradient-to-b from-background to-secondary/10 border-t border-border/50">
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 md:gap-6">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* Company Info */}
-          <div className="lg:col-span-2 space-y-2">
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 mb-1">
               <Icon
                 name="Scale"
                 className="h-5 w-5 sm:h-6 sm:w-6 text-primary"
@@ -47,7 +41,7 @@ const Footer = () => {
             <p className="text-xs sm:text-sm text-muted-foreground leading-snug">
               Юридические услуги в Новосибирске. Защита прав с 2016 года.
             </p>
-            <div className="flex items-start gap-1.5 text-xs sm:text-sm text-muted-foreground pt-1">
+            <div className="flex items-start gap-1.5 text-xs sm:text-sm text-muted-foreground">
               <Icon
                 name="MapPin"
                 className="h-3 w-3 sm:h-4 sm:w-4 mt-0.5 flex-shrink-0 text-primary"
@@ -157,260 +151,95 @@ const Footer = () => {
                 <span>Работаем 24/7</span>
               </div>
             </div>
-
-            {/* Форма обратного звонка */}
-            <div className="pt-1">
-              <div className="text-xs text-muted-foreground mb-1">
-                Мы перезвоним:
-              </div>
-              <div className="flex gap-1.5">
-                <input
-                  type="tel"
-                  placeholder="Ваш телефон"
-                  className="flex-1 px-2 py-1.5 text-xs rounded border border-border focus:outline-none focus:border-primary"
-                />
-                <Button
-                  size="sm"
-                  className="text-xs px-2.5 py-1.5"
-                  onClick={handleCallback}
-                >
-                  Жду звонка
-                </Button>
-              </div>
-            </div>
           </div>
 
-          {/* Соцсети */}
+          {/* Callback Form */}
           <div className="space-y-2">
             <h3 className="font-semibold text-foreground text-sm sm:text-base mb-1">
-              Наши группы
+              Мы перезвоним вам
             </h3>
 
-            <div className="grid grid-cols-2 gap-2">
-              {/* ВКонтакте */}
-              <a
-                href="#"
-                onClick={() => trackSocialClick("vk")}
-                className="flex items-center p-2 bg-[#0077FF]/5 hover:bg-[#0077FF]/10 rounded border border-[#0077FF]/20 transition-all group"
-                title="Мы ВКонтакте"
+            <div className="space-y-1.5">
+              <input
+                type="tel"
+                placeholder="Ваш телефон"
+                className="w-full px-3 py-2 text-sm rounded border border-border focus:outline-none focus:border-primary"
+              />
+              <Button
+                className="w-full text-sm bg-primary hover:bg-primary/90"
+                onClick={handleCallback}
               >
-                <div className="w-6 h-6 rounded-full bg-[#0077FF] flex items-center justify-center mr-1.5 group-hover:scale-110 transition-transform">
-                  <svg
-                    className="w-3 h-3 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2m-1.76 15.13c-1.37 0-1.88-.94-2.59-1.94-.77 1.07-1.17 1.94-2.85 1.94-1.54 0-2.17-1.12-3.06-2.51C4.62 12.15 4 10.93 4 10.29c0-.26.2-.47.47-.47h1.47c.35 0 .5.25.65.56.7 1.45 1.86 3.72 2.49 3.72.59 0 .74-.64 1.33-1.59.65-1.06 1.15-2.38 1.15-2.38 0-.26.2-.47.47-.47h1.47c.35 0 .5.25.5.56 0 .59-.84 2.05-1.27 2.68-.59.85-.86 1.12-.86 1.41 0 .35.5.47.85.82.49.49 1.68 1.68 1.68 3.72 0 .35-.2.56-.65.56h-1.47c-.35 0-.5-.25-.5-.56 0-1.02-.34-1.75-.79-2.38-.44-.61-.94-1.27-1.46-1.98-.2-.26-.59-.82-.94-1.27 0 .94.05 2.33.05 2.33 0 .35-.2.56-.65.56H9.1c-.35 0-.5-.25-.5-.56 0-1.37.05-3.14.05-3.14 0-.35.2-.56.65-.56h1.47c.35 0 .5.25.5.56 0 .59-.1 1.37-.1 1.37.2-.35.44-.79.79-1.27.49-.68 1.05-1.45 1.87-2.33.2-.2.44-.35.79-.35h1.47c.35 0 .5.25.5.56 0 .59-.34 1.37-1.27 2.68-.59.85-1.22 1.68-1.22 2.68 0 .35.2.56.65.56h1.47c.35 0 .5-.25.5-.56 0-1.02-.34-1.75-1.27-2.68-.49-.49-.94-1.02-1.46-1.68.2.26.44.56.65.79.79 1.02 1.86 2.38 2.59 3.14.79.82 1.37 1.12 1.37 1.68 0 .35-.2.56-.65.56h-1.47c-.35 0-.5-.25-.5-.56 0-.59.34-1.12 1.05-1.83.49-.49.94-1.02 1.46-1.68.2-.26.44-.56.65-.79-.2.26-.44.56-.65.79-.79 1.02-1.86 2.38-2.59 3.14-.79.82-1.37 1.12-1.37 1.68 0 .35.2.56.65.56h1.47c.35 0 .5-.25.5-.56 0-.59-.34-1.12-1.05-1.83-.49-.49-.94-1.02-1.46-1.68-.2-.26-.44-.56-.65-.79.2.26.44.56.65.79.79 1.02 1.86 2.38 2.59 3.14.79.82 1.37 1.12 1.37 1.68 0 .35-.2.56-.65.56h-1.47c-.35 0-.5-.25-.5-.56 0-.59.34-1.12 1.05-1.83.49-.49.94-1.02 1.46-1.68.2-.26.44-.56.65-.79-.2.26-.44.56-.65.79-.79 1.02-1.86 2.38-2.59 3.14-.79.82-1.37 1.12-1.37 1.68 0 .35.2.56.65.56h1.47c.35 0 .5-.25.5-.56 0-.59-.34-1.12-1.05-1.83z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-foreground truncate">
-                    ВКонтакте
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    Группа
-                  </div>
-                </div>
-              </a>
-
-              {/* YouTube */}
-              <a
-                href="#"
-                onClick={() => trackSocialClick("youtube")}
-                className="flex items-center p-2 bg-[#FF0000]/5 hover:bg-[#FF0000]/10 rounded border border-[#FF0000]/20 transition-all group"
-                title="Наш YouTube канал"
-              >
-                <div className="w-6 h-6 rounded-full bg-[#FF0000] flex items-center justify-center mr-1.5 group-hover:scale-110 transition-transform">
-                  <svg
-                    className="w-3 h-3 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M19.67 8.14C19.58 7.84 19.39 7.57 19.13 7.37C18.87 7.17 18.56 7.05 18.23 7.02C17.33 6.94 12 6.94 12 6.94C12 6.94 6.67 6.94 5.77 7.02C5.44 7.05 5.13 7.17 4.87 7.37C4.61 7.57 4.42 7.84 4.33 8.14C4.15 9.07 4.06 10.01 4.06 10.96C4.06 10.96 4.06 11.91 4.24 12.84C4.33 13.14 4.52 13.41 4.78 13.61C5.04 13.81 5.35 13.93 5.68 13.96C6.58 14.04 11.91 14.04 11.91 14.04C11.91 14.04 17.24 14.04 18.14 13.96C18.47 13.93 18.78 13.81 19.04 13.61C19.3 13.41 19.49 13.14 19.58 12.84C19.76 11.91 19.85 10.97 19.85 10.02C19.85 10.02 19.85 9.07 19.67 8.14ZM10.3 12.46V9.46L13.97 10.96L10.3 12.46Z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-foreground truncate">
-                    YouTube
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">Канал</div>
-                </div>
-              </a>
-
-              {/* TikTok */}
-              <a
-                href="#"
-                onClick={() => trackSocialClick("tiktok")}
-                className="flex items-center p-2 bg-black/5 hover:bg-black/10 rounded border border-gray-300 transition-all group"
-                title="Наш TikTok"
-              >
-                <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center mr-1.5 group-hover:scale-110 transition-transform">
-                  <svg
-                    className="w-3 h-3 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.3 0 .6.06.88.16V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-foreground truncate">
-                    TikTok
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    Аккаунт
-                  </div>
-                </div>
-              </a>
-
-              {/* Яндекс.Дзен */}
-              <a
-                href="#"
-                onClick={() => trackSocialClick("dzen")}
-                className="flex items-center p-2 bg-gradient-to-r from-[#FF0000]/5 to-[#FFCC00]/5 hover:from-[#FF0000]/10 hover:to-[#FFCC00]/10 rounded border border-[#FF0000]/20 transition-all group"
-                title="Наш Яндекс.Дзен"
-              >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FF0000] to-[#FFCC00] flex items-center justify-center mr-1.5 group-hover:scale-110 transition-transform">
-                  <div className="relative w-3 h-3 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-white rounded-full"></div>
-                    <span className="relative text-[#FF0000] font-bold text-xs leading-none">
-                      Я
-                    </span>
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-medium text-foreground truncate">
-                    Дзен
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    Яндекс
-                  </div>
-                </div>
-              </a>
+                Жду звонка
+              </Button>
             </div>
 
-            {/* Группы в мессенджерах */}
             <div className="pt-1">
-              <div className="text-xs text-muted-foreground mb-1.5">
-                Группы:
-              </div>
-              <div className="flex gap-1.5">
-                <a
-                  href="#"
-                  onClick={() => trackSocialClick("telegram_channel")}
-                  className="flex-1 flex items-center justify-center p-1.5 bg-[#0088cc]/5 hover:bg-[#0088cc]/10 rounded border border-[#0088cc]/20 transition-all group"
-                  title="Telegram группа"
-                >
-                  <div className="flex items-center gap-1">
-                    <div className="w-5 h-5 rounded-full bg-[#0088cc] flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <svg
-                        className="w-2.5 h-2.5 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.356l-1.896 8.928c-.134.626-.478.78-.97.486l-2.698-1.984-1.297 1.25c-.143.143-.265.265-.543.265l.193-2.72 5.022-4.53c.218-.196-.048-.305-.338-.11l-6.208 3.91-2.67-.835c-.582-.18-.596-.582.12-.864l10.47-4.03c.485-.18.91.12.72.864z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs font-medium text-[#0088cc]">
-                      Telegram
-                    </span>
-                  </div>
-                </a>
-
-                <a
-                  href="#"
-                  onClick={() => trackSocialClick("max_group")}
-                  className="flex-1 flex items-center justify-center p-1.5 bg-gradient-to-r from-[#6D4DFF]/5 to-[#3B1E8C]/5 hover:from-[#6D4DFF]/10 hover:to-[#3B1E8C]/10 rounded border border-[#6D4DFF]/20 transition-all group"
-                  title="MAX группа"
-                >
-                  <div className="flex items-center gap-1">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#6D4DFF] to-[#3B1E8C] flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-[10px] font-bold text-white">
-                        M
-                      </span>
-                    </div>
-                    <span className="text-xs font-medium text-[#6D4DFF]">
-                      MAX
-                    </span>
-                  </div>
-                </a>
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <Icon name="Shield" className="h-3 w-3 text-primary" />
+                <span>100% конфиденциальность</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Разделитель */}
-        <div className="mt-5 sm:mt-6 mb-4 sm:mb-5">
+        <div className="mt-5 mb-4">
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
         </div>
 
         {/* Нижняя часть */}
-        <div className="space-y-3">
-          {/* Реквизиты */}
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
-            <div className="space-y-1.5">
-              <p className="text-xs sm:text-sm font-medium text-foreground/90">
-                © 2016-{currentYear} ЮрСервис НСК. Все права защищены.
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div className="text-center sm:text-left">
+            <p className="text-xs sm:text-sm font-medium text-foreground/90">
+              © 2016-{currentYear} ЮрСервис НСК. Все права защищены.
+            </p>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              <p>
+                ИП Витушкин Артем Вячеславович • ИНН: 421210273345 • ОГРНИП:
+                323547600197695
               </p>
-              <div className="text-xs text-muted-foreground space-y-0.5">
-                <p className="font-medium text-foreground/70">
-                  ИП Витушкин Артем Вячеславович
-                </p>
-                <p>ИНН: 421210273345 • ОГРНИП: 323547600197695</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center">
-              <div className="flex gap-1.5">
-                <div className="text-xs px-2 py-0.5 bg-green-50 text-green-700 rounded border border-green-200 font-medium">
-                  ФНС проверено
-                </div>
-                <div className="text-xs px-2 py-0.5 bg-blue-50 text-blue-700 rounded border border-blue-200 font-medium">
-                  Аккредитация МВД
-                </div>
-              </div>
-
-              <a
-                href="https://webmaster.yandex.ru/siteinfo/?site=https://юридический-сервис.рф"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="opacity-70 hover:opacity-100 transition-opacity inline-block mt-1 sm:mt-0"
-                title="Яндекс.Метрика"
-              >
-                <img
-                  width="70"
-                  height="25"
-                  alt="Яндекс.Метрика"
-                  src="https://yandex.ru/cycounter?https://юридический-сервис.рф&theme=light&lang=ru"
-                  className="rounded"
-                  loading="lazy"
-                />
-              </a>
             </div>
           </div>
 
-          {/* Ссылки */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs">
-            <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1 text-muted-foreground">
-              <a
-                href="/privacy"
-                className="hover:text-primary transition-colors hover:underline"
-              >
-                Политика конфиденциальности
-              </a>
-              <a
-                href="/privacy#terms"
-                className="hover:text-primary transition-colors hover:underline"
-              >
-                Пользовательское соглашение
-              </a>
-              <a
-                href="/sitemap"
-                className="hover:text-primary transition-colors hover:underline"
-              >
-                Карта сайта
-              </a>
+          <div className="flex items-center gap-3">
+            <div className="text-xs px-2 py-0.5 bg-green-50 text-green-700 rounded border border-green-200 font-medium">
+              ФНС проверено
             </div>
+
+            <a
+              href="https://webmaster.yandex.ru/siteinfo/?site=https://юридический-сервис.рф"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="opacity-70 hover:opacity-100 transition-opacity inline-block"
+              title="Яндекс.Метрика"
+            >
+              <img
+                width="70"
+                height="25"
+                alt="Яндекс.Метрика"
+                src="https://yandex.ru/cycounter?https://юридический-сервис.рф&theme=light&lang=ru"
+                className="rounded"
+                loading="lazy"
+              />
+            </a>
+          </div>
+        </div>
+
+        {/* Ссылки */}
+        <div className="mt-3 flex justify-center">
+          <div className="flex gap-4 text-xs text-muted-foreground">
+            <a
+              href="/privacy"
+              className="hover:text-primary transition-colors hover:underline"
+            >
+              Политика конфиденциальности
+            </a>
+            <a
+              href="/privacy#terms"
+              className="hover:text-primary transition-colors hover:underline"
+            >
+              Пользовательское соглашение
+            </a>
           </div>
         </div>
       </div>
