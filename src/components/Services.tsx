@@ -34,25 +34,28 @@ const Services = () => {
       title: "Семейный юрист",
       description: "Развод, раздел имущества, алименты, опека",
       category: ["popular", "citizens"],
+      link: "/family-lawyer", // ← ДОБАВЬТЕ
     },
     {
       icon: "TrendingDown",
       title: "Банкротство физических лиц",
       description: "Процедура банкротства для граждан, списание долгов",
       category: ["popular", "bankruptcy", "citizens"],
+      link: "/bankruptcy-lawyer", // ← ДОБАВЬТЕ
     },
     {
       icon: "Home",
       title: "Недвижимость и перепланировки",
       description: "Сделки с недвижимостью, узаконивание перепланировок",
       category: ["popular", "realestate"],
+      link: "/real-estate-lawyer", // ← ДОБАВЬТЕ
     },
     {
       icon: "CreditCard",
       title: "Взыскание долгов",
       description: "Взыскание задолженности, работа с должниками",
       category: ["popular", "business", "citizens"],
-      link: "/debt-collection",
+      link: "/debt-collection", // ← УЖЕ ЕСТЬ
     },
     {
       icon: "FileText",
@@ -60,24 +63,28 @@ const Services = () => {
       description:
         "Подготовка договоров, анализ документации, правовая экспертиза",
       category: ["popular", "business", "citizens"],
+      link: "/document-analysis", // ← ДОБАВЬТЕ
     },
     {
       icon: "Shield",
       title: "Представительство и защита в суде",
       description: "Представительство интересов в судах всех инстанций",
       category: ["popular", "business", "citizens"],
+      link: "/court-representation", // ← ДОБАВЬТЕ
     },
     {
       icon: "ShieldCheck",
       title: "Защита прав потребителей",
       description: "Возврат некачественного товара, споры с продавцами",
       category: ["popular", "citizens"],
+      link: "/consumer-protection", // ← ДОБАВЬТЕ
     },
     {
       icon: "Car",
       title: "Автоюрист. Споры по ДТП",
       description: "Взыскание ущерба, представительство в суде по автоавариям",
       category: ["popular", "citizens"],
+      link: "/car-lawyer", // ← ДОБАВЬТЕ
     },
     {
       icon: "Building",
@@ -85,23 +92,27 @@ const Services = () => {
       description:
         "Защита прав дольщиков, взыскание неустойки, возврат средств",
       category: ["popular", "realestate", "citizens"],
+      link: "/construction-disputes",
     },
     {
       icon: "Briefcase",
       title: "Трудовое право",
       description: "Защита трудовых прав, взыскание заработной платы",
       category: ["citizens"],
+      link: "/labor-law",
     },
     {
       icon: "Building",
       title: "Земельное право",
       description: "Оформление земельных участков, споры по межеванию",
       category: ["realestate"],
+      link: "/land-law",
     },
     {
       icon: "Droplets",
       title: "Возмещение ущерба от потопов",
-      description: "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями и УК",
+      description:
+        "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями и УК",
       category: ["popular", "citizens", "realestate"],
       link: "/flood-damage",
     },
@@ -200,7 +211,7 @@ const Services = () => {
                       variant="outline"
                       size="sm"
                       className="flex-1"
-                      onClick={() => window.open('tel:+79994523500', '_self')}
+                      onClick={() => window.open("tel:+79994523500", "_self")}
                     >
                       <Icon name="Phone" className="h-4 w-4 mr-1" />
                       Позвонить
@@ -233,11 +244,13 @@ const Services = () => {
                 БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ
               </Button>
               <div className="text-center">
-                <div className="text-sm text-muted-foreground">или звоните прямо сейчас</div>
+                <div className="text-sm text-muted-foreground">
+                  или звоните прямо сейчас
+                </div>
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => window.open('tel:+79994523500', '_self')}
+                  onClick={() => window.open("tel:+79994523500", "_self")}
                   className="border-2 border-accent text-accent hover:bg-accent hover:text-white font-bold"
                 >
                   <Icon name="Phone" className="h-5 w-5 mr-2" />
