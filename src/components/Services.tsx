@@ -28,7 +28,6 @@ const Services = () => {
     { id: "bankruptcy", label: "БАНКРОТСТВО" },
   ];
 
-  // ВСЕ услуги имеют link - ЭТО ВАЖНО!
   const allServices = [
     {
       icon: "Users",
@@ -64,14 +63,14 @@ const Services = () => {
       description:
         "Подготовка договоров, анализ документации, правовая экспертиза",
       category: ["popular", "business", "citizens"],
-      link: "/document-analysis",
+      link: "/services", // Нет отдельной страницы - ведет на общую
     },
     {
       icon: "Shield",
       title: "Представительство и защита в суде",
       description: "Представительство интересов в судах всех инстанций",
       category: ["popular", "business", "citizens"],
-      link: "/court-representation",
+      link: "/services", // Нет отдельной страницы - ведет на общую
     },
     {
       icon: "ShieldCheck",
@@ -93,21 +92,21 @@ const Services = () => {
       description:
         "Защита прав дольщиков, взыскание неустойки, возврат средств",
       category: ["popular", "realestate", "citizens"],
-      link: "/construction-disputes",
+      link: "/real-estate-lawyer", // Нет отдельной - ведет на недвижимость
     },
     {
       icon: "Briefcase",
       title: "Трудовое право",
       description: "Защита трудовых прав, взыскание заработной платы",
       category: ["citizens"],
-      link: "/labor-law",
+      link: "/services", // Нет отдельной страницы - ведет на общую
     },
     {
       icon: "Building",
       title: "Земельное право",
       description: "Оформление земельных участков, споры по межеванию",
       category: ["realestate"],
-      link: "/land-law",
+      link: "/real-estate-lawyer", // Нет отдельной - ведет на недвижимость
     },
     {
       icon: "Droplets",
@@ -138,6 +137,8 @@ const Services = () => {
       className="py-20 bg-background"
       role="region"
       aria-labelledby="services-heading"
+      itemScope
+      itemType="https://schema.org/Service"
     >
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-8">
@@ -188,14 +189,23 @@ const Services = () => {
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">{service.description}</p>
                 <div className="flex flex-col gap-3 pt-2">
-                  {/* ВСЕГДА показываем "УЗНАТЬ БОЛЬШЕ" */}
-                  <Button
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
-                    onClick={() => navigate(service.link)}
-                  >
-                    <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
-                    УЗНАТЬ БОЛЬШЕ
-                  </Button>
+                  {service.link ? (
+                    <Button
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => navigate(service.link)}
+                    >
+                      <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
+                      УЗНАТЬ БОЛЬШЕ
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => consultationModal.open()}
+                    >
+                      <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
+                      ЗАКАЗАТЬ УСЛУГУ
+                    </Button>
+                  )}
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
