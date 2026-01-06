@@ -105,7 +105,7 @@ const ServicesMain = () => {
           ))}
         </div>
 
-        {/* Преимущества - ОСТАВЛЯЕМ */}
+        {/* Преимущества */}
         <div className="mt-12 sm:mt-16 md:mt-20">
           <div className="text-center mb-8 sm:mb-10">
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
