@@ -1,3 +1,4 @@
+import "@/styles/globals.css";
 import {
   BrowserRouter as Router,
   Routes,
