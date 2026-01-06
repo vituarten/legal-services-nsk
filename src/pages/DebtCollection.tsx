@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function PrivateDebtCollectionPage() {
   const [formData, setFormData] = useState({
@@ -11,6 +11,39 @@ export default function PrivateDebtCollectionPage() {
     phone: "",
   });
   const [downloadClicked, setDownloadClicked] = useState(false);
+
+  // Добавляем скрипт Яндекс.Метрики через useEffect
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.innerHTML = `
+      (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){
+          (m[i].a=m[i].a||[]).push(arguments)
+        };
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+          if (document.scripts[j].src === r) { return; }
+        }
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      
+      ym(106063131, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+      });
+    `;
+    document.head.appendChild(script);
+
+    return () => {
+      // При размонтировании удаляем скрипт
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -245,30 +278,7 @@ export default function PrivateDebtCollectionPage() {
           content="Вернем ваши деньги с друзей, знакомых, родственников. Долги по распискам, за аренду, услуги. Работаем за результат. Конфиденциально."
         />
 
-        {/* Яндекс.Метрика */}
-        <script>
-          {`
-            (function(m,e,t,r,i,k,a){
-              m[i]=m[i]||function(){
-                (m[i].a=m[i].a||[]).push(arguments)
-              };
-              m[i].l=1*new Date();
-              for (var j = 0; j < document.scripts.length; j++) {
-                if (document.scripts[j].src === r) { return; }
-              }
-              k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-            })
-            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-            
-            ym(106063131, "init", {
-              clickmap:true,
-              trackLinks:true,
-              accurateTrackBounce:true,
-              webvisor:true
-            });
-          `}
-        </script>
-
+        {/* NoScript для Яндекс.Метрики */}
         <noscript>
           <div>
             <img
