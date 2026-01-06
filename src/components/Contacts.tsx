@@ -175,7 +175,7 @@ const Contacts = () => {
             </div>
           </div>
 
-          {/* Правая колонка - Информация о компании */}
+          {/* Правая колонка - Информация о компании (БЕЗ РЕКВИЗИТОВ) */}
           <div>
             <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 sticky top-6">
               <CardContent className="p-5 sm:p-6">
@@ -191,7 +191,7 @@ const Contacts = () => {
                   </div>
                 </div>
 
-                <div className="space-y-1 mb-6">
+                <div className="space-y-1">
                   <h4 className="font-semibold text-foreground mb-2">
                     🎯 О нас:
                   </h4>
@@ -208,33 +208,13 @@ const Contacts = () => {
                   </ul>
                 </div>
 
-                <div className="pt-4 border-t border-primary/20">
-                  <h4 className="font-semibold text-foreground mb-2">
-                    📄 Реквизиты:
-                  </h4>
-                  <div className="text-sm space-y-1">
-                    <p>
-                      <strong>ИП:</strong> Витушкин Артем Вячеславович
-                    </p>
-                    <p>
-                      <strong>ИНН:</strong> 421210273345
-                    </p>
-                    <p>
-                      <strong>ОГРНИП:</strong> 323547600197695
-                    </p>
-                    <div className="mt-2 pt-2 border-t border-primary/10">
-                      <p className="text-xs text-muted-foreground">
-                        Лицензии и сертификаты предоставляются по запросу
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                {/* Убрали блок с реквизитами */}
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Призыв к действию */}
+        {/* Призыв к действию - с новым номером */}
         <div className="mt-8 sm:mt-12 text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 bg-white p-4 sm:p-5 rounded-xl border border-border shadow-sm">
             <div className="text-left">
@@ -246,7 +226,7 @@ const Contacts = () => {
               </div>
             </div>
             <a
-              href="tel:+79931903500"
+              href="tel:+79994523500"
               className="inline-flex items-center gap-2 text-lg font-bold text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
               onClick={() => {
                 if (typeof window !== "undefined" && window.ym) {
@@ -255,7 +235,7 @@ const Contacts = () => {
               }}
             >
               <Icon name="Phone" className="h-5 w-5" />
-              +7 993 190 35 00
+              +7 999 452 35 00
             </a>
           </div>
         </div>
