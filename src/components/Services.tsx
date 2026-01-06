@@ -2,478 +2,622 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    question: "",
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // Категории для фильтрации
-  const categories = [
-    { id: "all", label: "Все услуги" },
-    { id: "auto", label: "Авто и ДТП" },
-    { id: "money", label: "Деньги и долги" },
-    { id: "housing", label: "Жильё и недвижимость" },
-    { id: "family", label: "Семья и наследство" },
-    { id: "work", label: "Трудовые споры" },
-    { id: "consumer", label: "Защита прав потребителей" },
-    { id: "court", label: "Судебное представительство" },
+  // Категории проблем
+  const problemCategories = [
+    {
+      id: "money",
+      title: "💸 Деньги",
+      icon: "CreditCard",
+      color: "bg-gradient-to-br from-red-50 to-orange-50",
+      border: "border-red-100",
+      problems: ["Кредиты", "Долги", "Коллекторы", "Страховки", "Аресты"],
+    },
+    {
+      id: "housing",
+      title: "🏠 Жильё",
+      icon: "Home",
+      color: "bg-gradient-to-br from-blue-50 to-cyan-50",
+      border: "border-blue-100",
+      problems: ["Потопы", "Застройщики", "Ремонт", "Участки", "Соседи"],
+    },
+    {
+      id: "family",
+      title: "👨‍👩‍👧‍👦 Семья",
+      icon: "Users",
+      color: "bg-gradient-to-br from-pink-50 to-rose-50",
+      border: "border-pink-100",
+      problems: ["Развод", "Алименты", "Наследство", "Дети", "Имущество"],
+    },
+    {
+      id: "auto",
+      title: "🚗 Авто",
+      icon: "Car",
+      color: "bg-gradient-to-br from-green-50 to-emerald-50",
+      border: "border-green-100",
+      problems: ["ДТП", "Страховые", "Права", "Покупка авто", "Ремонт"],
+    },
+    {
+      id: "work",
+      title: "💼 Работа",
+      icon: "Briefcase",
+      color: "bg-gradient-to-br from-yellow-50 to-amber-50",
+      border: "border-yellow-100",
+      problems: ["Зарплата", "Увольнение", "Отпуск", "Травмы", "Дискриминация"],
+    },
+    {
+      id: "consumer",
+      title: "🛒 Покупки",
+      icon: "ShoppingCart",
+      color: "bg-gradient-to-br from-purple-50 to-violet-50",
+      border: "border-purple-100",
+      problems: ["Товары", "Обман", "Услуги", "Туры", "Ремонт"],
+    },
   ];
 
-  // Все услуги (чистый каталог)
-  const allServices = [
+  // Реальные ситуации с решениями + синонимы для поиска
+  const realCases = [
     {
-      id: 1,
-      title: "Автоюрист. Споры по ДТП",
-      description:
-        "Взыскание ущерба по ОСАГО, споры со страховыми, защита от лишения прав, административные дела",
-      category: "auto",
-      link: "/dtp-lawyer",
-      icon: "Car",
-    },
-    {
-      id: 2,
-      title: "Банкротство физических лиц",
-      description:
-        "Процедура банкротства для граждан, списание долгов, защита имущества от кредиторов",
-      category: "money",
-      link: "/bankruptcy-lawyer",
-      icon: "TrendingDown",
-    },
-    {
-      id: 3,
-      title: "Взыскание долгов",
-      description:
-        "Взыскание задолженности с физических и юридических лиц, работа с должниками",
-      category: "money",
+      problem: "Должны деньги, но не отдают",
+      keywords: [
+        "должны денег",
+        "не отдают деньги",
+        "задолжал",
+        "должник",
+        "вернуть деньги",
+        "задолженность",
+        "одолжил",
+        "заём",
+      ],
+      solution: "Заставим вернуть через суд",
+      result: "Получите свои деньги + проценты за просрочку",
+      time: "2-4 месяца",
       link: "/debt-collection",
       icon: "CreditCard",
+      color: "from-blue-500 to-cyan-500",
+      stat: "Вернули 89% долгов",
     },
     {
-      id: 4,
-      title: "Семейный юрист",
-      description:
-        "Развод, раздел имущества, алименты, опека, споры по детям, брачные договоры",
-      category: "family",
-      link: "/family-lawyer",
-      icon: "Users",
-    },
-    {
-      id: 5,
-      title: "Недвижимость и перепланировки",
-      description:
-        "Сделки с недвижимостью, узаконивание перепланировок, споры с соседями по границам",
-      category: "housing",
-      link: "/real-estate-lawyer",
-      icon: "Home",
-    },
-    {
-      id: 6,
-      title: "Возмещение ущерба от потопов",
-      description:
-        "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями и управляющей компанией",
-      category: "housing",
+      problem: "Затопили соседи, ремонт за свой счёт",
+      keywords: [
+        "затопили",
+        "потоп",
+        "соседи залили",
+        "ремонт",
+        "ущерб",
+        "затопило квартиру",
+        "вода",
+      ],
+      solution: "Взыщем ущерб в полном объёме",
+      result: "Деньги на новый ремонт + компенсация за неудобства",
+      time: "2-4 месяца",
       link: "/flood-damage",
       icon: "Droplets",
+      color: "from-cyan-500 to-blue-500",
+      stat: "Вернули до 500 тыс. ₽",
     },
     {
-      id: 7,
-      title: "Споры с застройщиками",
-      description:
-        "Защита прав дольщиков, взыскание неустойки за просрочку, возврат средств по ДДУ",
-      category: "housing",
+      problem: "Кредиты душат, коллекторы звонят",
+      keywords: [
+        "кредиты",
+        "долги",
+        "коллекторы",
+        "банкротство",
+        "не могу платить",
+        "просрочка",
+        "займы",
+        "микрофинансы",
+      ],
+      solution: "Спишем долги через банкротство",
+      result: "Избавитесь от долгов, сохраните жильё, остановите звонки",
+      time: "5-9 месяцев",
+      link: "/bankruptcy-lawyer",
+      icon: "TrendingDown",
+      color: "from-red-500 to-orange-500",
+      stat: "Списали до 90% долгов",
+    },
+    {
+      problem: "Попал в ДТП, страховая платит мало",
+      keywords: [
+        "дтп",
+        "авария",
+        "страховая",
+        "осаго",
+        "ущерб",
+        "авто",
+        "машина",
+        "авария",
+      ],
+      solution: "Добьёмся полной выплаты",
+      result: "Увеличим выплату в 2-3 раза, сохраним права",
+      time: "1-3 месяца",
+      link: "/dtp-lawyer",
+      icon: "Car",
+      color: "from-green-500 to-emerald-500",
+      stat: "Увеличили выплаты в 87% случаев",
+    },
+    {
+      problem: "Развод, муж угрожает забрать всё",
+      keywords: [
+        "развод",
+        "раздел имущества",
+        "дети",
+        "алименты",
+        "брак",
+        "супруг",
+        "семья",
+        "развод с мужем",
+        "развод с женой",
+      ],
+      solution: "Сохраним ваше имущество и права",
+      result: "Справедливый раздел, определение детей, алименты",
+      time: "3-6 месяцев",
+      link: "/family-lawyer",
+      icon: "Users",
+      color: "from-pink-500 to-rose-500",
+      stat: "Защитили имущество в 92% дел",
+    },
+    {
+      problem: "Купили квартиру, а застройщик обманул",
+      keywords: [
+        "застройщик",
+        "новостройка",
+        "квартира с дефектами",
+        "дду",
+        "обман",
+        "строители",
+        "некачественная квартира",
+      ],
+      solution: "Вернём деньги или заставим исправить",
+      result: "Полный возврат средств или устранение всех недостатков",
+      time: "4-8 месяцев",
       link: "/disputes-with-developers",
       icon: "Building",
+      color: "from-indigo-500 to-purple-500",
+      stat: "Вернули до 2 млн ₽",
     },
     {
-      id: 8,
-      title: "Трудовые споры",
-      description:
-        "Защита трудовых прав, взыскание заработной платы, восстановление на работе, споры с работодателем",
-      category: "work",
+      problem: "Не платят зарплату 3 месяца",
+      keywords: [
+        "зарплата",
+        "не платят",
+        "работодатель",
+        "увольнение",
+        "трудовой спор",
+        "деньги за работу",
+        "задержка зарплаты",
+      ],
+      solution: "Взыщем зарплату и компенсацию",
+      result: "Все невыплаты + компенсация за задержку",
+      time: "1-2 месяца",
       link: "/labor-law",
       icon: "Briefcase",
+      color: "from-amber-500 to-yellow-500",
+      stat: "Вернули 100% задолженности",
     },
     {
-      id: 9,
-      title: "Защита прав потребителей",
-      description:
-        "Возврат некачественного товара, споры с продавцами и услугами, взыскание компенсаций",
-      category: "consumer",
+      problem: "Купил телефон, а он сломался",
+      keywords: [
+        "брак",
+        "некачественный товар",
+        "возврат",
+        "гарантия",
+        "ремонт",
+        "покупка",
+        "магазин",
+        "обман",
+      ],
+      solution: "Вернём деньги или заменим товар",
+      result: "Возврат полной стоимости или замена на новый",
+      time: "1-2 месяца",
       link: "/consumer-protection",
-      icon: "ShieldCheck",
-    },
-    {
-      id: 10,
-      title: "Миграционные споры",
-      description:
-        "Получение РВП, ВНЖ, гражданства, защита от депортации, миграционный учёт для иностранцев",
-      category: "court",
-      link: "/migration",
-      icon: "Globe",
-    },
-    {
-      id: 11,
-      title: "Представительство в суде",
-      description:
-        "Представительство интересов в судах всех инстанций: мировом, районном, арбитражном",
-      category: "court",
-      link: "/court-representation",
-      icon: "Scale",
-    },
-    {
-      id: 12,
-      title: "Земельное право",
-      description:
-        "Оформление земельных участков, споры по межеванию, аренда земли, снятие обременений",
-      category: "housing",
-      link: "/land-law",
-      icon: "MapPin",
-    },
-    {
-      id: 13,
-      title: "Составление и анализ документов",
-      description:
-        "Подготовка договоров, исков, жалоб, анализ документации, правовая экспертиза",
-      category: "court",
-      link: "/document-services",
-      icon: "FileText",
-    },
-    {
-      id: 14,
-      title: "Уголовная защита",
-      description:
-        "Защита в уголовных делах, представительство в суде, обжалование приговоров, УДО",
-      category: "court",
-      link: "/criminal-lawyer",
-      icon: "Shield",
+      icon: "ShoppingCart",
+      color: "from-purple-500 to-violet-500",
+      stat: "Вернули деньги в 94% случаев",
     },
   ];
 
-  // Фильтрация услуг
-  const filteredServices = useMemo(() => {
-    let filtered = allServices;
+  // Улучшенный поиск с учетом синонимов
+  const filteredCases = useMemo(() => {
+    if (!searchQuery && !activeCategory) return realCases;
 
-    // Фильтрация по категории
-    if (activeCategory && activeCategory !== "all") {
-      filtered = filtered.filter(
-        (service) => service.category === activeCategory,
-      );
-    }
+    const query = searchQuery.toLowerCase().trim();
 
-    // Фильтрация по поиску
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (service) =>
-          service.title.toLowerCase().includes(query) ||
-          service.description.toLowerCase().includes(query) ||
-          service.category.toLowerCase().includes(query),
-      );
-    }
+    return realCases.filter((case_) => {
+      // Проверка по категории
+      const categoryMatch =
+        !activeCategory ||
+        problemCategories
+          .find((c) => c.id === activeCategory)
+          ?.problems.some((problem) =>
+            case_.problem.toLowerCase().includes(problem.toLowerCase()),
+          );
 
-    return filtered;
+      if (!categoryMatch) return false;
+
+      // Если есть поисковый запрос
+      if (!query) return true;
+
+      // Поиск по основным полям и ключевым словам
+      const searchIn = [
+        case_.problem.toLowerCase(),
+        case_.solution.toLowerCase(),
+        case_.result.toLowerCase(),
+        ...case_.keywords,
+      ].join(" ");
+
+      return searchIn.includes(query);
+    });
   }, [searchQuery, activeCategory]);
 
-  // Обработчик отправки формы
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Здесь должна быть логика отправки формы
-    console.log("Форма отправлена:", formData);
-
-    // Имитация успешной отправки
-    setIsSubmitted(true);
-
-    // Очистка формы
-    setTimeout(() => {
-      setFormData({ name: "", phone: "", question: "" });
-      setShowForm(false);
-      setIsSubmitted(false);
-    }, 3000);
-  };
-
-  // Обработчик изменения полей формы
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // Популярные запросы для быстрого поиска
+  const popularSearches = [
+    "должны деньги",
+    "затопили квартиру",
+    "долги по кредитам",
+    "попал в ДТП",
+    "не платят зарплату",
+    "развод с мужем",
+    "обманул застройщик",
+    "купил бракованный товар",
+  ];
 
   return (
-    <div className="space-y-12">
-      {/* Заголовок */}
+    <div className="space-y-16">
+      {/* Блок 1: Главный поиск */}
       <div className="text-center">
-        <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          Услуги юристов
+        <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+          Решим вашу проблему с юристом
         </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Найдите нужную услугу. На каждой странице — детальное описание,
-          порядок работы и примеры.
+        <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
+          Опишите ситуацию простыми словами — подберём решение. Работаем без
+          предоплаты.
         </p>
+
+        {/* Поле поиска с подсказками */}
+        <div className="max-w-3xl mx-auto mb-8">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Например: 'должны деньги', 'затопили квартиру', 'не платят зарплату'..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-6 py-5 text-lg border-2 border-gray-300 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-sm"
+            />
+            <Icon
+              name="Search"
+              className="absolute right-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            />
+          </div>
+
+          {/* Популярные запросы */}
+          <div className="mt-4 flex flex-wrap gap-2 justify-center">
+            <span className="text-sm text-gray-500 mr-2">Часто ищут:</span>
+            {popularSearches.map((search, i) => (
+              <button
+                key={i}
+                onClick={() => setSearchQuery(search)}
+                className="text-sm px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
+              >
+                {search}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Категории проблем - компактнее */}
+        <div className="mb-10">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Выберите категорию проблемы:
+          </h2>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {problemCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() =>
+                  setActiveCategory(
+                    activeCategory === category.id ? null : category.id,
+                  )
+                }
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl transition-all duration-300 ${
+                  activeCategory === category.id
+                    ? `${category.color} ${category.border} border-2 shadow-lg scale-105`
+                    : `bg-white ${category.border} border hover:shadow-md`
+                }`}
+              >
+                <span className="text-xl">{category.title.split(" ")[0]}</span>
+                <span className="font-medium">
+                  {category.title.split(" ")[1]}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Поиск и фильтры */}
-      <div className="max-w-4xl mx-auto">
-        {/* Строка поиска */}
-        <div className="relative mb-8">
-          <input
-            type="text"
-            placeholder="Поиск по услугам..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 text-lg border border-gray-300 rounded-xl focus:border-gray-400 focus:ring-1 focus:ring-gray-400 outline-none"
-          />
-          <Icon
-            name="Search"
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-          />
-        </div>
-
-        {/* Категории-фильтры */}
-        <div className="flex flex-wrap gap-2 mb-12 justify-center">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`px-5 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                activeCategory === category.id
-                  ? "bg-gray-900 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Сетка услуг */}
-      {filteredServices.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredServices.map((service) => (
-            <div
-              key={service.id}
-              className="group border border-gray-200 rounded-xl p-6 hover:border-gray-300 hover:shadow-sm transition-all cursor-pointer"
-              onClick={() => navigate(service.link)}
-            >
-              <div className="space-y-4">
-                {/* Иконка и заголовок */}
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 group-hover:bg-gray-200 transition-colors">
-                    <Icon
-                      name={service.icon}
-                      className="h-6 w-6 text-gray-600"
-                    />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-gray-700 transition-colors">
-                    {service.title}
-                  </h3>
-                </div>
-
-                {/* Описание */}
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {service.description}
-                </p>
-
-                {/* Кнопка перехода */}
-                <div className="pt-2">
-                  <div className="inline-flex items-center text-gray-700 font-medium text-sm group-hover:text-gray-900 transition-colors">
-                    <span>Перейти к услуге</span>
-                    <Icon
-                      name="ArrowRight"
-                      className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform"
-                    />
-                  </div>
-                </div>
-              </div>
+      {/* Блок 2: Результаты поиска */}
+      <div>
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">
+            {filteredCases.length === 0
+              ? "Не нашли свою ситуацию?"
+              : "Как решаем такие проблемы"}
+          </h2>
+          {filteredCases.length > 0 && (
+            <div className="text-sm text-gray-500">
+              Нашли {filteredCases.length} вариант
+              {filteredCases.length === 1 ? "" : "а"}
             </div>
-          ))}
-        </div>
-      ) : (
-        // Если ничего не найдено
-        <div className="text-center py-12 border border-gray-200 rounded-xl">
-          <Icon
-            name="Search"
-            className="h-12 w-12 text-gray-400 mx-auto mb-4"
-          />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Услуги не найдены
-          </h3>
-          <p className="text-gray-600 max-w-md mx-auto mb-6">
-            Попробуйте изменить поисковый запрос или выбрать другую категорию
-          </p>
-          <button
-            onClick={() => {
-              setSearchQuery("");
-              setActiveCategory("all");
-            }}
-            className="text-gray-700 hover:text-gray-900 font-medium mr-4"
-          >
-            Сбросить фильтры
-          </button>
-          <button
-            onClick={() => setShowForm(true)}
-            className="text-primary hover:text-primary/80 font-medium"
-          >
-            Задать вопрос
-          </button>
-        </div>
-      )}
-
-      {/* Форма заявки */}
-      {showForm ? (
-        <div className="border border-gray-200 rounded-xl p-8 max-w-2xl mx-auto">
-          {isSubmitted ? (
-            <div className="text-center py-8">
-              <Icon
-                name="CheckCircle"
-                className="h-16 w-16 text-green-500 mx-auto mb-4"
-              />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Заявка отправлена
-              </h3>
-              <p className="text-gray-600">
-                Мы свяжемся с вами в ближайшее время
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold text-gray-900">
-                  Задать вопрос юристу
-                </h3>
-                <button
-                  onClick={() => setShowForm(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <Icon name="X" className="h-5 w-5" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Ваше имя
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-1 focus:ring-gray-400 outline-none"
-                    placeholder="Иван Иванов"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Телефон
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-1 focus:ring-gray-400 outline-none"
-                    placeholder="+7 (___) ___-__-__"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="question"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Ваш вопрос
-                  </label>
-                  <textarea
-                    id="question"
-                    name="question"
-                    value={formData.question}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-1 focus:ring-gray-400 outline-none resize-none"
-                    placeholder="Опишите свою ситуацию..."
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <Button
-                    type="submit"
-                    className="flex-1 bg-gray-900 hover:bg-gray-800 text-white"
-                  >
-                    Отправить вопрос
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => window.open("tel:+73832359505", "_self")}
-                    className="flex-1"
-                  >
-                    <Icon name="Phone" className="h-4 w-4 mr-2" />
-                    Позвонить
-                  </Button>
-                </div>
-
-                <p className="text-sm text-gray-500 text-center">
-                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-                </p>
-              </form>
-            </>
           )}
         </div>
-      ) : (
-        /* Если форма не показана - показываем кнопку для связи */
-        <div className="border-t border-gray-200 pt-12 text-center">
-          <p className="text-gray-600 mb-4">
-            Если не нашли нужную услугу или есть вопросы
+
+        {filteredCases.length === 0 ? (
+          // Если ничего не найдено
+          <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
+            <div className="text-6xl mb-6">🤔</div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Такая ситуация нам не знакома
+            </h3>
+            <p className="text-gray-600 mb-8 max-w-xl mx-auto">
+              Возможно, ваша проблема уникальна или вы описали её необычно.
+              <br />
+              <span className="font-semibold">
+                Позвоните — мы всё равно поможем.
+              </span>
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                size="lg"
+                onClick={() => window.open("tel:+73832359505", "_self")}
+                className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg px-10 py-6 text-lg"
+              >
+                <Icon name="Phone" className="h-6 w-6 mr-3" />
+                Бесплатно проконсультироваться
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveCategory(null);
+                }}
+                className="border-2 border-gray-300 hover:border-gray-400 px-8 py-6"
+              >
+                Показать все ситуации
+              </Button>
+            </div>
+          </div>
+        ) : (
+          // Карточки решений - новый дизайн
+          <div className="grid md:grid-cols-2 gap-6">
+            {filteredCases.map((case_, index) => (
+              <div
+                key={index}
+                className="group relative bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-primary/30 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                onClick={() => navigate(case_.link)}
+              >
+                {/* Цветная полоска сверху */}
+                <div className={`h-2 bg-gradient-to-r ${case_.color}`} />
+
+                <div className="p-6">
+                  {/* Заголовок с иконкой */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${case_.color} flex items-center justify-center flex-shrink-0`}
+                    >
+                      <Icon name={case_.icon} className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 leading-tight mb-1">
+                        {case_.problem}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <div className="px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full">
+                          {case_.solution}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {case_.stat}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Результат */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                      <Icon
+                        name="CheckCircle"
+                        className="h-4 w-4 text-green-500"
+                      />
+                      <span className="font-medium">Что получите:</span>
+                    </div>
+                    <p className="text-gray-700 pl-6">{case_.result}</p>
+                  </div>
+
+                  {/* Футер карточки */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                        <Icon name="Clock" className="h-4 w-4" />
+                        <span>{case_.time}</span>
+                      </div>
+                      <div className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">
+                        Без предоплаты
+                      </div>
+                    </div>
+
+                    <div className="flex items-center text-primary font-semibold text-sm group-hover:text-primary/80">
+                      <span>Подробнее</span>
+                      <Icon
+                        name="ArrowRight"
+                        className="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Блок 3: Полный список услуг (аккордеон) */}
+      <div className="border-t border-gray-200 pt-12">
+        <details className="group">
+          <summary className="flex items-center justify-between cursor-pointer text-xl font-bold text-gray-900 mb-6 list-none hover:text-primary transition-colors">
+            <span>Все услуги юриста (список для ознакомления)</span>
+            <Icon
+              name="ChevronDown"
+              className="h-5 w-5 text-gray-500 transform group-open:rotate-180 transition-transform"
+            />
+          </summary>
+
+          <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              {
+                title: "Банкротство физических лиц",
+                desc: "Списание долгов, защита от коллекторов",
+                link: "/bankruptcy-lawyer",
+              },
+              {
+                title: "Взыскание долгов",
+                desc: "Вернём деньги с должников через суд",
+                link: "/debt-collection",
+              },
+              {
+                title: "Семейный юрист",
+                desc: "Развод, раздел имущества, алименты",
+                link: "/family-lawyer",
+              },
+              {
+                title: "Автоюрист",
+                desc: "ДТП, споры со страховыми, лишение прав",
+                link: "/dtp-lawyer",
+              },
+              {
+                title: "Недвижимость",
+                desc: "Сделки, перепланировки, споры",
+                link: "/real-estate-lawyer",
+              },
+              {
+                title: "Трудовые споры",
+                desc: "Невыплата зарплаты, незаконное увольнение",
+                link: "/labor-law",
+              },
+              {
+                title: "Защита прав потребителей",
+                desc: "Возврат некачественного товара",
+                link: "/consumer-protection",
+              },
+              {
+                title: "Миграционные вопросы",
+                desc: "ВНЖ, гражданство, защита от депортации",
+                link: "/migration",
+              },
+              {
+                title: "Уголовные дела",
+                desc: "Защита на следствии и в суде",
+                link: "/criminal-lawyer",
+              },
+              {
+                title: "Земельные споры",
+                desc: "Межевание, оформление участков",
+                link: "/land-law",
+              },
+              {
+                title: "Возмещение ущерба от потопов",
+                desc: "Взыскание ущерба при залитии",
+                link: "/flood-damage",
+              },
+              {
+                title: "Составление документов",
+                desc: "Договоры, иски, правовая экспертиза",
+                link: "/document-services",
+              },
+            ].map((service, index) => (
+              <Link
+                key={index}
+                to={service.link}
+                className="block p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all hover:shadow-sm"
+              >
+                <div className="font-semibold text-gray-900 hover:text-primary transition-colors mb-1">
+                  {service.title}
+                </div>
+                <div className="text-sm text-gray-600">{service.desc}</div>
+              </Link>
+            ))}
+          </div>
+        </details>
+      </div>
+
+      {/* Блок 4: CTA - помощь в выборе */}
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-10 text-white text-center">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6">
+            Не уверены, что вам можем помочь?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Расскажите о ситуации за 5 минут — юрист определит, можем ли решить
+            вашу проблему
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Button
+              size="lg"
               onClick={() => window.open("tel:+73832359505", "_self")}
-              variant="outline"
-              className="border-gray-300 hover:border-gray-400"
+              className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-10 py-6 text-lg rounded-xl shadow-lg"
             >
-              <Icon name="Phone" className="h-4 w-4 mr-2" />
-              Позвонить
+              <Icon name="Phone" className="h-6 w-6 mr-3" />
+              Бесплатная консультация 15 мин
             </Button>
-            <Button
-              onClick={() => setShowForm(true)}
-              className="bg-gray-900 hover:bg-gray-800 text-white"
-            >
-              <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
-              Задать вопрос юристу
-            </Button>
+
+            <div className="text-left">
+              <div className="text-2xl font-black tracking-tight">
+                +7 (383) 235-95-05
+              </div>
+              <div className="text-gray-400 text-sm mt-1">
+                Звоните с 8:00 до 22:00 • Новосибирск
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6">
-            <div className="text-lg font-medium text-gray-900">
-              +7 (383) 235-95-05
-            </div>
-            <div className="text-sm text-gray-500 mt-1">
-              Новосибирск, городской
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10 pt-8 border-t border-gray-700">
+            {[
+              {
+                icon: "CheckCircle",
+                title: "Честная оценка",
+                desc: "Скажем, если не сможем помочь",
+              },
+              {
+                icon: "Clock",
+                title: "Без ожидания",
+                desc: "Сразу соединим с юристом",
+              },
+              {
+                icon: "Shield",
+                title: "Конфиденциально",
+                desc: "Не передаём данные третьим лицам",
+              },
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mb-3">
+                  <Icon name={item.icon} className="h-5 w-5 text-primary" />
+                </div>
+                <div className="font-semibold">{item.title}</div>
+                <div className="text-gray-400 text-sm mt-1">{item.desc}</div>
+              </div>
+            ))}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
