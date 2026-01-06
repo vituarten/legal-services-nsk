@@ -58,13 +58,6 @@ const FloodDamage = lazy(() => import("@/pages/FloodDamage"));
 const RealEstateLawyer = lazy(() => import("@/pages/RealEstateLawyer"));
 const CriminalLawyer = lazy(() => import("@/pages/CriminalLawyer"));
 
-// ДОБАВЛЕНЫ НОВЫЕ ИМПОРТЫ ↓
-const DocumentAnalysis = lazy(() => import("@/pages/DocumentAnalysis"));
-const CourtRepresentation = lazy(() => import("@/pages/CourtRepresentation"));
-const ConstructionDisputes = lazy(() => import("@/pages/ConstructionDisputes"));
-const LaborLaw = lazy(() => import("@/pages/LaborLaw"));
-const LandLaw = lazy(() => import("@/pages/LandLaw"));
-
 function AppContent() {
   const location = useLocation();
   const showNavigation = location.pathname !== "/";
@@ -129,9 +122,11 @@ function AppContent() {
               />
               <Route path="/dtp-lawyer/bad-repair" element={<BadRepair />} />
               <Route path="/migration" element={<Migration />} />
+
               <Route path="/about" element={<About />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/privacy" element={<Privacy />} />
+
               <Route path="/sitemap.xml" element={<Sitemap />} />
               <Route path="/promo" element={<Promo />} />
               <Route path="/consumer-rights" element={<ConsumerRights />} />
@@ -150,18 +145,6 @@ function AppContent() {
                 element={<RealEstateLawyer />}
               />
               <Route path="/criminal-lawyer" element={<CriminalLawyer />} />
-              // ДОБАВЛЕНЫ НОВЫЕ МАРШРУТЫ ↓
-              <Route path="/document-analysis" element={<DocumentAnalysis />} />
-              <Route
-                path="/court-representation"
-                element={<CourtRepresentation />}
-              />
-              <Route
-                path="/construction-disputes"
-                element={<ConstructionDisputes />}
-              />
-              <Route path="/labor-law" element={<LaborLaw />} />
-              <Route path="/land-law" element={<LandLaw />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
