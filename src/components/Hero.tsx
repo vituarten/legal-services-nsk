@@ -166,7 +166,7 @@ const Hero = () => {
           </div>
 
           {/* Принципы работы */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-8 sm:mb-10 md:mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-12 sm:mb-16">
             {[
               {
                 icon: "Shield",
@@ -209,55 +209,8 @@ const Hero = () => {
             ))}
           </div>
 
-          <div className="flex flex-col lg:flex-row lg:grid lg:grid-cols-2 gap-6 sm:gap-7 md:gap-8">
-            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 border border-primary/20 space-y-4 sm:space-y-5 md:space-y-6">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-primary rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Icon
-                    name="Building2"
-                    className="h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1 sm:mb-2">
-                    ООО "Правоотношение"
-                  </h3>
-                  <p className="text-muted-foreground text-sm sm:text-base">
-                    Юридическая компания с 2016 года. Специализируемся на защите
-                    прав граждан и бизнеса во всех сферах права — от семейных
-                    споров до корпоративных конфликтов.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 border border-blue-200 space-y-4 sm:space-y-5 md:space-y-6">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Icon
-                    name="Shield"
-                    className="h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1 sm:mb-2">
-                    Народная дружина Октябрьского района
-                  </h3>
-                  <p className="text-muted-foreground text-sm sm:text-base">
-                    <strong>
-                      Аккредитация МВД Новосибирской области от 18 марта 2016
-                      года.
-                    </strong>
-                    Работаем в тесном взаимодействии с государственными органами
-                    для защиты законности.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Финальный блок - Уникальное сочетание возможностей */}
-          <div className="mt-12 sm:mt-14 md:mt-16 lg:mt-20">
+          <div className="mt-12 sm:mt-16 md:mt-20">
             <div className="bg-gradient-to-r from-primary/10 via-blue-50/30 to-primary/5 rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 border border-primary/20">
               <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8">
                 <div className="lg:w-1/4 flex justify-center">
