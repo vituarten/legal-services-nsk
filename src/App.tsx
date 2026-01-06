@@ -53,7 +53,7 @@ const ConsumerProtection = lazy(() => import("@/pages/ConsumerProtection"));
 const DTPLanding = lazy(() => import("@/pages/DTPLanding"));
 const FamilyLawyer = lazy(() => import("@/pages/FamilyLawyer"));
 const BankruptcyLawyer = lazy(() => import("@/pages/BankruptcyLawyer"));
-const DebtCollection = lazy(() => import("@/pages/DebtCollection"));
+import DebtCollection from "@/pages/DebtCollection";
 const FloodDamage = lazy(() => import("@/pages/FloodDamage"));
 const RealEstateLawyer = lazy(() => import("@/pages/RealEstateLawyer"));
 const CriminalLawyer = lazy(() => import("@/pages/CriminalLawyer"));
