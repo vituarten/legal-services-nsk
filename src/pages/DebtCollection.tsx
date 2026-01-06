@@ -5,14 +5,13 @@ import Icon from "@/components/ui/icon";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
-export default function PrivateDebtCollectionPage() {
+export default function DebtCollection() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
   });
   const [downloadClicked, setDownloadClicked] = useState(false);
 
-  // Яндекс.Метрика - добавляем правильно
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "text/javascript";
@@ -80,7 +79,6 @@ export default function PrivateDebtCollectionPage() {
     toast.info(`Файл "${docTitle}" отправлен`);
   };
 
-  // Данные
   const freeDocuments = [
     {
       title: "Образец расписки с максимальной защитой",
@@ -306,7 +304,6 @@ export default function PrivateDebtCollectionPage() {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        {/* Hero секция */}
         <section className="pt-28 pb-20 bg-gradient-to-br from-blue-50 to-white">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
@@ -401,7 +398,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Полезная информация */}
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -430,7 +426,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Ситуации */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -463,7 +458,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Преимущества */}
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-12">
@@ -492,7 +486,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Этапы работы */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-12">
@@ -521,7 +514,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Бесплатные документы */}
         <section id="documents" className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -598,7 +590,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* FAQ */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -627,7 +618,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Кейсы */}
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center mb-12">
@@ -674,7 +664,6 @@ export default function PrivateDebtCollectionPage() {
           </div>
         </section>
 
-        {/* Форма консультации */}
         <section
           id="consultation"
           className="py-20 bg-gradient-to-r from-blue-900 to-gray-900 text-white"
