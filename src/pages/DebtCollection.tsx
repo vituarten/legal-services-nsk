@@ -38,7 +38,6 @@ export default function PrivateDebtCollectionPage() {
     document.head.appendChild(script);
 
     return () => {
-      // При размонтировании удаляем скрипт
       if (script.parentNode) {
         script.parentNode.removeChild(script);
       }
