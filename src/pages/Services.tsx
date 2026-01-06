@@ -1,4 +1,4 @@
-import Services from "@/components/business/Services";
+import Services from "@/components/Services";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
 import Footer from "@/components/Footer";
