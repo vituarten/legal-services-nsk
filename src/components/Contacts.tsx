@@ -53,15 +53,6 @@ const Contacts = () => {
     },
   ];
 
-  const companyInfo = [
-    "✅ Опыт работы с 2016 года",
-    "✅ Аккредитация МВД Новосибирской области",
-    "✅ Индивидуальный подход к каждому клиенту",
-    "✅ Прозрачное ценообразование",
-    "✅ Работаем по всей России",
-    "✅ Очная и дистанционная консультация",
-  ];
-
   return (
     <section
       id="contacts"
@@ -77,8 +68,9 @@ const Contacts = () => {
           </p>
         </div>
 
+        {/* Основной контент - теперь без sticky */}
         <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Левая колонка - Контакты */}
+          {/* Левая колонка - Контакты (2/3 ширины) */}
           <div className="lg:col-span-2">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {contactInfo.map((item, index) => (
@@ -175,9 +167,9 @@ const Contacts = () => {
             </div>
           </div>
 
-          {/* Правая колонка - Информация о компании */}
+          {/* Правая колонка - Информация о компании (1/3 ширины) */}
           <div>
-            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 h-full">
               <CardContent className="p-4 sm:p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
@@ -194,7 +186,14 @@ const Contacts = () => {
                     О нас:
                   </h4>
                   <ul className="space-y-1.5">
-                    {companyInfo.map((info, index) => (
+                    {[
+                      "✅ Опыт работы с 2016 года",
+                      "✅ Аккредитация МВД Новосибирской области",
+                      "✅ Индивидуальный подход к каждому клиенту",
+                      "✅ Прозрачное ценообразование",
+                      "✅ Работаем по всей России",
+                      "✅ Очная и дистанционная консультация",
+                    ].map((info, index) => (
                       <li key={index} className="flex items-start gap-1.5">
                         <Icon
                           name="CheckCircle"
@@ -210,29 +209,34 @@ const Contacts = () => {
           </div>
         </div>
 
-        {/* Призыв к действию - ТОЛЬКО ГОРОДСКОЙ НОМЕР */}
-        <div className="mt-6 sm:mt-8 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 bg-white p-3 sm:p-4 rounded-lg border border-border shadow-sm">
-            <div className="text-left">
-              <div className="font-semibold text-foreground text-sm">
-                Нужна срочная консультация?
+        {/* Призыв к действию - теперь пропорциональный и красивый */}
+        <div className="mt-6 sm:mt-8">
+          <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4 sm:p-5 border border-primary/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+              <div className="text-center sm:text-left">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1">
+                  Нужна срочная консультация?
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Позвоните прямо сейчас
+                </p>
               </div>
-              <div className="text-xs text-muted-foreground">
-                Позвоните прямо сейчас
+
+              <div className="flex-shrink-0">
+                <a
+                  href="tel:+73832359505"
+                  className="inline-flex items-center gap-2 text-lg sm:text-xl font-bold text-primary hover:text-primary/80 transition-colors bg-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg border border-primary/20 hover:border-primary/40 hover:shadow-sm"
+                  onClick={() => {
+                    if (typeof window !== "undefined" && window.ym) {
+                      window.ym(106063131, "reachGoal", "urgent_call_bottom");
+                    }
+                  }}
+                >
+                  <Icon name="Phone" className="h-5 w-5" />
+                  +7 (383) 235-95-05
+                </a>
               </div>
             </div>
-            <a
-              href="tel:+73832359505"
-              className="inline-flex items-center gap-1.5 text-base font-bold text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
-              onClick={() => {
-                if (typeof window !== "undefined" && window.ym) {
-                  window.ym(106063131, "reachGoal", "urgent_call_bottom");
-                }
-              }}
-            >
-              <Icon name="Phone" className="h-4 w-4" />
-              +7 (383) 235-95-05
-            </a>
           </div>
         </div>
       </div>
