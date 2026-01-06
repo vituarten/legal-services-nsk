@@ -28,6 +28,7 @@ const Services = () => {
     { id: "bankruptcy", label: "БАНКРОТСТВО" },
   ];
 
+  // УДАЛЕНА услуга "Банкротство юридических лиц"
   const allServices = [
     {
       icon: "Users",
@@ -63,14 +64,14 @@ const Services = () => {
       description:
         "Подготовка договоров, анализ документации, правовая экспертиза",
       category: ["popular", "business", "citizens"],
-      link: "/services", // Нет отдельной страницы - ведет на общую
+      link: "/services",
     },
     {
       icon: "Shield",
       title: "Представительство и защита в суде",
       description: "Представительство интересов в судах всех инстанций",
       category: ["popular", "business", "citizens"],
-      link: "/services", // Нет отдельной страницы - ведет на общую
+      link: "/services",
     },
     {
       icon: "ShieldCheck",
@@ -92,21 +93,21 @@ const Services = () => {
       description:
         "Защита прав дольщиков, взыскание неустойки, возврат средств",
       category: ["popular", "realestate", "citizens"],
-      link: "/real-estate-lawyer", // Нет отдельной - ведет на недвижимость
+      link: "/real-estate-lawyer",
     },
     {
       icon: "Briefcase",
       title: "Трудовое право",
       description: "Защита трудовых прав, взыскание заработной платы",
       category: ["citizens"],
-      link: "/services", // Нет отдельной страницы - ведет на общую
+      link: "/services",
     },
     {
       icon: "Building",
       title: "Земельное право",
       description: "Оформление земельных участков, споры по межеванию",
       category: ["realestate"],
-      link: "/real-estate-lawyer", // Нет отдельной - ведет на недвижимость
+      link: "/real-estate-lawyer",
     },
     {
       icon: "Droplets",
