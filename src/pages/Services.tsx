@@ -1,10 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 import SEOHead from "@/components/SEOHead";
 import { getSEOConfig } from "@/utils/seoConfig";
-import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import {
   Breadcrumb,
@@ -14,26 +13,27 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom";
 
 const ServicesPage = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("popular");
   const seo = getSEOConfig("services");
 
   const tabs = [
-    { id: "all", label: "ВСЕ УСЛУГИ" },
     { id: "popular", label: "ПОПУЛЯРНЫЕ" },
-    { id: "citizens", label: "ДЛЯ ГРАЖДАН" },
+    { id: "citizens", label: "УСЛУГИ ДЛЯ ГРАЖДАН" },
+    { id: "business", label: "УСЛУГИ ДЛЯ БИЗНЕСА" },
     { id: "realestate", label: "НЕДВИЖИМОСТЬ" },
     { id: "bankruptcy", label: "БАНКРОТСТВО" },
   ];
 
-  // УДАЛЕНА услуга "Банкротство юридических лиц" и все цены
   const allServices = [
     {
       icon: "Car",
       title: "Автоюрист. Споры по ДТП",
       description:
-        "Взыскание ущерба по ОСАГО, споры со страховыми, защита от лишения прав, административные дела",
+        "Взыскание ущерба по ОСАГО, споры со страховыми, защита от лишения прав",
       category: ["popular", "citizens"],
       link: "/dtp-lawyer",
     },
@@ -48,25 +48,9 @@ const ServicesPage = () => {
       icon: "TrendingDown",
       title: "Банкротство физических лиц",
       description:
-        "Процедура банкротства для граждан, списание долгов, защита имущества от кредиторов",
+        "Процедура банкротства для граждан, списание долгов, защита имущества",
       category: ["popular", "bankruptcy", "citizens"],
       link: "/bankruptcy-lawyer",
-    },
-    {
-      icon: "FileText",
-      title: "Миграционные споры",
-      description:
-        "Получение РВП, ВНЖ, гражданства, защита от депортации, миграционный учёт",
-      category: ["popular", "citizens"],
-      link: "/migration",
-    },
-    {
-      icon: "Shield",
-      title: "Уголовная защита",
-      description:
-        "Защита в уголовных делах, представительство в суде, обжалование приговоров",
-      category: ["popular", "citizens"],
-      link: "/criminal-lawyer",
     },
     {
       icon: "Home",
@@ -85,6 +69,21 @@ const ServicesPage = () => {
       link: "/debt-collection",
     },
     {
+      icon: "FileText",
+      title: "Миграционные споры",
+      description: "Получение РВП, ВНЖ, гражданства, защита от депортации",
+      category: ["popular", "citizens"],
+      link: "/migration",
+    },
+    {
+      icon: "Shield",
+      title: "Уголовная защита",
+      description:
+        "Защита в уголовных делах, представительство в суде, обжалование приговоров",
+      category: ["popular", "citizens"],
+      link: "/criminal-lawyer",
+    },
+    {
       icon: "ShieldCheck",
       title: "Защита прав потребителей",
       description:
@@ -98,15 +97,14 @@ const ServicesPage = () => {
       description:
         "Защита прав дольщиков, взыскание неустойки, возврат средств",
       category: ["popular", "realestate", "citizens"],
-      link: "/real-estate-lawyer",
+      link: "/disputes-with-developers",
     },
     {
       icon: "FileText",
       title: "Составление документов",
-      description:
-        "Подготовка договоров, исков, жалоб, анализ документации, правовая экспертиза",
+      description: "Подготовка договоров, исков, жалоб, анализ документации",
       category: ["citizens"],
-      link: "/services",
+      link: "/document-services",
     },
     {
       icon: "Briefcase",
@@ -114,7 +112,7 @@ const ServicesPage = () => {
       description:
         "Защита трудовых прав, взыскание заработной платы, восстановление на работе",
       category: ["citizens"],
-      link: "/services",
+      link: "/labor-law",
     },
     {
       icon: "MapPin",
@@ -122,22 +120,25 @@ const ServicesPage = () => {
       description:
         "Оформление земельных участков, споры по межеванию, аренда земли",
       category: ["realestate"],
-      link: "/real-estate-lawyer",
+      link: "/land-law",
     },
     {
       icon: "Droplets",
       title: "Возмещение ущерба от потопов",
-      description:
-        "Взыскание ущерба от залития квартиры, оценка повреждений, споры с соседями",
+      description: "Взыскание ущерба от залития квартиры, оценка повреждений",
       category: ["popular", "citizens", "realestate"],
       link: "/flood-damage",
+    },
+    {
+      icon: "Shield",
+      title: "Представительство и защита в суде",
+      description: "Представительство интересов в судах всех инстанций",
+      category: ["popular", "business", "citizens"],
+      link: "/court-representation",
     },
   ];
 
   const getFilteredServices = () => {
-    if (activeTab === "all") {
-      return allServices;
-    }
     if (activeTab === "popular") {
       return allServices.filter((service) =>
         service.category.includes("popular"),
@@ -175,24 +176,24 @@ const ServicesPage = () => {
             </BreadcrumbList>
           </Breadcrumb>
 
-          {/* Header */}
-          <div className="text-center space-y-4 mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-foreground">
-              Наши услуги
+          {/* Заголовок */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              Услуги юристов в Новосибирске
             </h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Полный спектр юридических услуг для граждан. Прозрачные цены,
-              профессиональное качество, гарантия результата.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Найдите нужную услугу. Под каждой — детальное описание, порядок
+              работы и примеры из практики.
             </p>
           </div>
 
-          {/* Category Tabs */}
+          {/* Табы */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`px-6 py-3 text-sm font-medium rounded-lg transition-all ${
                   activeTab === tab.id
                     ? "bg-primary text-white shadow-lg"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -203,104 +204,74 @@ const ServicesPage = () => {
             ))}
           </div>
 
-          {/* Services Grid - БЕЗ ЦЕН */}
+          {/* Сетка услуг - чистая навигация */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <Card
+              <div
                 key={index}
-                className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-border group"
+                className="group bg-white rounded-2xl border border-border p-8 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                onClick={() => navigate(service.link)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && navigate(service.link)}
               >
-                <CardHeader className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                      <Icon name={service.icon} className="h-6 w-6" />
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <Icon
+                        name={service.icon}
+                        className="h-6 w-6 text-primary"
+                      />
                     </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+                    <div>
+                      <h3 className="text-xl font-bold text-foreground mb-2">
                         {service.title}
-                      </CardTitle>
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {service.description}
+                      </p>
                     </div>
                   </div>
-                </CardHeader>
 
-                <CardContent className="space-y-6">
-                  <p className="text-muted-foreground leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  <div className="flex gap-2">
-                    {service.link ? (
-                      <Link to={service.link} className="flex-1">
-                        <Button className="w-full bg-primary hover:bg-primary/90 text-white">
-                          <Icon name="ArrowRight" className="h-4 w-4 mr-2" />
-                          Подробнее
-                        </Button>
-                      </Link>
-                    ) : (
-                      <Button
-                        className="w-full bg-primary hover:bg-primary/90 text-white"
-                        onClick={() => window.open("tel:+79994523500", "_self")}
-                      >
-                        <Icon name="MessageCircle" className="h-4 w-4 mr-2" />
-                        Заказать услугу
-                      </Button>
-                    )}
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-primary font-semibold text-sm group-hover:text-primary/80 transition-colors">
+                      Подробнее об услуге
+                    </span>
+                    <Icon
+                      name="ArrowRight"
+                      className="h-4 w-4 text-primary transform group-hover:translate-x-1 transition-transform"
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
 
-          {/* Bottom CTA */}
-          <div className="mt-16 text-center">
-            <Card className="bg-gradient-to-r from-primary to-blue-600 text-white border-none shadow-2xl">
-              <CardContent className="p-8">
-                <div className="text-center space-y-6">
-                  <h3 className="text-3xl font-bold">
-                    Не нашли нужную услугу?
-                  </h3>
-                  <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-                    Мы оказываем весь спектр юридических услуг. Позвоните или
-                    оставьте заявку — подберём решение для вашей ситуации.
-                  </p>
-
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-                    <Button
-                      size="lg"
-                      className="bg-white text-primary hover:bg-gray-100"
-                      onClick={() => window.open("tel:+79994523500", "_self")}
-                    >
-                      <Icon name="MessageCircle" className="h-5 w-5 mr-2" />
-                      Бесплатная консультация
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="border-2 border-white text-white hover:bg-white hover:text-primary"
-                      onClick={() => window.open("tel:+79994523500", "_self")}
-                    >
-                      <Icon name="Phone" className="h-5 w-5 mr-2" />
-                      +7 999 452 35 00
-                    </Button>
-                  </div>
-
-                  <div className="flex flex-wrap justify-center gap-6 pt-6 text-blue-100">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Clock" className="h-5 w-5" />
-                      <span>Работаем 24/7</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="MapPin" className="h-5 w-5" />
-                      <span>Выезд в любой район</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Shield" className="h-5 w-5" />
-                      <span>Конфиденциальность</span>
-                    </div>
-                  </div>
+          {/* Минимальный блок для неопределившихся */}
+          <div className="text-center mt-16 pt-8 border-t border-border">
+            <p className="text-lg text-muted-foreground mb-4">
+              Не нашли свою ситуацию в списке?
+            </p>
+            <p className="text-sm text-muted-foreground mb-6 max-w-xl mx-auto">
+              Опишите проблему по телефону, и юрист подскажет, как её решить
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => window.open("tel:+73832359505", "_self")}
+                className="border-primary text-primary hover:bg-primary hover:text-white px-8"
+              >
+                <Icon name="Phone" className="h-5 w-5 mr-2" />
+                Позвонить юристу
+              </Button>
+              <div className="text-center sm:text-left">
+                <div className="text-lg font-bold">+7 (383) 235-95-05</div>
+                <div className="text-sm text-muted-foreground">
+                  Новосибирск, городской
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
         <Footer />
