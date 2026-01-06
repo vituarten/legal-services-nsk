@@ -1,332 +1,247 @@
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
-import { useState, useEffect } from "react";
 
-const Hero = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-
-  useEffect(() => {
-    const checkDevice = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      setIsTablet(width >= 768 && width < 1024);
-    };
-
-    checkDevice();
-    window.addEventListener("resize", checkDevice);
-    setIsVisible(true);
-
-    return () => window.removeEventListener("resize", checkDevice);
-  }, []);
+const Contacts = () => {
+  const contactInfo = [
+    {
+      icon: "Phone" as const,
+      title: "Телефон",
+      value: "+7 (383) 235-95-05",
+      link: "tel:+73832359505",
+      description: "Городской номер, Новосибирск",
+      color: "bg-primary/10 text-primary",
+    },
+    {
+      icon: "Mail" as const,
+      title: "Email",
+      value: "112@юридический-сервис.рф",
+      link: "mailto:112@юридический-сервис.рф",
+      description: "Основная почта",
+      color: "bg-purple-500/10 text-purple-500",
+    },
+    {
+      icon: "MapPin" as const,
+      title: "Адрес офиса",
+      value: "г. Новосибирск, ул. Ленина, д. 3",
+      link: "#",
+      description: "Юридический адрес",
+      color: "bg-green-500/10 text-green-500",
+    },
+    {
+      icon: "Clock" as const,
+      title: "Режим работы",
+      value: "Круглосуточно 24/7",
+      link: "#",
+      description: "Консультации в любое время",
+      color: "bg-amber-500/10 text-amber-500",
+    },
+    {
+      icon: "Building2" as const,
+      title: "О компании",
+      value: "ЮрСервис НСК",
+      link: "#home",
+      description: "Работаем с 2016 года",
+      color: "bg-red-500/10 text-red-500",
+    },
+    {
+      icon: "Shield" as const,
+      title: "Аккредитация",
+      value: "МВД Новосибирской области",
+      link: "#",
+      description: "С 18 марта 2016 года",
+      color: "bg-blue-500/10 text-blue-500",
+    },
+  ];
 
   return (
-    <main
-      id="home"
-      className="pt-16 sm:pt-18 md:pt-20 pb-12 sm:pb-14 md:pb-16 bg-gradient-to-b from-background to-secondary/20"
-      role="main"
+    <section
+      id="contacts"
+      className="py-8 sm:py-12 bg-gradient-to-b from-background to-white"
     >
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
-          {/* Content */}
-          <div
-            className={`space-y-4 sm:space-y-5 md:space-y-6 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-          >
-            <div className="space-y-3 sm:space-y-4">
-              <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-semibold border border-primary/20">
-                <Icon
-                  name="MapPin"
-                  className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2"
-                />
-                Новосибирск
-              </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight">
-                Профессиональная юридическая помощь
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Защищаем ваши права и интересы. Индивидуальный подход,
-                прозрачные цены, гарантия результата.
-              </p>
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+            Контакты
+          </h2>
+          <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+            Свяжитесь с нами любым удобным способом
+          </p>
+        </div>
+
+        {/* Основной контент - теперь без sticky */}
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Левая колонка - Контакты (2/3 ширины) */}
+          <div className="lg:col-span-2">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {contactInfo.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.link}
+                  target={
+                    item.link.startsWith("tel:") ||
+                    item.link.startsWith("mailto:")
+                      ? "_self"
+                      : "_blank"
+                  }
+                  rel="noopener noreferrer"
+                  className={`block ${item.link === "#" ? "cursor-default" : "cursor-pointer hover:scale-[1.02] transition-transform"}`}
+                  onClick={() => {
+                    if (
+                      (item.link.startsWith("tel:") ||
+                        item.link.startsWith("mailto:")) &&
+                      typeof window !== "undefined" &&
+                      window.ym
+                    ) {
+                      window.ym(
+                        106063131,
+                        "reachGoal",
+                        `${item.icon.toLowerCase()}_click`,
+                      );
+                    }
+                  }}
+                >
+                  <div className="bg-white p-3 sm:p-4 rounded-lg border border-border hover:border-gray-300 hover:shadow-md transition-all h-full">
+                    <div className="flex flex-col h-full">
+                      <div className="flex items-start gap-2 mb-2">
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${item.color.split(" ")[0]}`}
+                        >
+                          <Icon
+                            name={item.icon}
+                            className={`h-4 w-4 ${item.color.split(" ")[1]}`}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-foreground text-xs sm:text-sm">
+                            {item.title}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-auto">
+                        <div className="text-sm sm:text-base font-bold text-foreground mb-0.5">
+                          {item.value}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {item.description}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-3 sm:pt-4">
-              <Button
-                size={isMobile ? "default" : isTablet ? "lg" : "lg"}
-                className="bg-primary hover:bg-primary/90 text-sm sm:text-base md:text-lg px-6 sm:px-7 md:px-8 py-4 sm:py-5 md:py-6"
-                asChild
-              >
-                <a href="tel:+73832359505">
-                  <Icon name="Phone" className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                  +7 (383) 235-95-05
-                </a>
-              </Button>
-              <Button
-                variant="outline"
-                size={isMobile ? "default" : isTablet ? "lg" : "lg"}
-                asChild
-                className="border-2 border-primary text-primary hover:bg-primary hover:text-white text-sm sm:text-base md:text-lg px-6 sm:px-7 md:px-8 py-4 sm:py-5 md:py-6"
-              >
-                <a href="#contacts">
-                  <Icon
-                    name="MessageCircle"
-                    className="h-4 w-4 sm:h-5 sm:w-5 mr-2"
-                  />
-                  Получить консультацию
-                </a>
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap gap-4 sm:gap-5 md:gap-6 pt-3 sm:pt-4 text-xs sm:text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <Icon
-                  name="CheckCircle"
-                  className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0"
-                />
-                <span>Опыт с 2016 года</span>
-              </div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <Icon
-                  name="Shield"
-                  className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0"
-                />
-                <span>100% конфиденциальность</span>
-              </div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <Icon
-                  name="Clock"
-                  className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0"
-                />
-                <span>Работаем 24/7</span>
-              </div>
+            {/* Карта */}
+            <div className="mt-4 sm:mt-6">
+              <h3 className="font-semibold text-foreground text-base sm:text-lg mb-2">
+                Мы находимся здесь
+              </h3>
+              <Card className="border-border overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="aspect-video">
+                    <iframe
+                      src="https://yandex.ru/map-widget/v1/?ll=82.920430%2C55.030204&z=14&l=map&pt=82.920430%2C55.030204,pm2rdm"
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      title="Офис ЮрСервис НСК в Новосибирске"
+                      loading="lazy"
+                      allowFullScreen
+                      className="block"
+                    />
+                  </div>
+                  <div className="p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-white border-t border-border">
+                    <div className="text-xs sm:text-sm text-muted-foreground">
+                      <p className="mb-1">
+                        <strong>Адрес:</strong> г. Новосибирск, ул. Ленина, д. 3
+                      </p>
+                      <p>
+                        <strong>Время работы:</strong> круглосуточно,
+                        консультации 24/7
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
-          {/* Right side - Logos */}
-          <div className="relative w-full">
-            <div className="relative w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 items-stretch">
-                {/* Логотип Народной Дружины */}
-                <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg sm:shadow-xl border border-border hover:shadow-2xl transition-all flex flex-col">
-                  <div className="flex-1 flex items-center justify-center min-h-[120px] sm:min-h-[140px] md:min-h-[160px]">
-                    <img
-                      src="https://cdn.poehali.dev/files/ЛоготипНД54%20(%20без%20фона%20)%20.jpe%20g.png"
-                      alt="Народная Дружина Октябрьского района"
-                      className="w-full h-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] object-contain"
-                      loading="lazy"
-                    />
+          {/* Правая колонка - Информация о компании (1/3 ширины) */}
+          <div>
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 h-full">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                    <Icon name="Scale" className="h-5 w-5 text-white" />
                   </div>
-                  <p className="text-xs text-center text-muted-foreground mt-3 sm:mt-4">
-                    Народная Дружина
-                    <br />
-                    Октябрьского района
-                  </p>
+                  <div>
+                    <h3 className="font-bold text-foreground">ЮрСервис НСК</h3>
+                    <p className="text-xs text-muted-foreground">С 2016 года</p>
+                  </div>
                 </div>
 
-                {/* Логотип Правоотношение */}
-                <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg sm:shadow-xl border border-border hover:shadow-2xl transition-all flex flex-col">
-                  <div className="flex-1 flex items-center justify-center min-h-[120px] sm:min-h-[140px] md:min-h-[160px]">
-                    <img
-                      src="https://cdn.poehali.dev/files/Unkwn.png"
-                      alt="ООО Правоотношение"
-                      className="w-full h-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                  <p className="text-xs text-center text-muted-foreground mt-3 sm:mt-4">
-                    ООО "Правоотношение"
-                  </p>
+                <div className="space-y-1">
+                  <h4 className="font-semibold text-foreground text-sm mb-1">
+                    О нас:
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {[
+                      "✅ Опыт работы с 2016 года",
+                      "✅ Аккредитация МВД Новосибирской области",
+                      "✅ Индивидуальный подход к каждому клиенту",
+                      "✅ Прозрачное ценообразование",
+                      "✅ Работаем по всей России",
+                      "✅ Очная и дистанционная консультация",
+                    ].map((info, index) => (
+                      <li key={index} className="flex items-start gap-1.5">
+                        <Icon
+                          name="CheckCircle"
+                          className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5"
+                        />
+                        <span className="text-xs text-foreground">{info}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-
-              <div className="mt-6 sm:mt-7 md:mt-8 text-center">
-                <div className="inline-flex items-center gap-2 sm:gap-3 bg-primary/10 rounded-full px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 border border-primary/20">
-                  <Icon
-                    name="Scale"
-                    className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary"
-                  />
-                  <span className="font-bold text-foreground text-sm sm:text-base">
-                    ЮрСервисНСК
-                  </span>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        {/* About Company Section */}
-        <div className="mt-16 sm:mt-18 md:mt-20 lg:mt-24">
-          <div className="text-center mb-8 sm:mb-10 md:mb-12">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
-              Наша миссия
-            </h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto font-semibold text-sm sm:text-base md:text-lg">
-              Сделать правовую защиту доступной и эффективной для каждого
-            </p>
-          </div>
-
-          {/* Принципы работы */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-12 sm:mb-16">
-            {[
-              {
-                icon: "Shield",
-                title: "Защита интересов",
-                desc: "Ваши интересы — наш приоритет",
-              },
-              {
-                icon: "Scale",
-                title: "Законность",
-                desc: "Строгое соблюдение закона",
-              },
-              {
-                icon: "Users",
-                title: "Индивидуальный подход",
-                desc: "Персональная стратегия",
-              },
-              {
-                icon: "Clock",
-                title: "Оперативность",
-                desc: "Быстрое решение задач",
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-xl p-4 sm:p-5 md:p-6 border border-border hover:border-primary/30 transition-colors"
-              >
-                <div className="inline-block p-2.5 sm:p-3 bg-primary/10 rounded-lg sm:rounded-xl mb-3">
-                  <Icon
-                    name={item.icon as any}
-                    className="h-5 w-5 sm:h-6 sm:w-6 text-primary"
-                  />
-                </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-1 sm:mb-2">
-                  {item.title}
+        {/* Призыв к действию - теперь пропорциональный и красивый */}
+        <div className="mt-6 sm:mt-8">
+          <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-4 sm:p-5 border border-primary/20">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+              <div className="text-center sm:text-left">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1">
+                  Нужна срочная консультация?
                 </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {item.desc}
+                <p className="text-sm text-muted-foreground">
+                  Позвоните прямо сейчас
                 </p>
               </div>
-            ))}
-          </div>
 
-          {/* Финальный блок - Уникальное сочетание возможностей */}
-          <div className="mt-12 sm:mt-16 md:mt-20">
-            <div className="bg-gradient-to-r from-primary/10 via-blue-50/30 to-primary/5 rounded-xl sm:rounded-2xl p-6 sm:p-7 md:p-8 border border-primary/20">
-              <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8">
-                <div className="lg:w-1/4 flex justify-center">
-                  <div className="relative">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary to-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center">
-                      <Icon
-                        name="ShieldCheck"
-                        className="h-8 w-8 sm:h-10 sm:w-10 text-white"
-                      />
-                    </div>
-                    <div className="absolute -top-2 -right-2 bg-white rounded-full p-1.5 border border-primary/20">
-                      <Icon name="Star" className="h-4 w-4 text-amber-500" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:w-3/4 text-center lg:text-left">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4">
-                    Уникальное сочетание возможностей
-                  </h3>
-
-                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-5">
-                    <div className="bg-white p-4 sm:p-5 rounded-lg border border-blue-100 hover:border-primary/30 transition-colors">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Icon
-                            name="Building2"
-                            className="h-5 w-5 text-primary"
-                          />
-                        </div>
-                        <div>
-                          <div className="font-semibold text-foreground text-sm">
-                            Юридическая экспертиза
-                          </div>
-                          <div className="text-xs text-primary font-medium">
-                            ООО "Правоотношение"
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Более 8 лет успешной практики во всех сферах права
-                      </p>
-                    </div>
-
-                    <div className="bg-white p-4 sm:p-5 rounded-lg border border-blue-100 hover:border-blue-300 transition-colors">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Icon
-                            name="Shield"
-                            className="h-5 w-5 text-blue-600"
-                          />
-                        </div>
-                        <div>
-                          <div className="font-semibold text-foreground text-sm">
-                            Государственная поддержка
-                          </div>
-                          <div className="text-xs text-blue-600 font-medium">
-                            Народная дружина
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Аккредитация МВД Новосибирской области с 18 марта 2016
-                        года
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-primary/20">
-                    <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 bg-white px-5 py-3 sm:px-6 sm:py-4 rounded-xl border border-primary/20 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Icon name="Scale" className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="text-sm font-semibold text-primary">
-                          ЮрСервис НСК =
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-foreground">
-                            Экспертиза в праве
-                          </span>
-                          <Icon
-                            name="Plus"
-                            className="h-4 w-4 text-green-600"
-                          />
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-foreground">
-                            Государственная поддержка
-                          </span>
-                          <Icon name="Equal" className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="text-sm font-bold text-primary">
-                          Ваша уверенность в результате
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 text-center sm:text-left">
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Объединение профессиональной юридической помощи и
-                        официальной поддержки
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div className="flex-shrink-0">
+                <a
+                  href="tel:+73832359505"
+                  className="inline-flex items-center gap-2 text-lg sm:text-xl font-bold text-primary hover:text-primary/80 transition-colors bg-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg border border-primary/20 hover:border-primary/40 hover:shadow-sm"
+                  onClick={() => {
+                    if (typeof window !== "undefined" && window.ym) {
+                      window.ym(106063131, "reachGoal", "urgent_call_bottom");
+                    }
+                  }}
+                >
+                  <Icon name="Phone" className="h-5 w-5" />
+                  +7 (383) 235-95-05
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 
-export default Hero;
+export default Contacts;
