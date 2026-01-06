@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import Icon from "@/components/ui/Icon";
+import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 
 const Services = () => {
