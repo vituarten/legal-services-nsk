@@ -9,9 +9,12 @@ export default function DebtCollection() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    email: "",
+    situation: "",
   });
   const [downloadClicked, setDownloadClicked] = useState(false);
 
+  // Яндекс.Метрика
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "text/javascript";
@@ -25,8 +28,7 @@ export default function DebtCollection() {
         clickmap:true,
         trackLinks:true,
         accurateTrackBounce:true,
-        webvisor:true,
-        ecommerce:"dataLayer"
+        webvisor:true
       });
     `;
 
@@ -53,8 +55,10 @@ export default function DebtCollection() {
       (window as any).ym(106063131, "reachGoal", "form_submit");
     }
 
-    toast.success("Спасибо! Мы перезвоним вам в течение 30 минут");
-    setFormData({ name: "", phone: "" });
+    toast.success(
+      "Заявка принята! Юрист по взысканию свяжется с вами в течение 30 минут",
+    );
+    setFormData({ name: "", phone: "", email: "", situation: "" });
   };
 
   const handlePhoneClick = () => {
@@ -76,213 +80,141 @@ export default function DebtCollection() {
         document: docTitle,
       });
     }
-    toast.info(`Файл "${docTitle}" отправлен`);
+    toast.info(
+      `Файл "${docTitle}" начнет скачиваться. Если возникнут вопросы - мы ниже.`,
+    );
   };
 
+  // Психологический триггер
+  const painPoints = [
+    { icon: "Clock", text: 'Долг "висит" уже несколько месяцев или лет?' },
+    { icon: "UserX", text: "Должник игнорирует звонки и письма?" },
+    { icon: "Building", text: "Компания-должник меняет директоров и адреса?" },
+    { icon: "ShieldOff", text: 'Приставы говорят "не можем найти имущество"?' },
+    {
+      icon: "TrendingDown",
+      text: "Боитесь, что должник обанкротится и спишет долг?",
+    },
+    { icon: "DollarSign", text: "Эти деньги нужны вам для развития бизнеса?" },
+  ];
+
+  // Документы для скачивания
   const freeDocuments = [
     {
-      title: "Образец расписки с максимальной защитой",
-      description: "Шаблон, который не оставит должнику шансов в суде",
+      title: 'Чек-лист "10 действий до обращения в суд"',
+      description:
+        "Пошаговый план, который увеличит шансы на возврат денег на 40%",
+      icon: "CheckSquare",
+    },
+    {
+      title: "Образец эффективной досудебной претензии",
+      description:
+        "Не просто формальность, а документ, после которого 30% должников платят",
       icon: "FileText",
     },
     {
-      title: 'Чек-лист "Как вести переговоры с должником"',
-      description: "10 фраз, которые заставят человека вернуть деньги",
-      icon: "MessageSquare",
-    },
-    {
-      title: "Шаблон претензии о возврате денег",
-      description: "Готовый текст, который отправляем перед судом",
-      icon: "Send",
-    },
-    {
-      title: 'Памятка "Что делать, если должник скрывается"',
-      description: "Пошаговый план поиска и действий",
+      title: 'Памятка "Как проверить должника"',
+      description:
+        "7 источников информации, которые покажут реальные активы должника",
       icon: "Search",
+    },
+    {
+      title: "Гид по работе с приставами",
+      description:
+        "Что требовать от ФССП, чтобы они реально работали по вашему делу",
+      icon: "Shield",
     },
   ];
 
-  const situations = [
+  // Ситуации
+  const creditorSituations = [
     {
-      icon: "Users",
-      title: "Долг по расписке",
-      description:
-        "Друг, знакомый, сосед взял деньги под расписку и не возвращает",
-      color: "bg-blue-100 text-blue-700",
+      icon: "Building2",
+      title: "Контрагент не платит",
+      description: "ООО или ИП задерживает оплату за товар или услугу",
+      signs: ["Игнорирует претензии", "Меняет юр. адрес"],
     },
     {
-      icon: "Home",
-      title: "Долг за аренду",
-      description: "Жилец не платит за квартиру или комнату, не выезжает",
-      color: "bg-green-100 text-green-700",
+      icon: "User",
+      title: "Частный заемщик",
+      description: "Человек не возвращает крупную сумму денег",
+      signs: ["Скрывается", "Меняет номера"],
     },
     {
-      icon: "Wrench",
-      title: "Долг за ремонт/услуги",
-      description: "Сделали ремонт, оказали услуги — клиент исчез без оплаты",
-      color: "bg-orange-100 text-orange-700",
+      icon: "FileText",
+      title: "Есть решение суда",
+      description: "Суд был, исполнительный лист есть, а денег нет",
+      signs: ["Имущество скрыто", "Приставы бездействуют"],
     },
     {
-      icon: "Car",
-      title: "Долг за автомобиль",
-      description: "Продали машину, а покупатель не доплатил оставшуюся сумму",
-      color: "bg-purple-100 text-purple-700",
+      icon: "ShieldAlert",
+      title: "Должник банкротится",
+      description: "Нужно срочно включиться в реестр кредиторов",
+      signs: ["Процедура запущена", "Сроки горят"],
     },
     {
-      icon: "Briefcase",
-      title: "Партнерский долг",
-      description:
-        "Бывший партнер по бизнесу должен деньги за вклад в общее дело",
-      color: "bg-red-100 text-red-700",
+      icon: "Globe",
+      title: "Иностранный контрагент",
+      description: "Зарубежная компания уклоняется от оплаты",
+      signs: ["Юрисдикция сложная", "Законы другие"],
     },
     {
-      icon: "HeartHandshake",
-      title: "Семейный долг",
-      description: "Родственник занял крупную сумму и теперь избегает общения",
-      color: "bg-pink-100 text-pink-700",
+      icon: "Clock",
+      title: "Долг списали как безнадежный",
+      description: "Но вы уверены, что деньги можно вернуть",
+      signs: ["Срок давности", "Банк списал"],
     },
   ];
 
   const advantages = [
     {
       icon: "Percent",
-      title: "Оплата за результат",
-      text: "В сложных случаях работаем за процент от возвращенной суммы. Никаких предоплат.",
+      title: "Платите только за результат",
+      text: "В сложных делах работаем за процент от возвращенной суммы. Никаких предоплат.",
       highlight: true,
     },
     {
       icon: "Zap",
-      title: "Действуем за 72 часа",
-      text: "Пока другие раздумывают — мы уже отправляем претензию и начинаем давление.",
+      title: "Действуем пока вы читаете",
+      text: 'За 72 часа наложим арест на счета и имущество должника. Пока другие юристы "изучают документы".',
       highlight: true,
     },
     {
-      icon: "Shield",
-      title: "Работаем по закону",
-      text: "Никаких угроз и незаконных методов. Только правовые рычаги давления.",
-      highlight: false,
+      icon: "Search",
+      title: "Найдем то, что скрыто",
+      text: 'У 60% "бедных" должников есть счета в других банках, недвижимость на родственников, доли в бизнесе.',
+      highlight: true,
     },
     {
-      icon: "EyeOff",
-      title: "Конфиденциальность",
-      text: "Ваши соседи, знакомые и коллеги не узнают, что вы взыскиваете долг.",
-      highlight: false,
-    },
-    {
-      icon: "Clock",
-      title: "Экономим ваше время",
-      text: "Не нужно ходить по судам и общаться с приставами. Мы делаем всё за вас.",
-      highlight: false,
-    },
-    {
-      icon: "Target",
-      title: "Знаем слабые места",
-      text: "У 95% должников есть что терять: работа, репутация, имущество. Используем это.",
-      highlight: false,
-    },
-  ];
-
-  const steps = [
-    {
-      num: "1",
-      title: "Консультация",
-      text: "Бесплатный анализ вашей ситуации. Просто расскажите, кто, сколько и как давно должен.",
-      duration: "15 минут",
-    },
-    {
-      num: "2",
-      title: "Стратегия",
-      text: "Изучаем ваши документы, объясняем рычаги воздействия, предлагаем план.",
-      duration: "1-2 дня",
-    },
-    {
-      num: "3",
-      title: "Реализация",
-      text: "Юридически грамотные претензии, переговоры, психологическое давление — всё по закону.",
-      duration: "2-3 недели",
-    },
-    {
-      num: "4",
-      title: "Результат",
-      text: "Деньги возвращаются на ваш счет. В 72% случаев — без суда.",
-      duration: "1-4 месяца",
+      icon: "Briefcase",
+      title: "Говорим на языке цифр",
+      text: 'Не "возьмемся за дело", а "вернем от 70% долга за 4-8 месяцев". Конкретика вместо обещаний.',
+      highlight: true,
     },
   ];
 
   const cases = [
     {
-      amount: "850 000 ₽",
-      period: "3 года",
-      result: "Полностью вернули",
-      details:
-        "Долг по расписке от бывшего друга. Должник скрывался, менял номера.",
-      actions: ["Поиск через соцсети", "Претензия на работу", "Угроза судом"],
+      debt: "12.4 млн ₽",
+      result: "Взыскано 100%",
+      time: "8 месяцев",
+      situation:
+        "Долг по договору поставки. Должник скрывал активы через офшоры.",
+      difficulties: ["Офшоры", "Подставные лица"],
     },
     {
-      amount: "350 000 ₽",
-      period: "1.5 года",
-      result: "Вернули 300 000 ₽",
-      details: "Долг за ремонт квартиры. Заказчик остался недоволен качеством.",
-      actions: ["Экспертиза качества", "Медиация", "Мировое соглашение"],
+      debt: "3.1 млн ₽",
+      result: "Взыскано 85%",
+      time: "4 месяца",
+      situation: "Займ физлицу. Вернули через арест доли в бизнесе.",
+      difficulties: ["Отсутствие имущества", "Бездействие приставов"],
     },
     {
-      amount: "1 200 000 ₽",
-      period: "4 года",
-      result: "Вернули 900 000 ₽",
-      details:
-        "Семейный долг между братьями. Конфликт угрожал разрушить семью.",
-      actions: [
-        "Конфиденциальные переговоры",
-        "Рассрочка платежа",
-        "Семейный договор",
-      ],
-    },
-  ];
-
-  const faq = [
-    {
-      question: "А если у меня нет расписки?",
-      answer:
-        "Расписка — не единственное доказательство. Переписка, свидетельские показания, банковские переводы — всё это можно использовать.",
-    },
-    {
-      question: "Что делать, если должник скрывается?",
-      answer:
-        "Мы знаем, как найти человека: через соцсети, родственников, место работы. В 85% случаев удается установить контакт.",
-    },
-    {
-      question: "А если прошло уже много времени?",
-      answer:
-        "Срок исковой давности — 3 года, но он прерывается, если должник признал долг. Часто даже старые долги можно вернуть.",
-    },
-    {
-      question: "Не испортятся ли отношения с должником?",
-      answer:
-        "Мы действуем максимально тактично. Часто должник даже не знает, что вы обратились к юристу — думает, что это стандартная процедура.",
-    },
-  ];
-
-  const usefulInfo = [
-    {
-      title: "Средний срок возврата",
-      value: "2-3 месяца",
-      description: "Именно столько нужно, чтобы заставить должника заплатить",
-    },
-    {
-      title: "Возврат без суда",
-      value: "72%",
-      description:
-        "Большинство должников начинают платить после наших первых действий",
-    },
-    {
-      title: "Минимальная сумма",
-      value: "от 50 000 ₽",
-      description: "Если долг меньше, судиться часто невыгодно",
-    },
-    {
-      title: "Шанс вернуть деньги",
-      value: "85-90%",
-      description: "При условии, что есть доказательства долга",
+      debt: "87 млн ₽",
+      result: "Взыскано 70%",
+      time: "14 месяцев",
+      situation: "Корпоративный спор. Работали в рамках банкротства должника.",
+      difficulties: ["Банкротное дело", "Конкурсные кредиторы"],
     },
   ];
 
@@ -290,370 +222,176 @@ export default function DebtCollection() {
     <>
       <Helmet>
         <title>
-          Поможем вернуть деньги с должника | Взыскание долгов между частными
-          лицами
+          Вернуть деньги с должника | Профессиональное взыскание долгов
         </title>
         <meta
           name="description"
-          content="Вернем ваши деньги с друзей, знакомых, родственников. Долги по распискам, за аренду, услуги. Работаем за результат. Конфиденциально. Бесплатная консультация."
-        />
-        <meta
-          name="keywords"
-          content="вернуть долг, взыскание долгов, долг по расписке, вернуть деньги, должник не платит, судебное взыскание"
+          content="Должник не платит? Вернем ваши деньги. Действуем жестко и быстро. Арест счетов за 72 часа. Работаем за результат. Бесплатный анализ дела."
         />
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        <section className="pt-28 pb-20 bg-gradient-to-br from-blue-50 to-white">
+        {/* Hero с психологическим ударом */}
+        <section className="pt-28 pb-20 bg-gradient-to-br from-gray-900 to-blue-900 text-white">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-blue-700 font-medium mb-6">
-                <Icon name="HandHeart" className="h-5 w-5 mr-2" />
-                Поможем вернуть ваши деньги
-              </div>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center px-4 py-2 bg-blue-500/20 rounded-full text-blue-300 font-medium mb-6 border border-blue-500/30">
+                  <Icon name="AlertTriangle" className="h-5 w-5 mr-2" />
+                  Для тех, кто устал ждать
+                </div>
+                <h1 className="text-5xl font-bold mb-6 leading-tight">
+                  Должник не платит?
+                  <br />
+                  <span className="text-blue-300">Мы заставим</span>
+                </h1>
+                <p className="text-xl text-gray-300 mb-8">
+                  Не ждите, пока должник обанкротится или скроется.{" "}
+                  <span className="font-semibold text-white">За 72 часа</span>{" "}
+                  наложим арест на его счета и имущество. Вернем ваши деньги,
+                  когда другие опускают руки.
+                </p>
 
-              <h1 className="text-5xl font-bold mb-6 leading-tight">
-                Вам должны деньги, а должник{" "}
-                <span className="text-blue-600">не отвечает</span> на звонки?
-              </h1>
-
-              <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-                Долги по распискам, за аренду, услуги или просто "одолжил и не
-                вернул".
-                <br />
-                <span className="font-semibold">
-                  Мы поможем вернуть ваши деньги
-                </span>{" "}
-                — профессионально, тактично и, в большинстве случаев, без суда.
-              </p>
-
-              <div className="bg-white rounded-xl p-8 shadow-lg mb-12 max-w-2xl mx-auto">
-                <h3 className="text-2xl font-bold mb-6 text-center">
-                  Скорее всего, вы уже пробовали:
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <Icon
-                      name="PhoneOff"
-                      className="h-5 w-5 text-gray-500 mr-3"
-                    />
-                    <span>Звонить и писать</span>
-                  </div>
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <Icon name="Users" className="h-5 w-5 text-gray-500 mr-3" />
-                    <span>Просить через общих знакомых</span>
-                  </div>
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <Icon name="Clock" className="h-5 w-5 text-gray-500 mr-3" />
-                    <span>Ждать "когда будет возможность"</span>
-                  </div>
-                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <Icon
-                      name="AlertTriangle"
-                      className="h-5 w-5 text-gray-500 mr-3"
-                    />
-                    <span>Угрожать (и жалеть об этом)</span>
+                <div className="mb-10 p-6 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <Icon name="HelpCircle" className="h-5 w-5 mr-2" />
+                    Вы уже все перепробовали?
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {painPoints.map((point, i) => (
+                      <div key={i} className="flex items-center text-sm">
+                        <Icon
+                          name="X"
+                          className="h-4 w-4 text-red-400 mr-2 flex-shrink-0"
+                        />
+                        <span>{point.text}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <p className="text-center mt-6 text-gray-700">
-                  Если эти методы не работают — пора действовать
-                  профессионально.
-                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button
+                    size="lg"
+                    className="text-lg bg-blue-600 hover:bg-blue-700 shadow-lg"
+                    onClick={() => trackButtonClick("hero_start")}
+                    asChild
+                  >
+                    <a href="#action">
+                      <Icon name="Swords" className="h-5 w-5 mr-2" />
+                      Начать взыскание
+                    </a>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="text-lg text-white border-white/30 hover:bg-white/10"
+                    onClick={() => {
+                      handlePhoneClick();
+                      trackButtonClick("hero_phone");
+                    }}
+                    asChild
+                  >
+                    <a href="tel:73832359505">
+                      <Icon name="Phone" className="h-5 w-5 mr-2" />
+                      +7 (383) 235-95-05
+                    </a>
+                  </Button>
+                </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <Button
-                  size="lg"
-                  className="text-lg bg-blue-600 hover:bg-blue-700 shadow-lg px-8 py-6"
-                  onClick={() => trackButtonClick("hero_consultation")}
-                  asChild
-                >
-                  <a href="#consultation">
-                    <Icon name="MessageSquare" className="h-5 w-5 mr-2" />
-                    Бесплатно обсудить мою ситуацию
-                  </a>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg border-gray-300 px-8 py-6"
-                  onClick={() => {
-                    handlePhoneClick();
-                    trackButtonClick("hero_phone");
-                  }}
-                  asChild
-                >
-                  <a href="tel:73832359505">
-                    <Icon name="Phone" className="h-5 w-5 mr-2" />
-                    +7 (383) 235-95-05
-                  </a>
-                </Button>
-              </div>
-
-              <div className="text-sm text-gray-500">
-                <Icon name="Shield" className="h-4 w-4 inline mr-1" />
-                Первая консультация — бесплатно и без обязательств
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">
-                Что нужно знать, прежде чем действовать
-              </h2>
-              <p className="text-lg text-gray-600">
-                Факты, которые помогут вам принять правильное решение
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {usefulInfo.map((info, i) => (
-                <Card
-                  key={i}
-                  className="p-6 text-center hover:shadow-lg transition-shadow"
-                >
-                  <div className="text-3xl font-bold text-blue-600 mb-2">
-                    {info.value}
+              <Card className="p-8 bg-gray-800 border-gray-700 text-white">
+                <h3 className="text-2xl font-bold mb-6 text-center">
+                  Пока вы думаете, должник:
+                </h3>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 p-4 bg-gray-900/50 rounded-lg">
+                    <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                      <Icon name="Building" className="h-6 w-6 text-red-400" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">
+                        Переоформляет имущество
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        На родственников или подставных лиц
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">{info.title}</h3>
-                  <p className="text-gray-600 text-sm">{info.description}</p>
-                </Card>
-              ))}
+                  <div className="flex items-center gap-4 p-4 bg-gray-900/50 rounded-lg">
+                    <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                      <Icon
+                        name="Banknote"
+                        className="h-6 w-6 text-yellow-400"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-semibold">Выводит деньги</div>
+                      <div className="text-sm text-gray-400">
+                        Со счетов, пока не наложен арест
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-gray-900/50 rounded-lg">
+                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                      <Icon name="Scale" className="h-6 w-6 text-green-400" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">
+                        Инициирует банкротство
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        Чтобы списать ваш долг законно
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-8 pt-6 border-t border-gray-700 text-center">
+                  <div className="text-3xl font-bold text-blue-300">
+                    72 часа
+                  </div>
+                  <div className="text-gray-400">
+                    и мы начинаем реальные действия
+                  </div>
+                </div>
+              </Card>
             </div>
           </div>
         </section>
 
+        {/* Ситуации */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Знакомые ситуации?</h2>
+              <h2 className="text-4xl font-bold mb-4">
+                "У нас такая же ситуация"
+              </h2>
               <p className="text-lg text-gray-600">
-                Мы помогаем в самых разных случаях
+                С какими должниками мы работаем каждый день
               </p>
             </div>
-
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {situations.map((item, i) => (
+              {creditorSituations.map((item, i) => (
                 <Card
                   key={i}
-                  className="p-6 hover:shadow-lg transition-shadow border hover:border-blue-300"
-                  onClick={() => trackButtonClick(`situation_${item.title}`)}
+                  className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 border hover:border-blue-300"
                 >
-                  <div
-                    className={`w-14 h-14 ${item.color.split(" ")[0]} rounded-xl flex items-center justify-center mb-4`}
-                  >
-                    <Icon
-                      name={item.icon}
-                      className={`h-7 w-7 ${item.color.split(" ")[1]}`}
-                    />
+                  <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                    <Icon name={item.icon} className="h-7 w-7 text-blue-600" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                   <p className="text-gray-600">{item.description}</p>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-12">
-              Почему обращаются к нам
-            </h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {advantages.map((adv, i) => (
-                <div
-                  key={i}
-                  className={`p-6 rounded-xl border ${adv.highlight ? "bg-blue-50 border-blue-200" : "bg-white border-gray-200"}`}
-                >
-                  <div
-                    className={`w-12 h-12 ${adv.highlight ? "bg-blue-100" : "bg-gray-100"} rounded-lg flex items-center justify-center mb-4`}
-                  >
-                    <Icon
-                      name={adv.icon}
-                      className={`h-6 w-6 ${adv.highlight ? "text-blue-600" : "text-gray-600"}`}
-                    />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{adv.title}</h3>
-                  <p className="text-gray-600">{adv.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-12">
-              Как мы помогаем вернуть деньги
-            </h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {steps.map((step, i) => (
-                <div key={i} className="relative">
-                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
-                    {step.num}
-                  </div>
-                  <Card className="p-6 pt-12 h-full bg-white hover:shadow-lg transition-shadow">
-                    <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                    <p className="text-gray-600 mb-4">{step.text}</p>
-                    <div className="mt-auto pt-4 border-t border-gray-100">
-                      <div className="text-sm text-gray-500 flex items-center">
-                        <Icon name="Clock" className="h-4 w-4 mr-2" />
-                        {step.duration}
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="documents" className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full text-green-700 font-medium mb-4">
-                <Icon name="Gift" className="h-5 w-5 mr-2" />
-                Полезные материалы в подарок
-              </div>
-              <h2 className="text-4xl font-bold mb-4">
-                Возьмите эти документы бесплатно
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Даже если вы решите действовать самостоятельно
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {freeDocuments.map((doc, i) => (
-                <Card
-                  key={i}
-                  className="p-6 hover:shadow-xl transition-shadow border border-blue-100"
-                >
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <Icon name={doc.icon} className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{doc.title}</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {doc.description}
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="w-full border-blue-300 text-blue-700 hover:bg-blue-50"
-                    onClick={() => handleDownloadClick(doc.title)}
-                  >
-                    <Icon name="Download" className="h-4 w-4 mr-2" />
-                    Получить бесплатно
-                  </Button>
-                </Card>
-              ))}
-            </div>
-
-            {downloadClicked && (
-              <div className="max-w-2xl mx-auto mt-12 p-8 bg-gradient-to-r from-blue-50 to-white rounded-2xl border border-blue-200">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Icon
-                      name="MessageCircle"
-                      className="h-6 w-6 text-blue-600"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Получили документы? Отлично!
-                    </h3>
-                    <p className="text-gray-700 mb-4">
-                      Теперь у вас есть полезные инструменты. Но помните: каждая
-                      ситуация уникальна.
-                    </p>
-                    <Button
-                      asChild
-                      className="bg-blue-600 hover:bg-blue-700"
-                      onClick={() =>
-                        trackButtonClick("documents_to_consultation")
-                      }
-                    >
-                      <a href="#consultation">
-                        <Icon name="Phone" className="h-4 w-4 mr-2" />
-                        Обсудить мою ситуацию с юристом
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">
-                Частые вопросы и сомнения
-              </h2>
-              <p className="text-lg text-gray-600">
-                То, о чем обычно спрашивают перед обращением
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {faq.map((item, i) => (
-                <Card key={i} className="p-6 hover:shadow-md transition-shadow">
-                  <h3 className="text-lg font-semibold mb-3 flex items-start">
-                    <Icon
-                      name="HelpCircle"
-                      className="h-5 w-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0"
-                    />
-                    {item.question}
-                  </h3>
-                  <p className="text-gray-700">{item.answer}</p>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h2 className="text-4xl font-bold text-center mb-12">
-              Реальные истории возврата
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {cases.map((c, i) => (
-                <Card key={i} className="p-8 hover:shadow-lg transition-shadow">
-                  <div className="mb-6">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">
-                      {c.amount}
-                    </div>
+                  <div className="mt-4 pt-4 border-t">
                     <div className="text-sm text-gray-500">
-                      не возвращалось {c.period}
+                      Типичные признаки:
                     </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <div className="text-lg font-semibold text-green-700 mb-2">
-                      {c.result}
-                    </div>
-                    <p className="text-gray-700">{c.details}</p>
-                  </div>
-
-                  <div className="pt-6 border-t">
-                    <div className="text-sm font-semibold text-gray-500 mb-3">
-                      Примененные методы:
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {c.actions.map((action, idx) => (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {item.signs.map((sign, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                          className="px-2 py-1 bg-gray-100 rounded text-xs"
                         >
-                          {action}
+                          {sign}
                         </span>
                       ))}
                     </div>
@@ -664,118 +402,429 @@ export default function DebtCollection() {
           </div>
         </section>
 
+        {/* Преимущества */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-12">
+              Почему клиенты возвращаются к нам с новыми делами
+            </h2>
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div>
+                {advantages.map((adv, i) => (
+                  <div key={i} className="flex items-start gap-4 mb-8">
+                    <div
+                      className={`w-12 h-12 ${adv.highlight ? "bg-blue-600" : "bg-gray-200"} rounded-lg flex items-center justify-center flex-shrink-0`}
+                    >
+                      <Icon
+                        name={adv.icon}
+                        className={`h-6 w-6 ${adv.highlight ? "text-white" : "text-gray-600"}`}
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        {adv.title}
+                      </h3>
+                      <p className="text-gray-600">{adv.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-white p-8 rounded-2xl shadow-lg border">
+                <h3 className="text-2xl font-bold mb-6">Чего мы НЕ делаем:</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-red-50 rounded-lg">
+                    <Icon
+                      name="XCircle"
+                      className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <div className="font-semibold">
+                        Не берем дела "для галочки"
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Если шансов нет - скажем честно и не возьмемся
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 bg-red-50 rounded-lg">
+                    <Icon
+                      name="XCircle"
+                      className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <div className="font-semibold">Не затягиваем сроки</div>
+                      <div className="text-sm text-gray-600">
+                        Каждые 2 недели - отчет о конкретных действиях
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 bg-red-50 rounded-lg">
+                    <Icon
+                      name="XCircle"
+                      className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <div className="font-semibold">
+                        Не работаем по шаблону
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Для каждого должника - своя стратегия давления
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-8 p-6 bg-blue-50 rounded-lg">
+                  <div className="text-lg font-semibold text-blue-900 mb-2">
+                    Простая математика:
+                  </div>
+                  <div className="text-3xl font-bold text-blue-700 mb-2">
+                    0 ₽ предоплаты
+                  </div>
+                  <div className="text-gray-600">
+                    в делах с оплатой за результат
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Бесплатные документы */}
+        <section id="documents" className="py-20 bg-white border-t">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full text-green-700 font-medium mb-4">
+                <Icon name="Download" className="h-5 w-5 mr-2" />
+                Бесплатно • Без регистрации
+              </div>
+              <h2 className="text-4xl font-bold mb-4">
+                Возьмите эти документы, даже если не готовы к услугам
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                То, что другие юристы продают за деньги. Скачайте и используйте
+                прямо сейчас.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {freeDocuments.map((doc, i) => (
+                <Card
+                  key={i}
+                  className="p-6 hover:shadow-xl transition-all hover:-translate-y-2 border-2 border-green-100"
+                >
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <Icon name={doc.icon} className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{doc.title}</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {doc.description}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full border-green-300 text-green-700 hover:bg-green-50"
+                    onClick={() => handleDownloadClick(doc.title)}
+                  >
+                    <Icon name="Download" className="h-4 w-4 mr-2" />
+                    Скачать бесплатно
+                  </Button>
+                </Card>
+              ))}
+            </div>
+
+            {downloadClicked && (
+              <div className="max-w-2xl mx-auto mt-12 p-8 bg-blue-50 rounded-2xl border border-blue-200">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Icon
+                      name="MessageCircle"
+                      className="h-6 w-6 text-blue-600"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">
+                      Остались вопросы по документам?
+                    </h3>
+                    <p className="text-gray-700 mb-4">
+                      Бесплатные файлы — это хорошо. Но если нужен конкретный
+                      план для вашей ситуации,
+                      <span className="font-semibold">
+                        {" "}
+                        лучше поговорить с юристом.
+                      </span>
+                    </p>
+                    <Button
+                      asChild
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={() =>
+                        trackButtonClick("documents_to_consultation")
+                      }
+                    >
+                      <a href="#action">
+                        <Icon name="Phone" className="h-4 w-4 mr-2" />
+                        Получить 15-минутную консультацию
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Кейсы */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-4">
+              Сложные дела, которые другие назвали "безнадежными"
+            </h2>
+            <p className="text-center text-gray-600 mb-12 text-lg">
+              Мы специализируемся на том, от чего отказываются другие
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {cases.map((c, i) => (
+                <Card key={i} className="p-8 hover:shadow-xl transition-shadow">
+                  <div className="mb-6">
+                    <div className="text-4xl font-bold text-gray-900 mb-1">
+                      {c.debt}
+                    </div>
+                    <div className="text-lg font-semibold text-green-700">
+                      {c.result}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-2">
+                      за {c.time} работы
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-6">{c.situation}</p>
+                  <div className="pt-6 border-t">
+                    <div className="text-sm font-semibold text-gray-500 mb-2">
+                      Особые сложности:
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {c.difficulties.map((diff, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs"
+                        >
+                          {diff}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <div className="inline-flex items-center px-4 py-2 bg-gray-200 rounded-full text-gray-700 font-medium mb-4">
+                <Icon name="AlertTriangle" className="h-5 w-5 mr-2" />
+                Ваш случай сложнее? Это наша специализация
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Форма */}
         <section
-          id="consultation"
+          id="action"
           className="py-20 bg-gradient-to-r from-blue-900 to-gray-900 text-white"
         >
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold mb-4">
-                  Бесплатная консультация
+                  Один из двух вариантов:
                 </h2>
-                <p className="text-xl opacity-90">
-                  Обсудим вашу ситуацию и расскажем, что можно сделать
-                </p>
+                <div className="grid md:grid-cols-2 gap-8 mt-8">
+                  <div className="p-6 bg-white/10 rounded-xl border border-white/20">
+                    <div className="text-2xl font-bold mb-4 text-red-300">
+                      Самостоятельно
+                    </div>
+                    <ul className="space-y-3 text-left">
+                      <li className="flex items-center">
+                        <Icon name="X" className="h-5 w-5 text-red-400 mr-3" />
+                        Тратите время на изучение законов
+                      </li>
+                      <li className="flex items-center">
+                        <Icon name="X" className="h-5 w-5 text-red-400 mr-3" />
+                        Делаете ошибки, которые затягивают процесс
+                      </li>
+                      <li className="flex items-center">
+                        <Icon name="X" className="h-5 w-5 text-red-400 mr-3" />
+                        Должник находит новые лазейки
+                      </li>
+                      <li className="flex items-center">
+                        <Icon name="X" className="h-5 w-5 text-red-400 mr-3" />
+                        Вернете 0-30% долга за 1-2 года
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="p-6 bg-blue-600/30 rounded-xl border border-blue-400">
+                    <div className="text-2xl font-bold mb-4 text-green-300">
+                      С нами
+                    </div>
+                    <ul className="space-y-3 text-left">
+                      <li className="flex items-center">
+                        <Icon
+                          name="Check"
+                          className="h-5 w-5 text-green-400 mr-3"
+                        />
+                        Мы действуем с первого дня
+                      </li>
+                      <li className="flex items-center">
+                        <Icon
+                          name="Check"
+                          className="h-5 w-5 text-green-400 mr-3"
+                        />
+                        Знаем все уловки должников
+                      </li>
+                      <li className="flex items-center">
+                        <Icon
+                          name="Check"
+                          className="h-5 w-5 text-green-400 mr-3"
+                        />
+                        Действуем одновременно по всем направлениям
+                      </li>
+                      <li className="flex items-center">
+                        <Icon
+                          name="Check"
+                          className="h-5 w-5 text-green-400 mr-3"
+                        />
+                        Вернете 50-100% долга за 4-8 месяцев
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
               <Card className="p-8 bg-white text-gray-900">
                 <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Icon
-                      name="MessageSquare"
-                      className="h-8 w-8 text-blue-600"
-                    />
+                  <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-full font-medium mb-4">
+                    <Icon name="Zap" className="h-5 w-5 mr-2" />
+                    Экспресс-анализ вашего дела
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">
-                    Расскажите о своей ситуации
+                  <h3 className="text-3xl font-bold mb-4">
+                    Узнайте, можно ли вернуть ваши деньги
                   </h3>
                   <p className="text-gray-600">
-                    Мы выслушаем, зададим уточняющие вопросы и объясним варианты
+                    Ответим за 15 минут. Если шансов нет — скажем честно.
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Как вас зовут? *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Иван Иванов"
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Телефон для связи *
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+7 (___) ___-__-__"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Как вас зовут?
+                      Электронная почта
                     </label>
                     <input
-                      type="text"
-                      placeholder="Ваше имя"
-                      value={formData.name}
+                      type="email"
+                      placeholder="для отправки предварительного плана"
+                      value={formData.email}
                       onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
+                        setFormData({ ...formData, email: e.target.value })
                       }
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                      required
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Телефон для связи
+                      Опишите ситуацию коротко *
+                      <span className="text-gray-500 font-normal ml-2">
+                        (Например: "ООО должен 2 млн за поставку с января,
+                        директор скрывается")
+                      </span>
                     </label>
-                    <input
-                      type="tel"
-                      placeholder="+7 (___) ___-__-__"
-                      value={formData.phone}
+                    <textarea
+                      placeholder="Чем больше деталей, точнее будет анализ..."
+                      value={formData.situation}
                       onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
+                        setFormData({ ...formData, situation: e.target.value })
                       }
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 min-h-[120px]"
                       required
                     />
                   </div>
 
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
-                    <p className="text-blue-800 text-sm text-center">
-                      Консультация — это просто разговор. Вы ничего не теряете,
-                      но можете многое понять.
-                    </p>
+                  <div className="p-6 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-4">
+                      <Icon
+                        name="Clock"
+                        className="h-6 w-6 text-blue-600 flex-shrink-0"
+                      />
+                      <div>
+                        <div className="font-semibold text-blue-900">
+                          Что будет после заявки:
+                        </div>
+                        <ol className="list-decimal list-inside text-sm text-gray-700 mt-2 space-y-1">
+                          <li>
+                            Перезвоним в течение 15 минут (в рабочее время)
+                          </li>
+                          <li>Зададим 5-7 уточняющих вопросов по телефону</li>
+                          <li>
+                            Сразу скажем, есть ли реальные рычаги воздействия
+                          </li>
+                          <li>
+                            Если шансы есть — предложим план действий и
+                            стоимость
+                          </li>
+                          <li>
+                            Если нет — объясним почему и что можно сделать
+                          </li>
+                        </ol>
+                      </div>
+                    </div>
                   </div>
 
                   <Button
                     type="submit"
                     size="lg"
                     className="w-full text-lg bg-blue-600 hover:bg-blue-700 py-6"
-                    onClick={() => trackButtonClick("consultation_form_submit")}
+                    onClick={() => trackButtonClick("form_submit")}
                   >
-                    <Icon name="Phone" className="h-5 w-5 mr-2" />
-                    Обсудить мою ситуацию
+                    <Icon name="Send" className="h-5 w-5 mr-2" />
+                    Получить честный анализ ситуации
                   </Button>
 
                   <p className="text-xs text-center text-gray-500 mt-4">
-                    Нажимая кнопку, вы соглашаетесь с{" "}
-                    <a href="/policy" className="text-blue-600 hover:underline">
-                      политикой конфиденциальности
-                    </a>
+                    Отправляя заявку, вы соглашаетесь с политикой
+                    конфиденциальности.
                   </p>
                 </form>
               </Card>
-
-              <div className="text-center mt-8">
-                <div className="inline-flex items-center px-4 py-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                  <Icon name="Phone" className="h-5 w-5 mr-3" />
-                  <div className="text-left">
-                    <div className="font-medium">Или просто позвоните:</div>
-                    <a
-                      href="tel:73832359505"
-                      className="text-2xl font-bold hover:text-blue-300 transition-colors"
-                      onClick={() => {
-                        handlePhoneClick();
-                        trackButtonClick("bottom_phone_large");
-                      }}
-                    >
-                      +7 (383) 235-95-05
-                    </a>
-                  </div>
-                </div>
-                <p className="text-sm opacity-80 mt-4">
-                  Звоните с 9:00 до 21:00. Ответим на вопросы и запишем на
-                  консультацию.
-                </p>
-              </div>
             </div>
           </div>
         </section>
