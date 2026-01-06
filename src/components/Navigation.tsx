@@ -1,8 +1,8 @@
+// Navigation.tsx - обновленная версия
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
-
 
 interface NavigationProps {
   onLoginClick?: () => void;
@@ -11,56 +11,197 @@ interface NavigationProps {
 const Navigation = ({ onLoginClick }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const menuItems = [
     { name: "Главная", href: "/citizens" },
     { name: "Услуги", href: "/services" },
     { name: "Цены", href: "/pricing" },
-
     { name: "О нас", href: "/about" },
     { name: "Контакты", href: "/contacts" },
   ];
 
-  const isActive = (href: string) => location.pathname === href;
-  const isCitizensVersion = !location.pathname.startsWith('/business');
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  // Проверяем, находимся ли на странице взыскания долгов
+  const isDebtCollectionPage =
+    location.pathname.includes("/debt-collection") ||
+    location.pathname.includes("/vzyskanie") ||
+    location.pathname.includes("/взыскание");
 
-  const handleVersionSwitch = () => {
-    setIsTransitioning(true);
-    
-    // Создаем анимацию fade out
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 0.3s ease-out';
-    
-    setTimeout(() => {
-      if (isCitizensVersion) {
-        localStorage.setItem('audienceType', 'business');
-        window.location.href = '/business';
-      } else {
-        localStorage.setItem('audienceType', 'citizens');
-        window.location.href = '/citizens';
-      }
-    }, 300);
-  };
+  // =========== СПЕЦИАЛЬНАЯ ВЕРСИЯ ДЛЯ СТРАНИЦЫ ВЗЫСКАНИЯ ===========
+  if (isDebtCollectionPage) {
+    return (
+      <header
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-gradient-to-r from-gray-900 to-blue-900/95 shadow-2xl backdrop-blur-md"
+            : "bg-gradient-to-r from-gray-900/95 to-blue-900/90 backdrop-blur-sm"
+        }`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            {/* Логотип для взыскания */}
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="relative">
+                <Icon name="Swords" className="h-8 w-8 text-red-400" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+              </div>
+              <div className="text-left">
+                <div className="text-xl font-black text-white tracking-tight">
+                  ВЗЫСКАНИЕ ДОЛГОВ
+                </div>
+                <div className="text-xs text-gray-300 font-medium">
+                  ЮрСервис НСК • Для бизнеса
+                </div>
+              </div>
+            </Link>
+
+            {/* Навигация для конверсии */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a
+                href="#action"
+                className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
+                onClick={() => {
+                  const element = document.getElementById("action");
+                  element?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Начать взыскание
+              </a>
+              <a
+                href="#documents"
+                className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
+                onClick={() => {
+                  const element = document.getElementById("documents");
+                  element?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Бесплатные документы
+              </a>
+              <a
+                href="#cases"
+                className="text-white hover:text-cyan-300 font-semibold transition-colors hover:scale-105"
+                onClick={() => {
+                  const element = document.getElementById("cases");
+                  element?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Реальные кейсы
+              </a>
+
+              {/* ГОРОДСКОЙ ТЕЛЕФОН */}
+              <div className="ml-4 pl-4 border-l border-white/30">
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 shadow-lg hover:shadow-red-500/25"
+                  asChild
+                >
+                  <a href="tel:+738322359505" className="flex items-center">
+                    <Icon name="Phone" className="h-4 w-4 mr-2" />
+                    <span className="font-bold">+7 (383) 235-95-05</span>
+                  </a>
+                </Button>
+              </div>
+            </nav>
+
+            {/* Мобильная версия */}
+            <div className="md:hidden flex items-center gap-3">
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
+                asChild
+              >
+                <a href="tel:+738322359505">
+                  <Icon name="Phone" className="h-4 w-4" />
+                </a>
+              </Button>
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2"
+              >
+                <Icon
+                  name={isMenuOpen ? "X" : "Menu"}
+                  className="h-6 w-6 text-white"
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Мобильное меню */}
+          {isMenuOpen && (
+            <div className="md:hidden pt-4 pb-6 border-t border-white/20">
+              <nav className="flex flex-col space-y-4">
+                <a
+                  href="#action"
+                  className="text-white hover:text-cyan-300 font-medium py-2 px-4 bg-white/10 rounded-lg"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    const element = document.getElementById("action");
+                    element?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Начать взыскание
+                </a>
+                <a
+                  href="#documents"
+                  className="text-white hover:text-cyan-300 font-medium py-2 px-4 bg-white/10 rounded-lg"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    const element = document.getElementById("documents");
+                    element?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Бесплатные документы
+                </a>
+                <a
+                  href="#cases"
+                  className="text-white hover:text-cyan-300 font-medium py-2 px-4 bg-white/10 rounded-lg"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    const element = document.getElementById("cases");
+                    element?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  Реальные кейсы
+                </a>
+                <Button
+                  className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 mt-4"
+                  asChild
+                >
+                  <a
+                    href="tel:+738322359505"
+                    className="flex items-center justify-center"
+                  >
+                    <Icon name="Phone" className="h-4 w-4 mr-2" />
+                    Экстренный звонок: +7 (383) 235-95-05
+                  </a>
+                </Button>
+              </nav>
+            </div>
+          )}
+        </div>
+      </header>
+    );
+  }
+
+  // =========== ОБЫЧНАЯ ВЕРСИЯ НАВИГАЦИИ ===========
+  const isActive = (href: string) => location.pathname === href;
 
   return (
-    <header 
+    <header
       className={`fixed top-0 w-full backdrop-blur-sm border-b border-border z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/95 shadow-lg' : 'bg-background/70'
+        isScrolled ? "bg-background/95 shadow-lg" : "bg-background/70"
       }`}
       role="banner"
-      itemScope 
+      itemScope
       itemType="https://schema.org/SiteNavigationElement"
     >
       <div className="container mx-auto px-4">
@@ -80,9 +221,9 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                 key={item.name}
                 to={item.href}
                 className={`transition-colors duration-200 font-medium ${
-                  isActive(item.href) 
-                    ? 'text-primary border-b-2 border-primary pb-1' 
-                    : 'text-foreground hover:text-primary'
+                  isActive(item.href)
+                    ? "text-primary border-b-2 border-primary pb-1"
+                    : "text-foreground hover:text-primary"
                 }`}
               >
                 {item.name}
@@ -96,13 +237,11 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
               <Icon name="MapPin" className="h-4 w-4 text-primary" />
               <span>г. Новосибирск, ул. Ленина, д. 3</span>
             </div>
-            <Button
-              className="bg-primary hover:bg-primary/90"
-              asChild
-            >
-              <a href="tel:+79931903500">
+            <Button className="bg-primary hover:bg-primary/90" asChild>
+              {/* ЗАМЕНА НА ГОРОДСКОЙ НОМЕР */}
+              <a href="tel:+738322359505">
                 <Icon name="Phone" className="h-4 w-4 mr-2" />
-                +7 993 190 35 00
+                +7 (383) 235-95-05
               </a>
             </Button>
           </div>
@@ -117,9 +256,11 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`md:hidden overflow-hidden transition-all duration-300 ${
-          isMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
-        }`}>
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ${
+            isMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
           <div className="py-4 border-t border-border">
             <nav className="flex flex-col space-y-4">
               {menuItems.map((item) => (
@@ -127,22 +268,20 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                   key={item.name}
                   to={item.href}
                   className={`px-2 py-1 transition-colors duration-200 ${
-                    isActive(item.href) 
-                      ? 'text-primary font-medium' 
-                      : 'text-foreground hover:text-primary'
+                    isActive(item.href)
+                      ? "text-primary font-medium"
+                      : "text-foreground hover:text-primary"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              <Button
-                className="w-full bg-primary hover:bg-primary/90"
-                asChild
-              >
-                <a href="tel:+79931903500">
+              <Button className="w-full bg-primary hover:bg-primary/90" asChild>
+                {/* ЗАМЕНА НА ГОРОДСКОЙ НОМЕР */}
+                <a href="tel:+738322359505">
                   <Icon name="Phone" className="h-4 w-4 mr-2" />
-                  +7 993 190 35 00
+                  +7 (383) 235-95-05
                 </a>
               </Button>
             </nav>
