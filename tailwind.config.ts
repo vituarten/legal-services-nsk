@@ -7,7 +7,7 @@ export default {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./@/**/*.{ts,tsx}",
+    "./@/**/*.{ts,tsx}", // Добавил алиас если используете @/
   ],
   prefix: "",
   theme: {
@@ -65,14 +65,12 @@ export default {
           800: "#92400e",
           900: "#78350f",
         },
-
-        // Shadcn/ui цвета
+        // Shadcn/ui цвета (ОБЯЗАТЕЛЬНЫЕ)
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -101,8 +99,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-
-        // Дополнительные цвета для sidebar - ВАЖНО: добавлены все!
+        // Дополнительные цвета для sidebar
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -159,6 +156,7 @@ export default {
             opacity: "0",
           },
         },
+        // Добавил для кнопок с loading
         spin: {
           from: {
             transform: "rotate(0deg)",
@@ -190,23 +188,26 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "spin-slow": "spin 8s linear infinite",
-        spin: "spin 1s linear infinite",
+        spin: "spin 1s linear infinite", // Для спиннера загрузки
         orbit: "orbit 10s linear infinite",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "ping-slow": "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite",
         "fade-in": "fade-in 0.3s ease-out",
         "slide-in": "slide-in 0.3s ease-out",
+        "bounce-slow": "bounce 2s infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(var(--tw-gradient-stops))",
         "gradient-premium": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       },
+      // Добавил для лучшего контроля
       boxShadow: {
         card: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
         "card-lg":
           "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
       },
+      // Для компонентов формы
       fontFamily: {
         sans: [
           "Inter",
@@ -222,5 +223,9 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/forms")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // Добавил для better forms если нужно
+    require("@tailwindcss/forms"),
+  ],
 } satisfies Config;
