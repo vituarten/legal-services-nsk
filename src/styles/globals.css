@@ -91,12 +91,12 @@
 
 @layer base {
   * {
-    /* Убрали border-border */
+    /* @apply border-border; */
   }
   body {
-    /* Убрали bg-background и text-foreground */
-    background: white;
-    color: black;
+    /* @apply bg-background text-foreground; */
+    background: white;      <-- ВМЕСТО bg-background
+    color: black;          <-- ВМЕСТО text-foreground
   }
 }
 
@@ -123,8 +123,6 @@
 }
 
 /* Кастомные стили для scrollbar */
-/* Закомментировал проблемные строки с hsl() */
-/*
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -143,4 +141,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
-*/
