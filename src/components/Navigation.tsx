@@ -1,4 +1,4 @@
-// Navigation.tsx - финальная версия
+// Navigation.tsx - ИСПРАВЛЕННАЯ версия
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,10 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
     { name: "Контакты", href: "/contacts" },
   ];
 
+  // Городской телефон
+  const cityPhone = "+7 (383) 235-95-05";
+  const cityPhoneRaw = "+738322359505";
+
   // Проверяем, находимся ли на странице взыскания долгов
   const isDebtCollectionPage =
     location.pathname.includes("/debt-collection") ||
@@ -48,7 +52,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
       >
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            {/* Логотип - ОРИГИНАЛЬНЫЙ */}
+            {/* Логотип */}
             <Link to="/" className="flex items-center space-x-2">
               <Icon name="Scale" className="h-8 w-8 text-red-400" />
               <span className="text-xl font-bold text-white">ЮрСервис НСК</span>
@@ -92,16 +96,14 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                   Документы
                 </a>
 
-                {/* ГОРОДСКОЙ ТЕЛЕФОН */}
+                {/* ГОРОДСКОЙ ТЕЛЕФОН - ИСПРАВЛЕНО */}
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 shadow-lg hover:shadow-red-500/25 ml-2"
-                  asChild
+                  onClick={() => (window.location.href = `tel:${cityPhoneRaw}`)}
                 >
-                  <a href="tel:+738322359505" className="flex items-center">
-                    <Icon name="Phone" className="h-4 w-4 mr-2" />
-                    <span className="font-bold">+7 (383) 235-95-05</span>
-                  </a>
+                  <Icon name="Phone" className="h-4 w-4 mr-2" />
+                  <span className="font-bold">{cityPhone}</span>
                 </Button>
               </div>
             </nav>
@@ -111,11 +113,9 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
               <Button
                 size="sm"
                 className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
-                asChild
+                onClick={() => (window.location.href = `tel:${cityPhoneRaw}`)}
               >
-                <a href="tel:+738322359505">
-                  <Icon name="Phone" className="h-4 w-4" />
-                </a>
+                <Icon name="Phone" className="h-4 w-4" />
               </Button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -182,15 +182,13 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
 
                 <Button
                   className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 mt-4"
-                  asChild
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    window.location.href = `tel:${cityPhoneRaw}`;
+                  }}
                 >
-                  <a
-                    href="tel:+738322359505"
-                    className="flex items-center justify-center"
-                  >
-                    <Icon name="Phone" className="h-4 w-4 mr-2" />
-                    +7 (383) 235-95-05
-                  </a>
+                  <Icon name="Phone" className="h-4 w-4 mr-2" />
+                  {cityPhone}
                 </Button>
               </nav>
             </div>
@@ -239,17 +237,18 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
             ))}
           </nav>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons - ИСПРАВЛЕНО */}
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Icon name="MapPin" className="h-4 w-4 text-primary" />
               <span>г. Новосибирск, ул. Ленина, д. 3</span>
             </div>
-            <Button className="bg-primary hover:bg-primary/90" asChild>
-              <a href="tel:+738322359505">
-                <Icon name="Phone" className="h-4 w-4 mr-2" />
-                +7 (383) 235-95-05
-              </a>
+            <Button
+              className="bg-primary hover:bg-primary/90"
+              onClick={() => (window.location.href = `tel:${cityPhoneRaw}`)}
+            >
+              <Icon name="Phone" className="h-4 w-4 mr-2" />
+              {cityPhone}
             </Button>
           </div>
 
@@ -284,11 +283,15 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                   {item.name}
                 </Link>
               ))}
-              <Button className="w-full bg-primary hover:bg-primary/90" asChild>
-                <a href="tel:+738322359505">
-                  <Icon name="Phone" className="h-4 w-4 mr-2" />
-                  +7 (383) 235-95-05
-                </a>
+              <Button
+                className="w-full bg-primary hover:bg-primary/90"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  window.location.href = `tel:${cityPhoneRaw}`;
+                }}
+              >
+                <Icon name="Phone" className="h-4 w-4 mr-2" />
+                {cityPhone}
               </Button>
             </nav>
           </div>
