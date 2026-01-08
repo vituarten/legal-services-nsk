@@ -1,7 +1,6 @@
 {
-  "name": "legal-services-ai-server",
+  "name": "legal-ai-server",
   "version": "1.0.0",
-  "description": "Сервер AI-поиска для юридических услуг",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,13 +9,6 @@
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "openai": "^4.20.0",
-    "dotenv": "^16.0.3"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "openai": "^4.20.0"
   }
 }
