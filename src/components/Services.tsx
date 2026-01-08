@@ -1,10 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import { Link } from "react-router-dom";
 
-// ВАЖНО: Сохраните ваш существующий массив realCases здесь!
+// ПОЛНЫЙ МАССИВ ИЗ 8 УСЛУГ
 const realCases = [
   {
     id: "debt",
@@ -122,7 +122,7 @@ const Services = () => {
     originalQuery: string;
   }>({ service: null, originalQuery: "" });
 
-  // Функция запроса к AI
+  // ПРОСТАЯ ВЕРСИЯ AI ПОИСКА (работает всегда)
   const analyzeWithAI = async (query: string) => {
     if (!query.trim()) return;
 
@@ -130,6 +130,7 @@ const Services = () => {
     setAiResult({ service: null, originalQuery: query });
 
     try {
+      // Пробуем настоящий AI сервер
       const response = await fetch(
         "http://localhost:3001/api/analyze-problem",
         {
@@ -145,9 +146,26 @@ const Services = () => {
         originalQuery: query,
       });
     } catch (error) {
-      console.error("Ошибка AI-поиска:", error);
+      // Если AI сервер не работает - используем простой поиск по ключевым словам
+      console.log("AI сервер недоступен, используем простой поиск");
+
+      const queryLower = query.toLowerCase();
+      let foundService = "Консультация";
+
+      // Простой поиск по ключевым словам
+      for (const service of realCases) {
+        if (
+          service.problem.toLowerCase().includes(queryLower) ||
+          service.keywords.some((keyword) => queryLower.includes(keyword)) ||
+          service.professionalTitle.toLowerCase().includes(queryLower)
+        ) {
+          foundService = service.professionalTitle;
+          break;
+        }
+      }
+
       setAiResult({
-        service: "Консультация",
+        service: foundService,
         originalQuery: query,
       });
     } finally {
@@ -155,11 +173,11 @@ const Services = () => {
     }
   };
 
-  // Основная фильтрация услуг
+  // ФИЛЬТРАЦИЯ - ПРОСТАЯ И РАБОЧАЯ
   const filteredCases = useMemo(() => {
     let result = [...realCases];
 
-    // 1. Фильтр по результату AI (приоритет)
+    // Если AI нашел конкретную услугу - показываем только ее
     if (aiResult.service && aiResult.service !== "Консультация") {
       result = result.filter(
         (item) => item.professionalTitle === aiResult.service,
@@ -167,27 +185,20 @@ const Services = () => {
       return result;
     }
 
-    // 2. Фильтр по категории (если нет AI-результата)
-    if (activeCategory && !aiResult.service) {
-      // Ваша существующая логика фильтрации по категориям
-      // Оставьте ваш текущий код здесь
-    }
-
-    // 3. Фильтр по тексту вручную (если нет AI и категории)
-    if (searchQuery && !aiResult.service && !activeCategory) {
+    // Если есть текст поиска - фильтруем по нему
+    if (searchQuery && !aiResult.service) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (item) =>
           item.problem.toLowerCase().includes(query) ||
-          item.keywords?.some((kw) => kw.toLowerCase().includes(query)) ||
+          item.keywords.some((kw) => query.includes(kw.toLowerCase())) ||
           item.professionalTitle.toLowerCase().includes(query),
       );
     }
 
     return result;
-  }, [aiResult.service, activeCategory, searchQuery]);
+  }, [aiResult.service, searchQuery]);
 
-  // Обработчик поиска
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -195,7 +206,6 @@ const Services = () => {
     }
   };
 
-  // Сброс поиска
   const handleResetSearch = () => {
     setSearchQuery("");
     setActiveCategory(null);
@@ -204,23 +214,20 @@ const Services = () => {
 
   return (
     <div className="space-y-16">
-      {/* Блок поиска */}
       <div className="text-center">
         <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
           Профессиональные юридические решения
         </h1>
 
         <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-          Опишите вашу ситуацию — интеллектуальная система точно определит
-          необходимую юридическую услугу
+          Опишите вашу ситуацию — система подберёт нужную юридическую услугу
         </p>
 
-        {/* Форма поиска */}
         <form onSubmit={handleSearchSubmit} className="max-w-3xl mx-auto mb-6">
           <div className="relative">
             <input
               type="text"
-              placeholder="Примеры: 'соседи затопили квартиру', 'не выплачивают зарплату', 'попал в ДТП'..."
+              placeholder="Примеры: 'соседи затопили', 'не выплачивают зарплату', 'попал в ДТП'..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-6 py-5 text-lg border-2 border-gray-300 rounded-2xl focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-sm"
@@ -234,7 +241,7 @@ const Services = () => {
               {isAnalyzing ? (
                 <>
                   <span className="inline-block animate-spin mr-2">⟳</span>
-                  Анализ
+                  Поиск
                 </>
               ) : (
                 "Найти решение"
@@ -244,32 +251,19 @@ const Services = () => {
 
           {aiResult.service && (
             <div className="mt-4 text-sm text-gray-600">
-              <span className="font-semibold">Определено AI:</span>{" "}
+              <span className="font-semibold">Результат:</span>{" "}
               {aiResult.service}
-              {aiResult.service !== "Консультация" && (
-                <button
-                  onClick={handleResetSearch}
-                  className="ml-4 text-primary hover:text-primary/80 text-xs font-medium"
-                >
-                  [ показать все услуги ]
-                </button>
-              )}
+              <button
+                onClick={handleResetSearch}
+                className="ml-4 text-primary hover:text-primary/80 text-xs font-medium"
+              >
+                [ показать все ]
+              </button>
             </div>
           )}
         </form>
-
-        {/* Ваш существующий блок категорий - можно оставить */}
-        {!aiResult.service && (
-          <div className="mb-10">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Выберите категорию:
-            </h2>
-            {/* Ваш код категорий */}
-          </div>
-        )}
       </div>
 
-      {/* Результаты поиска */}
       <div>
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -282,7 +276,7 @@ const Services = () => {
               {aiResult.service
                 ? aiResult.service === "Консультация"
                   ? "Опишите подробнее вашу ситуацию"
-                  : "Подобранное решение для вашего случая"
+                  : "Подобранное решение"
                 : "Полный спектр юридических услуг"}
             </p>
           </div>
@@ -294,24 +288,18 @@ const Services = () => {
           )}
         </div>
 
-        {/* Состояния отображения */}
         {isAnalyzing ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin text-4xl mb-4">⟳</div>
             <h3 className="text-xl font-semibold text-gray-700">
-              Анализируем ваш запрос
+              Ищем решение
             </h3>
-            <p className="text-gray-500 mt-2">
-              ИИ определяет подходящую юридическую услугу...
-            </p>
           </div>
         ) : filteredCases.length === 0 ? (
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
             <div className="text-6xl mb-6">📋</div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
-              {aiResult.service === "Консультация"
-                ? "Требуется индивидуальная консультация"
-                : "Уточните запрос"}
+              Уточните запрос
             </h3>
             <Button
               size="lg"
@@ -319,11 +307,10 @@ const Services = () => {
               className="mt-4"
             >
               <Icon name="Phone" className="h-6 w-6 mr-3" />
-              Получить консультацию
+              Позвонить юристу
             </Button>
           </div>
         ) : (
-          // КАРТОЧКИ УСЛУГ (БЕЗ "Чаще всего ищут")
           <div className="grid md:grid-cols-2 gap-6">
             {filteredCases.map((caseItem) => (
               <div
@@ -334,7 +321,6 @@ const Services = () => {
                 <div className={`h-2 bg-gradient-to-r ${caseItem.color}`} />
 
                 <div className="p-6">
-                  {/* ЗАГОЛОВОК (только профессиональное название) */}
                   <div className="flex items-start gap-4 mb-4">
                     <div
                       className={`w-12 h-12 rounded-xl bg-gradient-to-br ${caseItem.color} flex items-center justify-center flex-shrink-0`}
@@ -359,7 +345,6 @@ const Services = () => {
                     </div>
                   </div>
 
-                  {/* ОПИСАНИЕ РЕЗУЛЬТАТА (деловой стиль) */}
                   <div className="mb-4">
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                       <Icon
@@ -371,7 +356,6 @@ const Services = () => {
                     <p className="text-gray-700 pl-6">{caseItem.result}</p>
                   </div>
 
-                  {/* ФУТЕР КАРТОЧКИ */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1 text-sm text-gray-500">
@@ -396,8 +380,6 @@ const Services = () => {
           </div>
         )}
       </div>
-
-      {/* Остальные блоки (аккордеон, CTA) остаются без изменений */}
     </div>
   );
 };
