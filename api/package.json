@@ -1,5 +1,5 @@
 {
-  "name": "legal-ai-server",
+  "name": "legal-ai-openrouter",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -10,5 +10,8 @@
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "openai": "^4.20.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
