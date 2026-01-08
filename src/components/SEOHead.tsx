@@ -1,64 +1,32 @@
-import { useEffect } from 'react';
+// Файл: src/components/SEOHead.tsx
+import Head from 'next/head';
 
 interface SEOHeadProps {
-  title?: string;
-  description?: string;
-  keywords?: string;
+  title: string;
+  description: string;
   canonical?: string;
-  ogImage?: string;
+  noindex?: boolean;
 }
 
-const SEOHead = ({ 
-  title = "ЮрСервис НСК — Юридические услуги в Новосибирске",
-  description = "Профессиональные юридические услуги в Новосибирске. Семейное право, наследство, жилищные споры, арбитраж, банкротство, трудовые споры. Цены от 1 рубля. Бесплатная консультация.",
-  keywords = "юрист новосибирск, юридические услуги новосибирск, семейное право новосибирск, наследство юрист новосибирск, жилищные споры новосибирск, арбитраж новосибирск, банкротство юрист новосибирск, трудовые споры новосибирск, автоюрист новосибирск, земельные споры новосибирск, медицинские споры новосибирск, кредитные споры новосибирск, цены юридические услуги новосибирск, стоимость юрист новосибирск",
-  canonical = "https://юридический-сервис.рф/",
-  ogImage = "https://юридический-сервис.рф/og-image.jpg"
-}: SEOHeadProps) => {
-  useEffect(() => {
-    // Update title
-    document.title = title;
-    
-    // Update meta tags
-    const updateMeta = (name: string, content: string) => {
-      let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.name = name;
-        document.head.appendChild(meta);
-      }
-      meta.content = content;
-    };
+export default function SEOHead({ title, description, canonical, noindex = false }: SEOHeadProps) {
+  const siteName = 'Ваше название фирмы';
+  const fullTitle = `${title} | ${siteName}`;
 
-    const updateProperty = (property: string, content: string) => {
-      let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.setAttribute('property', property);
-        document.head.appendChild(meta);
-      }
-      meta.content = content;
-    };
+  return (
+    <Head>
+      <title>{fullTitle}</title>
+      <meta name="description" content={description} />
+      {canonical && <link rel="canonical" href={`https://ваш-сайт.ру${canonical}`} />}
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-    updateMeta('description', description);
-    updateMeta('keywords', keywords);
-    updateProperty('og:title', title);
-    updateProperty('og:description', description);
-    updateProperty('og:image', ogImage);
-    updateProperty('og:url', canonical);
+      {/* Open Graph теги для соцсетей (важно для шаринга) */}
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="website" />
+      {/* Укажите здесь путь к изображению для превью */}
+      {/* <meta property="og:image" content="https://ваш-сайт.ру/og-image.jpg" /> */}
 
-    // Update canonical link
-    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonicalLink) {
-      canonicalLink = document.createElement('link');
-      canonicalLink.rel = 'canonical';
-      document.head.appendChild(canonicalLink);
-    }
-    canonicalLink.href = canonical;
-
-  }, [title, description, keywords, canonical, ogImage]);
-
-  return null;
-};
-
-export default SEOHead;
+      {/* Можно добавить темы для Twitter, если нужно */}
+    </Head>
+  );
+}
