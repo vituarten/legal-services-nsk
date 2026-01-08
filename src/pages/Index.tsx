@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AudienceSelector from "@/components/AudienceSelector";
 import SEOHead from "@/components/SEOHead";
 
@@ -7,7 +7,6 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Если пользователь уже выбирал аудиторию, перенаправляем его
     const audienceType = localStorage.getItem("audienceType");
     if (audienceType === "business") {
       navigate("/business");
@@ -18,18 +17,15 @@ const Index = () => {
 
   const handleAudienceSelect = (type: "business" | "citizens") => {
     localStorage.setItem("audienceType", type);
-    if (type === "business") {
-      navigate("/business");
-    } else {
-      navigate("/citizens");
-    }
+    navigate(type === "business" ? "/business" : "/citizens");
   };
 
   return (
     <>
       <SEOHead
         title="ЮрСервис НСК - Юридические услуги в Новосибирске"
-        description="Профессиональные юридические услуги для граждан и бизнеса в Калуге. Автоюрист, гражданские дела, банкротство, миграционные споры."
+        description="Профессиональные юридические услуги для граждан и бизнеса в Новосибирске. Автоюрист, гражданские дела, банкротство, миграционные споры."
+        canonical="/"
       />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50">
         <AudienceSelector onSelect={handleAudienceSelect} />
