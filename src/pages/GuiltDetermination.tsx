@@ -3,27 +3,23 @@ import Icon from "@/components/ui/icon";
 import { trackCustomGoal } from "@/utils/metrika";
 import { useEffect } from "react";
 
-// SEO-конфигурация для этой страницы
-const SEO_CONFIG = {
-  title: "Установление вины в ДТП в Новосибирске — Юридическая помощь",
-  description:
-    "Профессиональное установление и оспаривание вины в ДТП в суде Новосибирска. Докажем вашу невиновность. Опыт 15+ лет, 98% успешных дел. Бесплатный анализ документов.",
-  canonical: "/guilt-determination",
-};
-
 const GuiltDetermination = () => {
-  // Устанавливаем SEO-теги при загрузке страницы
+  // SEO настройки
   useEffect(() => {
-    document.title = SEO_CONFIG.title;
+    document.title =
+      "Установление вины в ДТП в Новосибирске — Юридическая помощь";
 
-    // Обновляем meta-тег description
+    // Обновляем meta description
     let metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {
       metaDescription = document.createElement("meta");
       metaDescription.setAttribute("name", "description");
       document.head.appendChild(metaDescription);
     }
-    metaDescription.setAttribute("content", SEO_CONFIG.description);
+    metaDescription.setAttribute(
+      "content",
+      "Профессиональное установление и оспаривание вины в ДТП в суде Новосибирска. Докажем вашу невиновность. Опыт 15+ лет, 98% успешных дел. Бесплатный анализ документов.",
+    );
 
     // Добавляем canonical link
     let linkCanonical = document.querySelector('link[rel="canonical"]');
@@ -34,12 +30,12 @@ const GuiltDetermination = () => {
     }
     linkCanonical.setAttribute(
       "href",
-      `https://юридический-сервис.рф${SEO_CONFIG.canonical}`,
+      "https://юридический-сервис.рф/guilt-determination",
     );
 
-    // Очистка при размонтировании
+    // Очистка
     return () => {
-      document.title = "Юридические услуги в Новосибирске"; // Заголовок по умолчанию
+      document.title = "Юридические услуги в Новосибирске";
     };
   }, []);
 
