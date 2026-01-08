@@ -257,7 +257,7 @@ const Services = () => {
         case_.problem.toLowerCase(),
         case_.solution.toLowerCase(),
         case_.result.toLowerCase(),
-        case_.professionalTitle.toLowerCase(), // Добавляем профессиональные названия в поиск
+        case_.professionalTitle.toLowerCase(),
         ...case_.keywords,
       ].join(" ");
 
@@ -353,14 +353,17 @@ const Services = () => {
       {/* Блок 2: Результаты поиска */}
       <div>
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">
-            {filteredCases.length === 0
-              ? "Не нашли свою ситуацию?"
-              : "Как решаем такие проблемы"}
-          </h2>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Профессиональные решения
+            </h2>
+            <p className="text-gray-600">
+              Подбираем юридические услуги под вашу ситуацию
+            </p>
+          </div>
           {filteredCases.length > 0 && (
             <div className="text-sm text-gray-500">
-              Нашли {filteredCases.length} вариант
+              Найдено {filteredCases.length} вариант
               {filteredCases.length === 1 ? "" : "а"}
             </div>
           )}
@@ -405,7 +408,7 @@ const Services = () => {
             </div>
           </div>
         ) : (
-          // Карточки решений
+          // Карточки решений - С ПРОФЕССИОНАЛЬНЫМИ НАЗВАНИЯМИ
           <div className="grid md:grid-cols-2 gap-6">
             {filteredCases.map((case_, index) => (
               <div
@@ -417,7 +420,7 @@ const Services = () => {
                 <div className={`h-2 bg-gradient-to-r ${case_.color}`} />
 
                 <div className="p-6">
-                  {/* Заголовок с иконкой */}
+                  {/* Заголовок с иконкой - ТЕПЕРЬ ПРОФЕССИОНАЛЬНОЕ НАЗВАНИЕ */}
                   <div className="flex items-start gap-4 mb-4">
                     <div
                       className={`w-12 h-12 rounded-xl bg-gradient-to-br ${case_.color} flex items-center justify-center flex-shrink-0`}
@@ -426,9 +429,9 @@ const Services = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 leading-tight mb-1">
-                        {case_.problem}
+                        {case_.professionalTitle}
                       </h3>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
                         <div className="px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full">
                           {case_.solution}
                         </div>
@@ -437,6 +440,17 @@ const Services = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Блок с человеческим описанием проблемы */}
+                  <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <div className="flex items-center gap-2 text-sm text-blue-700 mb-1">
+                      <Icon name="MessageSquare" className="h-4 w-4" />
+                      <span className="font-medium">
+                        Чаще всего описывают так:
+                      </span>
+                    </div>
+                    <p className="text-gray-700 text-sm">"{case_.problem}"</p>
                   </div>
 
                   {/* Результат */}
@@ -478,7 +492,7 @@ const Services = () => {
         )}
       </div>
 
-      {/* Блок 3: Полный список услуг (аккордеон) с профессиональными названиями */}
+      {/* Блок 3: Полный список услуг (аккордеон) */}
       <div className="border-t border-gray-200 pt-12">
         <details className="group">
           <summary className="flex items-center justify-between cursor-pointer text-xl font-bold text-gray-900 mb-6 list-none hover:text-primary transition-colors">
