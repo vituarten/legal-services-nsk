@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { CheckboxSimple } from "@/components/ui/checkbox-simple";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -502,7 +502,7 @@ export default function FloodDamagePage() {
                         className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center h-7">
-                          <Checkbox
+                          <CheckboxSimple
                             id={`item-${item.id}`}
                             checked={checklist.includes(item.id)}
                             onCheckedChange={(checked) =>
