@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
@@ -198,7 +198,7 @@ const Services = () => {
       result: "Списание до 100% долгов, защита от коллекторов",
       time: "5-9 месяцев",
       price: "от 45 000 ₽ в рассрочку",
-      stats: ["Опыт 12+ лет", "97% успешных дел", "Списали до 15 млн ₳"],
+      stats: ["Опыт 12+ лет", "97% успешных дел", "Списали до 15 млн ₽"],
       link: "/bankrotstvo-fizlic",
       icon: "FileCheck",
       color: "from-red-500 to-orange-500",
@@ -224,7 +224,7 @@ const Services = () => {
       result: "Возврат всей суммы долга + проценты и штрафы",
       time: "2-4 месяца",
       price: "от 15 000 ₽ или 15% от суммы",
-      stats: ["Опыт 15+ лет", "89% успешных взысканий", "Вернули до 23 млн ₳"],
+      stats: ["Опыт 15+ лет", "89% успешных взысканий", "Вернули до 23 млн ₽"],
       link: "/vzyskanie-dolgov",
       icon: "Scale",
       color: "from-blue-500 to-cyan-500",
@@ -251,7 +251,7 @@ const Services = () => {
       result: "Устранение недостатков или возврат денег + неустойка",
       time: "4-8 месяцев",
       price: "от 35 000 ₽",
-      stats: ["Опыт 10+ лет", "92% выигранных дел", "Вернули до 5 млн ₳"],
+      stats: ["Опыт 10+ лет", "92% выигранных дел", "Вернули до 5 млн ₽"],
       link: "/spory-so-zastrojshhikom",
       icon: "Building",
       color: "from-indigo-500 to-purple-500",
@@ -276,7 +276,7 @@ const Services = () => {
       result: "Полная компенсация ущерба + моральный вред",
       time: "2-4 месяца",
       price: "от 20 000 ₽",
-      stats: ["Опыт 8+ лет", "95% успешных дел", "Взыскали до 2 млн ₳"],
+      stats: ["Опыт 8+ лет", "95% успешных дел", "Взыскали до 2 млн ₽"],
       link: "/vozmeshchenie-ushcherba",
       icon: "Droplets",
       color: "from-cyan-500 to-blue-500",
@@ -328,7 +328,7 @@ const Services = () => {
       result: "Регулярные выплаты + взыскание задолженности + индексация",
       time: "1-2 месяца",
       price: "от 18 000 ₽",
-      stats: ["Опыт 12+ лет", "98% успешных взысканий", "Взыскали до 15 млн ₳"],
+      stats: ["Опыт 12+ лет", "98% успешных взысканий", "Взыскали до 15 млн ₽"],
       link: "/vzyskanie-alimentov",
       icon: "Baby",
       color: "from-rose-500 to-pink-500",
@@ -510,7 +510,7 @@ const Services = () => {
         "Взыскание всей задолженности + 1/150 ключевой ставки за каждый день",
       time: "1-2 месяца",
       price: "от 15 000 ₽ или 20% от взысканного",
-      stats: ["Опыт 10+ лет", "100% успешных дел", "Вернули до 8 млн ₳"],
+      stats: ["Опыт 10+ лет", "100% успешных дел", "Вернули до 8 млн ₽"],
       link: "/vzyskanie-zarplaty",
       icon: "Banknote",
       color: "from-amber-500 to-yellow-500",
@@ -538,7 +538,7 @@ const Services = () => {
       stats: [
         "Опыт 12+ лет",
         "96% успешных восстановлений",
-        "Взыскали до 2.5 млн ₳",
+        "Взыскали до 2.5 млн ₽",
       ],
       link: "/vosstanovlenie-na-rabote",
       icon: "Briefcase",
@@ -566,7 +566,7 @@ const Services = () => {
       result: "Возврат полной стоимости + неустойка и штраф 50%",
       time: "1-2 месяца",
       price: "от 7 000 ₽",
-      stats: ["Опыт 9+ лет", "94% успешных дел", "Вернули до 3 млн ₳"],
+      stats: ["Опыт 9+ лет", "94% успешных дел", "Вернули до 3 млн ₽"],
       link: "/vozvrat-deneg-za-tovar",
       icon: "PackageCheck",
       color: "from-purple-500 to-violet-500",
@@ -591,7 +591,7 @@ const Services = () => {
       result: "Взыскание неустойки в размере до 50% от суммы договора",
       time: "1-3 месяца",
       price: "от 10 000 ₽ или 20% от взысканного",
-      stats: ["Опыт 8+ лет", "91% успешных дел", "Взыскали до 1.5 млн ₳"],
+      stats: ["Опыт 8+ лет", "91% успешных дел", "Взыскали до 1.5 млн ₽"],
       link: "/vzyskanie-neustojki",
       icon: "FileText",
       color: "from-violet-500 to-purple-500",
@@ -632,7 +632,7 @@ const Services = () => {
           service.solution.toLowerCase(),
           service.result.toLowerCase(),
           ...service.keywords,
-          ...service.stats.map((stat) => stat.toLowerCase()),
+          ...service.stats.map((stat: string) => stat.toLowerCase()),
         ].join(" ");
 
         return searchIn.includes(query);
