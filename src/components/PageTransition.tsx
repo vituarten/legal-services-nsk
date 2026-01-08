@@ -1,25 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from "react";
 
-const PageTransition = () => {
+const PageTransition = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Fade in при загрузке страницы
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 0.3s ease-in';
-    
-    // Небольшая задержка для плавности
-    requestAnimationFrame(() => {
+    const appContent = document.querySelector("#app-content");
+    if (appContent) {
+      appContent.style.opacity = "0";
+      appContent.style.transition = "opacity 0.3s ease-in";
+
       requestAnimationFrame(() => {
-        document.body.style.opacity = '1';
+        requestAnimationFrame(() => {
+          appContent.style.opacity = "1";
+        });
       });
-    });
+    }
 
     return () => {
-      document.body.style.opacity = '1';
-      document.body.style.transition = '';
+      if (appContent) {
+        appContent.style.opacity = "1";
+        appContent.style.transition = "";
+      }
     };
   }, []);
 
-  return null;
+  return <>{children}</>;
 };
 
 export default PageTransition;
