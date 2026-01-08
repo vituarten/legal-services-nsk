@@ -8,6 +8,12 @@ const Services = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    problem: "",
+  });
 
   // Категории с расширенными ключевыми словами
   const problemCategories = [
@@ -32,6 +38,8 @@ const Services = () => {
         "просрочка",
         "финансовые споры",
         "денежные обязательства",
+        "списание долгов",
+        "реструктуризация",
       ],
     },
     {
@@ -56,6 +64,8 @@ const Services = () => {
         "сделка",
         "долевое строительство",
         "некачественный ремонт",
+        "затопление",
+        "новостройка",
       ],
     },
     {
@@ -78,6 +88,8 @@ const Services = () => {
         "брачный договор",
         "раздел имущества",
         "семейные споры",
+        "определение порядка общения",
+        "лишение родительских прав",
       ],
     },
     {
@@ -102,6 +114,9 @@ const Services = () => {
         "страховая выплата",
         "виновник дтп",
         "потерпевший",
+        "гибдд",
+        "административные правонарушения",
+        "алкогольное опьянение",
       ],
     },
     {
@@ -124,6 +139,8 @@ const Services = () => {
         "трудовые права",
         "компенсация",
         "восстановление на работе",
+        "рабочее место",
+        "трудовая инспекция",
       ],
     },
     {
@@ -147,37 +164,45 @@ const Services = () => {
         "изготовитель",
         "существенный недостаток",
         "закон о защите прав потребителей",
+        "претензия",
+        "неустойка",
       ],
     },
   ];
 
-  // Профессиональные услуги с пояснениями
+  // Популярные поисковые запросы
+  const popularSearches = [
+    "банкротство физических лиц",
+    "взыскание задолженности",
+    "затопили квартиру",
+    "споры с застройщиком",
+    "развод и раздел имущества",
+    "алименты на ребенка",
+    "дтп установление вины",
+    "споры со страховой",
+    "незаконное увольнение",
+    "возврат товара ненадлежащего качества",
+    "лишение прав за алкоголь",
+    "некачественный ремонт автомобиля",
+    "взыскание заработной платы",
+    "наследственные споры",
+  ];
+
+  // Юридические услуги с расширенными описаниями
   const legalServices = [
-    {
-      // Деньги
-      problem: "Взыскание задолженности",
-      description: "Вернем ваши деньги с должника через суд",
-      keywords: [
-        "должник не возвращает деньги",
-        "заем не отдают",
-        "задолженность по договору",
-        "неплатеж по расписке",
-        "вернуть долг",
-        "судебное взыскание",
-        "принудительное исполнение",
-        "исполнительный лист",
-      ],
-      solution: "Судебное взыскание",
-      result: "Возврат всей суммы долга + проценты и штрафы",
-      time: "2-4 месяца",
-      link: "/vzyskanie-dolgov",
-      icon: "Scale",
-      color: "from-blue-500 to-cyan-500",
-      category: "money",
-    },
+    // Деньги и долги
     {
       problem: "Банкротство физических лиц",
       description: "Спишем долги по кредитам и займам законно",
+      solution: "Процедура банкротства",
+      result: "Списание до 100% долгов, защита от коллекторов",
+      time: "5-9 месяцев",
+      price: "от 45 000 ₽ в рассрочку",
+      stats: ["Опыт 12+ лет", "97% успешных дел", "Списали до 15 млн ₳"],
+      link: "/bankrotstvo-fizlic",
+      icon: "FileCheck",
+      color: "from-red-500 to-orange-500",
+      category: "money",
       keywords: [
         "не могу платить кредиты",
         "долги банкам",
@@ -187,41 +212,50 @@ const Services = () => {
         "освобождение от долгов",
         "реструктуризация долгов",
         "процедура банкротства",
+        "списание кредитов",
+        "защита от коллекторов",
+        "судебное банкротство",
       ],
-      solution: "Процедура банкротства",
-      result: "Списание до 100% долгов, защита от коллекторов",
-      time: "5-9 месяцев",
-      link: "/bankrotstvo-fizlic",
-      icon: "FileCheck",
-      color: "from-red-500 to-orange-500",
+    },
+    {
+      problem: "Взыскание задолженности",
+      description: "Вернем ваши деньги с должника через суд",
+      solution: "Судебное взыскание",
+      result: "Возврат всей суммы долга + проценты и штрафы",
+      time: "2-4 месяца",
+      price: "от 15 000 ₽ или 15% от суммы",
+      stats: ["Опыт 15+ лет", "89% успешных взысканий", "Вернули до 23 млн ₳"],
+      link: "/vzyskanie-dolgov",
+      icon: "Scale",
+      color: "from-blue-500 to-cyan-500",
       category: "money",
+      keywords: [
+        "должник не возвращает деньги",
+        "заем не отдают",
+        "задолженность по договору",
+        "неплатеж по расписке",
+        "вернуть долг",
+        "судебное взыскание",
+        "принудительное исполнение",
+        "исполнительный лист",
+        "взыскание дебиторки",
+        "денежные обязательства",
+      ],
     },
 
     // Недвижимость
     {
-      problem: "Возмещение ущерба от залива",
-      description: "Взыщем деньги на ремонт, если вас затопили соседи",
-      keywords: [
-        "затопили квартиру",
-        "потоп от соседей",
-        "ремонт после залива",
-        "ущерб имуществу",
-        "компенсация ущерба",
-        "оценка ущерба",
-        "соседи сверху залили",
-        "залив квартиры",
-      ],
-      solution: "Досудебное урегулирование и суд",
-      result: "Полная компенсация ущерба + моральный вред",
-      time: "2-4 месяца",
-      link: "/vozmeshchenie-ushcherba",
-      icon: "Droplets",
-      color: "from-cyan-500 to-blue-500",
-      category: "housing",
-    },
-    {
       problem: "Споры с застройщиком",
       description: "Решим проблемы с новостройкой: дефекты, просрочка, обман",
+      solution: "Претензионная работа и суд",
+      result: "Устранение недостатков или возврат денег + неустойка",
+      time: "4-8 месяцев",
+      price: "от 35 000 ₽",
+      stats: ["Опыт 10+ лет", "92% выигранных дел", "Вернули до 5 млн ₳"],
+      link: "/spory-so-zastrojshhikom",
+      icon: "Building",
+      color: "from-indigo-500 to-purple-500",
+      category: "housing",
       keywords: [
         "застройщик нарушил сроки",
         "квартира с недостатками",
@@ -231,20 +265,49 @@ const Services = () => {
         "отказ от договора",
         "взыскание неустойки",
         "расторжение договора дду",
+        "дольщик",
+        "незавершенное строительство",
       ],
-      solution: "Претензионная работа и суд",
-      result: "Устранение недостатков или возврат денег",
-      time: "4-8 месяцев",
-      link: "/spory-so-zastrojshhikom",
-      icon: "Building",
-      color: "from-indigo-500 to-purple-500",
+    },
+    {
+      problem: "Возмещение ущерба от залива",
+      description: "Взыщем деньги на ремонт, если вас затопили соседи",
+      solution: "Досудебное урегулирование и суд",
+      result: "Полная компенсация ущерба + моральный вред",
+      time: "2-4 месяца",
+      price: "от 20 000 ₽",
+      stats: ["Опыт 8+ лет", "95% успешных дел", "Взыскали до 2 млн ₳"],
+      link: "/vozmeshchenie-ushcherba",
+      icon: "Droplets",
+      color: "from-cyan-500 to-blue-500",
       category: "housing",
+      keywords: [
+        "затопили квартиру",
+        "потоп от соседей",
+        "ремонт после залива",
+        "ущерб имуществу",
+        "компенсация ущерба",
+        "оценка ущерба",
+        "соседи сверху залили",
+        "залив квартиры",
+        "затопление",
+        "водопровод прорвало",
+      ],
     },
 
     // Семейное право
     {
       problem: "Расторжение брака и раздел имущества",
       description: "Поможем при разводе справедливо разделить имущество",
+      solution: "Мировое соглашение или суд",
+      result: "Справедливый раздел, определение долей, сохранение имущества",
+      time: "3-6 месяцев",
+      price: "от 25 000 ₽",
+      stats: ["Опыт 14+ лет", "94% успешных дел", "Сохранили имущество до 87%"],
+      link: "/razvod-razdel-imushchestva",
+      icon: "HeartBreak",
+      color: "from-pink-500 to-rose-500",
+      category: "family",
       keywords: [
         "развод с мужем/женой",
         "раздел квартиры при разводе",
@@ -254,18 +317,22 @@ const Services = () => {
         "спор об имуществе",
         "супружеские доли",
         "раздел ипотечной квартиры",
+        "расторжение брака через суд",
+        "имущественные споры супругов",
       ],
-      solution: "Мировое соглашение или суд",
-      result: "Справедливый раздел, определение долей",
-      time: "3-6 месяцев",
-      link: "/razvod-razdel-imushchestva",
-      icon: "HeartBreak",
-      color: "from-pink-500 to-rose-500",
-      category: "family",
     },
     {
       problem: "Взыскание алиментов",
       description: "Добьемся выплат на содержание детей",
+      solution: "Судебный приказ или иск",
+      result: "Регулярные выплаты + взыскание задолженности + индексация",
+      time: "1-2 месяца",
+      price: "от 18 000 ₽",
+      stats: ["Опыт 12+ лет", "98% успешных взысканий", "Взыскали до 15 млн ₳"],
+      link: "/vzyskanie-alimentov",
+      icon: "Baby",
+      color: "from-rose-500 to-pink-500",
+      category: "family",
       keywords: [
         "алименты на ребенка",
         "неплательщик алиментов",
@@ -275,20 +342,50 @@ const Services = () => {
         "уклонение от алиментов",
         "лишение родительских прав",
         "изменение размера алиментов",
+        "алименты на супруга",
+        "исполнительное производство по алиментам",
       ],
-      solution: "Судебный приказ или иск",
-      result: "Регулярные выплаты + взыскание задолженности",
-      time: "1-2 месяца",
-      link: "/vzyskanie-alimentov",
-      icon: "Baby",
-      color: "from-rose-500 to-pink-500",
-      category: "family",
     },
 
-    // Автомобильное право
+    // Автомобильное право - все ведут на /dtp-lawyer
     {
-      problem: "Споры со страховой компанией",
-      description: "Добьемся полной выплаты по ОСАГО после ДТП",
+      problem: "Установление вины за ДТП",
+      description:
+        "Доказательство невиновности и защита ваших интересов в споре о виновнике",
+      solution: "Доказать невиновность",
+      result: "Снятие обвинений или смягчение ответственности",
+      time: "1-3 месяца",
+      price: "от 15 000 ₽",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "Car",
+      color: "from-green-500 to-emerald-500",
+      category: "auto",
+      keywords: [
+        "дтп вина",
+        "невиновность в дтп",
+        "спор о виновнике дтп",
+        "установление виновника аварии",
+        "административное расследование дтп",
+        "экспертиза дтп",
+        "обжалование постановления",
+        "виновность в аварии",
+        "доказательства невиновности",
+        "экспертиза обстоятельств дтп",
+      ],
+    },
+    {
+      problem: "Споры со страховой",
+      description: "Страховая занижает выплату или отказывает в возмещении",
+      solution: "Узнать цену вопроса",
+      result: "Взыскание полной суммы ущерба с страховой компании + штраф 50%",
+      time: "2-4 месяца",
+      price: "от 10 000 ₽ или 10% от увеличения",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "ShieldAlert",
+      color: "from-emerald-500 to-green-500",
+      category: "auto",
       keywords: [
         "страховая отказывает в выплате",
         "недостаточная выплата по осаго",
@@ -298,41 +395,126 @@ const Services = () => {
         "досудебная претензия страховой",
         "судебный спор со страховой",
         "взыскание страхового возмещения",
+        "каско выплата",
+        "неправомерный отказ страховой",
       ],
-      solution: "Досудебное урегулирование и суд",
-      result: "Увеличение выплаты до рыночной стоимости ремонта",
-      time: "1-3 месяца",
-      link: "/spory-so-strahovoj",
-      icon: "ShieldAlert",
-      color: "from-green-500 to-emerald-500",
-      category: "auto",
     },
     {
-      problem: "Оспаривание виновности в ДТП",
-      description: "Докажем вашу невиновность или смягчим ответственность",
-      keywords: [
-        "не согласен с виновностью",
-        "неправильное оформление дтп",
-        "обжалование постановления",
-        "лишение прав",
-        "административное нарушение",
-        "доказательство невиновности",
-        "экспертиза дтп",
-        "восстановление водительских прав",
-      ],
-      solution: "Административное обжалование",
-      result: "Отмена или изменение постановления, сохранение прав",
-      time: "2-3 месяца",
-      link: "/osparivanie-dtp",
-      icon: "Car",
-      color: "from-emerald-500 to-green-500",
+      problem: "Взыскание ущерба от ДТП",
+      description: "Виновник не платит за ремонт или вред здоровью",
+      solution: "Бесплатная консультация",
+      result: "Полное возмещение ущерба здоровью и имуществу + моральный вред",
+      time: "3-5 месяцев",
+      price: "от 20 000 ₽ или 15% от взысканного",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "FileWarning",
+      color: "from-teal-500 to-green-500",
       category: "auto",
+      keywords: [
+        "взыскание ущерба с виновника дтп",
+        "ущерб здоровью в дтп",
+        "ремонт автомобиля после аварии",
+        "компенсация вреда здоровью",
+        "моральный вред дтп",
+        "иск к виновнику дтп",
+        "возмещение ущерба имуществу",
+        "лечение после аварии",
+        "утрата трудоспособности дтп",
+        "упущенная выгода дтп",
+      ],
+    },
+    {
+      problem: "Лишают прав за алкоголь",
+      description: "Обжалование протокола и защита в суде",
+      solution: "Оценить мои шансы",
+      result:
+        "Сохранение водительского удостоверения или сокращение срока лишения",
+      time: "1-2 месяца",
+      price: "от 25 000 ₽",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "Wine",
+      color: "from-amber-500 to-orange-500",
+      category: "auto",
+      keywords: [
+        "лишение прав за алкоголь",
+        "алкогольное опьянение за рулем",
+        "обжалование лишения прав",
+        "административный протокол",
+        "медицинское освидетельствование",
+        "возврат прав досрочно",
+        "суд по лишению прав",
+        "административное правонарушение",
+        "отказ от медосвидетельствования",
+        "управление в состоянии опьянения",
+      ],
+    },
+    {
+      problem: "Незаконный штраф ГИБДД",
+      description: "Обжалование необоснованных штрафов и постановлений",
+      solution: "Узнать, как решить",
+      result: "Отмена незаконного штрафа, возврат денег, сохранение прав",
+      time: "1-2 месяца",
+      price: "от 12 000 ₽",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "FileText",
+      color: "from-yellow-500 to-amber-500",
+      category: "auto",
+      keywords: [
+        "незаконный штраф гибдд",
+        "обжалование штрафа",
+        "необоснованное постановление",
+        "ошибочный штраф",
+        "протокол гибдд",
+        "административная жалоба",
+        "отмена постановления",
+        "нарушение пдд",
+        "автофиксация нарушений",
+        "камера штраф",
+      ],
+    },
+    {
+      problem: "СТО сделала плохой ремонт",
+      description: "Взыскание убытков за некачественный ремонт автомобиля",
+      solution: "Бесплатная консультация",
+      result: "Возврат денег за ремонт + компенсация ущерба",
+      time: "2-3 месяца",
+      price: "от 15 000 ₽",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "Wrench",
+      color: "from-gray-500 to-slate-500",
+      category: "auto",
+      keywords: [
+        "некачественный ремонт автомобиля",
+        "сто испортил машину",
+        "возврат денег за ремонт",
+        "брак в ремонте авто",
+        "диагностика авто после ремонта",
+        "автосервис некачественный ремонт",
+        "взыскание ущерба с сто",
+        "экспертиза качества ремонта",
+        "гарантия на ремонт автомобиля",
+        "защита прав автовладельца",
+      ],
     },
 
     // Трудовое право
     {
       problem: "Взыскание заработной платы",
       description: "Вернем невыплаченную зарплату и компенсацию",
+      solution: "Трудовая инспекция и суд",
+      result:
+        "Взыскание всей задолженности + 1/150 ключевой ставки за каждый день",
+      time: "1-2 месяца",
+      price: "от 15 000 ₽ или 20% от взысканного",
+      stats: ["Опыт 10+ лет", "100% успешных дел", "Вернули до 8 млн ₳"],
+      link: "/vzyskanie-zarplaty",
+      icon: "Banknote",
+      color: "from-amber-500 to-yellow-500",
+      category: "work",
       keywords: [
         "не выплачивают зарплату",
         "задержка заработной платы",
@@ -342,18 +524,26 @@ const Services = () => {
         "задолженность по зарплате",
         "трудовые права",
         "нарушение трудового договора",
+        "неофициальная зарплата",
+        "премии и надбавки",
       ],
-      solution: "Трудовая инспекция и суд",
-      result: "Взыскание всей задолженности + 1/150 ключевой ставки",
-      time: "1-2 месяца",
-      link: "/vzyskanie-zarplaty",
-      icon: "Banknote",
-      color: "from-amber-500 to-yellow-500",
-      category: "work",
     },
     {
       problem: "Восстановление на работе",
       description: "Вернем на работу при незаконном увольнении",
+      solution: "Судебное восстановление",
+      result: "Восстановление в должности + компенсация вынужденного прогула",
+      time: "2-3 месяца",
+      price: "от 25 000 ₽",
+      stats: [
+        "Опыт 12+ лет",
+        "96% успешных восстановлений",
+        "Взыскали до 2.5 млн ₳",
+      ],
+      link: "/vosstanovlenie-na-rabote",
+      icon: "Briefcase",
+      color: "from-yellow-500 to-amber-500",
+      category: "work",
       keywords: [
         "незаконное увольнение",
         "восстановление в должности",
@@ -363,20 +553,24 @@ const Services = () => {
         "нарушение процедуры увольнения",
         "компенсация за вынужденный прогул",
         "незаконное сокращение",
+        "увольнение по статье",
+        "трудовой спор",
       ],
-      solution: "Судебное восстановление",
-      result: "Восстановление в должности + компенсация вынужденного прогула",
-      time: "2-3 месяца",
-      link: "/vosstanovlenie-na-rabote",
-      icon: "Briefcase",
-      color: "from-yellow-500 to-amber-500",
-      category: "work",
     },
 
     // Защита прав потребителей
     {
       problem: "Расторжение договора и возврат денег",
       description: "Вернем деньги за некачественный товар или услугу",
+      solution: "Претензионный порядок и суд",
+      result: "Возврат полной стоимости + неустойка и штраф 50%",
+      time: "1-2 месяца",
+      price: "от 7 000 ₽",
+      stats: ["Опыт 9+ лет", "94% успешных дел", "Вернули до 3 млн ₳"],
+      link: "/vozvrat-deneg-za-tovar",
+      icon: "PackageCheck",
+      color: "from-purple-500 to-violet-500",
+      category: "consumer",
       keywords: [
         "бракованный товар",
         "некачественная услуга",
@@ -386,18 +580,22 @@ const Services = () => {
         "гарантийный ремонт",
         "претензия продавцу",
         "обман потребителя",
+        "технически сложный товар",
+        "закон о защите прав потребителей",
       ],
-      solution: "Претензионный порядок и суд",
-      result: "Возврат полной стоимости + неустойка и штраф",
-      time: "1-2 месяца",
-      link: "/vozvrat-deneg-za-tovar",
-      icon: "PackageCheck",
-      color: "from-purple-500 to-violet-500",
-      category: "consumer",
     },
     {
       problem: "Взыскание неустойки по договору",
       description: "Взыщем штрафы и пени за нарушение условий договора",
+      solution: "Претензионная работа",
+      result: "Взыскание неустойки в размере до 50% от суммы договора",
+      time: "1-3 месяца",
+      price: "от 10 000 ₽ или 20% от взысканного",
+      stats: ["Опыт 8+ лет", "91% успешных дел", "Взыскали до 1.5 млн ₳"],
+      link: "/vzyskanie-neustojki",
+      icon: "FileText",
+      color: "from-violet-500 to-purple-500",
+      category: "consumer",
       keywords: [
         "нарушение сроков",
         "неустойка по договору",
@@ -407,18 +605,13 @@ const Services = () => {
         "договорные обязательства",
         "взыскание пени",
         "ответственность за нарушение договора",
+        "проценты за пользование чужими деньгами",
+        "договор оказания услуг",
       ],
-      solution: "Претензионная работа",
-      result: "Взыскание неустойки в размере до 50% от суммы договора",
-      time: "1-3 месяца",
-      link: "/vzyskanie-neustojki",
-      icon: "FileText",
-      color: "from-violet-500 to-purple-500",
-      category: "consumer",
     },
   ];
 
-  // Улучшенный поиск с учетом категорий
+  // Улучшенный поиск
   const filteredServices = useMemo(() => {
     if (!searchQuery && !activeCategory) return legalServices;
 
@@ -439,6 +632,7 @@ const Services = () => {
           service.solution.toLowerCase(),
           service.result.toLowerCase(),
           ...service.keywords,
+          ...service.stats.map((stat) => stat.toLowerCase()),
         ].join(" ");
 
         return searchIn.includes(query);
@@ -448,17 +642,14 @@ const Services = () => {
     });
   }, [searchQuery, activeCategory]);
 
-  // Популярные запросы
-  const popularSearches = [
-    "вернуть долг",
-    "затопили квартиру",
-    "банкротство",
-    "дтп",
-    "алименты",
-    "незаконное увольнение",
-    "возврат товара",
-    "споры с застройщиком",
-  ];
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Здесь обычно отправка на сервер
+    console.log("Форма отправлена:", formData);
+    setShowContactForm(false);
+    setFormData({ name: "", phone: "", problem: "" });
+    alert("Заявка отправлена! Мы свяжемся с вами в течение 15 минут.");
+  };
 
   return (
     <div className="space-y-16">
@@ -487,26 +678,28 @@ const Services = () => {
             />
           </div>
 
-          {/* Популярные запросы */}
-          <div className="mt-4 flex flex-wrap gap-2 justify-center">
-            <span className="text-sm text-gray-500 mr-2">
-              Популярные запросы:
-            </span>
-            {popularSearches.map((search, i) => (
-              <button
-                key={i}
-                onClick={() => setSearchQuery(search)}
-                className="text-sm px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
-              >
-                {search}
-              </button>
-            ))}
+          {/* Частые запросы - улучшенное оформление */}
+          <div className="mt-6">
+            <div className="text-sm font-medium text-gray-700 mb-3 text-center">
+              Часто ищут:
+            </div>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {popularSearches.map((search, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSearchQuery(search)}
+                  className="text-sm px-4 py-2.5 bg-gradient-to-r from-gray-50 to-white border border-gray-200 hover:border-primary/30 hover:shadow-md text-gray-700 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  {search}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Категории */}
         <div className="mb-10">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          <h2 className="text-xl font-semibold text-gray-700 mb-6">
             Выберите категорию:
           </h2>
           <div className="flex flex-wrap gap-3 justify-center">
@@ -518,14 +711,16 @@ const Services = () => {
                     activeCategory === category.id ? null : category.id,
                   )
                 }
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl transition-all duration-300 ${
+                className={`flex flex-col items-center px-6 py-4 rounded-xl transition-all duration-300 min-w-[140px] ${
                   activeCategory === category.id
                     ? `${category.color} ${category.border} border-2 shadow-lg scale-105`
                     : `bg-white ${category.border} border hover:shadow-md`
                 }`}
               >
-                <span className="text-xl">{category.title.split(" ")[0]}</span>
-                <span className="font-medium">
+                <span className="text-2xl mb-2">
+                  {category.title.split(" ")[0]}
+                </span>
+                <span className="font-medium text-sm text-center">
                   {category.title.split(" ").slice(1).join(" ")}
                 </span>
               </button>
@@ -558,49 +753,32 @@ const Services = () => {
               Не нашли нужную услугу?
             </h3>
             <p className="text-gray-600 mb-8 max-w-xl mx-auto">
-              Возможно, ваша ситуация требует индивидуального подхода.
-              <br />
-              <span className="font-semibold">
-                Позвоните нам для бесплатной консультации.
-              </span>
+              Опишите вашу проблему в форме ниже, и наш юрист свяжется с вами
+              для бесплатной консультации.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                size="lg"
-                onClick={() => window.open("tel:+73832359505", "_self")}
-                className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg px-10 py-6 text-lg"
-              >
-                <Icon name="Phone" className="h-6 w-6 mr-3" />
-                Бесплатная консультация
-              </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => {
-                  setSearchQuery("");
-                  setActiveCategory(null);
-                }}
-                className="border-2 border-gray-300 hover:border-gray-400 px-8 py-6"
-              >
-                Показать все услуги
-              </Button>
-            </div>
+            <Button
+              size="lg"
+              onClick={() => setShowContactForm(true)}
+              className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg px-10 py-6 text-lg"
+            >
+              <Icon name="MessageSquare" className="h-6 w-6 mr-3" />
+              Получить бесплатную консультацию
+            </Button>
           </div>
         ) : (
           // Карточки услуг
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredServices.map((service, index) => (
               <div
                 key={index}
-                className="group relative bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-primary/30 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                className="group relative bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-primary/30 hover:shadow-xl transition-all duration-300 cursor-pointer h-full flex flex-col"
                 onClick={() => navigate(service.link)}
               >
                 {/* Цветная полоска сверху */}
                 <div className={`h-2 bg-gradient-to-r ${service.color}`} />
 
-                <div className="p-6">
+                <div className="p-6 flex-1 flex flex-col">
                   {/* Заголовок с иконкой */}
                   <div className="flex items-start gap-4 mb-4">
                     <div
@@ -626,8 +804,22 @@ const Services = () => {
                     </div>
                   </div>
 
-                  {/* Результат */}
+                  {/* Статистика */}
                   <div className="mb-4">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {service.stats.map((stat, i) => (
+                        <div
+                          key={i}
+                          className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded"
+                        >
+                          {stat}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Результат */}
+                  <div className="mb-4 flex-1">
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                       <Icon
                         name="CheckCircle"
@@ -639,16 +831,19 @@ const Services = () => {
                   </div>
 
                   {/* Футер карточки */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1 text-sm text-gray-500">
                         <Icon name="Clock" className="h-4 w-4" />
                         <span>{service.time}</span>
                       </div>
+                      <div className="text-sm font-medium text-gray-700">
+                        {service.price}
+                      </div>
                     </div>
 
                     <div className="flex items-center text-primary font-semibold text-sm group-hover:text-primary/80">
-                      <span>Подробнее об услуге</span>
+                      <span>Подробнее</span>
                       <Icon
                         name="ArrowRight"
                         className="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform"
@@ -662,79 +857,226 @@ const Services = () => {
         )}
       </div>
 
-      {/* Блок 3: Процесс работы */}
-      <div className="border-t border-gray-200 pt-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-          Как мы работаем
-        </h2>
-        <div className="grid md:grid-cols-4 gap-6">
-          {[
-            {
-              step: "01",
-              title: "Консультация",
-              description: "Анализируем вашу ситуацию, оцениваем перспективы",
-              icon: "MessageSquare",
-            },
-            {
-              step: "02",
-              title: "Документы",
-              description: "Собираем и готовим все необходимые документы",
-              icon: "FileText",
-            },
-            {
-              step: "03",
-              title: "Решение",
-              description: "Выбираем оптимальную стратегию решения проблемы",
-              icon: "Target",
-            },
-            {
-              step: "04",
-              title: "Результат",
-              description: "Добиваемся положительного результата для клиента",
-              icon: "Award",
-            },
-          ].map((item, index) => (
-            <div key={index} className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 text-white flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                {item.step}
+      {/* Блок 3: Контакты и форма */}
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-10 text-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Левая часть: Контакты */}
+            <div>
+              <h2 className="text-3xl font-bold mb-6">
+                Свяжитесь с нами удобным способом
+              </h2>
+              <p className="text-gray-300 mb-8">
+                Получите бесплатную первичную консультацию по вашему вопросу в
+                течение 15 минут
+              </p>
+
+              {/* Телефон */}
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Icon name="Phone" className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-black tracking-tight">
+                      +7 (383) 235-95-05
+                    </div>
+                    <div className="text-gray-400 text-sm mt-1">
+                      Новосибирск • Ежедневно с 9:00 до 21:00
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  size="lg"
+                  onClick={() => window.open("tel:+73832359505", "_self")}
+                  className="w-full bg-white text-gray-900 hover:bg-gray-100 font-bold py-6 text-lg rounded-xl shadow-lg"
+                >
+                  <Icon name="Phone" className="h-6 w-6 mr-3" />
+                  Позвонить юристу
+                </Button>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                <Icon name={item.icon} className="h-6 w-6 text-primary" />
+
+              {/* Мессенджеры */}
+              <div className="mb-6">
+                <div className="text-lg font-semibold mb-4">
+                  Напишите в мессенджер:
+                </div>
+                <div className="flex gap-4">
+                  <a
+                    href="https://t.me/ваш_телеграм"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1"
+                  >
+                    <Button className="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white py-6">
+                      <div className="flex items-center justify-center gap-3">
+                        {/* Логотип Telegram */}
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.064-1.225-.461-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                        </svg>
+                        <span>Telegram</span>
+                      </div>
+                    </Button>
+                  </a>
+                  <a
+                    href="https://vk.com/ваш_vk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1"
+                  >
+                    <Button className="w-full bg-[#0077FF] hover:bg-[#0066DD] text-white py-6">
+                      <div className="flex items-center justify-center gap-3">
+                        {/* Логотип VK */}
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.445h-1.863c-.66 0-.864-.525-2.05-1.881-1.033-1.175-1.46-1.298-1.726-1.298-.396 0-.507.216-.507.741v1.426c0 .525-.192.66-1.588.66-2.125 0-4.222-1.21-5.792-3.46C4.624 10.89 4.03 8.163 4.03 8.096c0-.11.144-.254.288-.254h1.902c.396 0 .528.216.66.72.792 2.436 2.178 4.566 2.742 4.566.22 0 .33-.144.33-.72V9.673c-.061-1.267-.793-1.373-.793-1.813 0-.216.165-.432.44-.432h2.904c.37 0 .507.216.507.65v3.703c0 .396.22.528.33.528.11 0 .275-.11.55-.396 1.1-1.375 2.07-3.465 2.07-3.465.11-.254.275-.432.605-.432h1.864c.44 0 .528.216.44.576-.11.396-1.1 2.904-1.1 2.904-.11.22-.165.396 0 .65.11.22.385.33.605.55.825.793 1.267 1.56 1.7 2.326.275.396.33.65-.055.65z" />
+                        </svg>
+                        <span>VK</span>
+                      </div>
+                    </Button>
+                  </a>
+                </div>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-              <p className="text-gray-600 text-sm">{item.description}</p>
+
+              {/* Другие контакты */}
+              <div className="text-gray-400 text-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name="Mail" className="h-4 w-4" />
+                  <span>info@jurist-expert.ru</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Icon name="MapPin" className="h-4 w-4" />
+                  <span>г. Новосибирск, ул. Ленина, д. 12, офис 405</span>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Блок 4: CTA */}
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-10 text-white text-center">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">
-            Нужна консультация юриста?
-          </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Получите бесплатную первичную консультацию по вашему вопросу
-          </p>
+            {/* Правая часть: Форма */}
+            <div>
+              <h3 className="text-2xl font-bold mb-6">
+                {showContactForm
+                  ? "Опишите вашу проблему"
+                  : "Бесплатная консультация"}
+              </h3>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button
-              size="lg"
-              onClick={() => window.open("tel:+73832359505", "_self")}
-              className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-10 py-6 text-lg rounded-xl shadow-lg"
-            >
-              <Icon name="Phone" className="h-6 w-6 mr-3" />
-              Заказать консультацию
-            </Button>
-
-            <div className="text-left">
-              <div className="text-2xl font-black tracking-tight">
-                +7 (383) 235-95-05
-              </div>
-              <div className="text-gray-400 text-sm mt-1">
-                Новосибирск • Ежедневно с 9:00 до 21:00
-              </div>
+              {showContactForm ? (
+                <form onSubmit={handleFormSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Ваше имя
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      className="w-full px-4 py-3 bg-white/10 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="Иван Иванов"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Телефон
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
+                      className="w-full px-4 py-3 bg-white/10 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="+7 (999) 999-99-99"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Опишите ситуацию
+                    </label>
+                    <textarea
+                      required
+                      value={formData.problem}
+                      onChange={(e) =>
+                        setFormData({ ...formData, problem: e.target.value })
+                      }
+                      rows={4}
+                      className="w-full px-4 py-3 bg-white/10 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      placeholder="Кратко опишите вашу проблему..."
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 text-lg rounded-xl"
+                  >
+                    Отправить заявку
+                  </Button>
+                  <p className="text-gray-400 text-xs text-center">
+                    Нажимая кнопку, вы соглашаетесь с политикой
+                    конфиденциальности
+                  </p>
+                </form>
+              ) : (
+                <>
+                  <p className="text-gray-300 mb-8">
+                    Заполните форму, и наш юрист свяжется с вами в течение 15
+                    минут
+                  </p>
+                  <Button
+                    onClick={() => setShowContactForm(true)}
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 text-lg rounded-xl shadow-lg"
+                  >
+                    <Icon name="MessageSquare" className="h-6 w-6 mr-3" />
+                    Получить консультацию
+                  </Button>
+                  <div className="mt-8 space-y-4">
+                    <div className="flex items-start gap-3">
+                      <Icon
+                        name="CheckCircle"
+                        className="h-5 w-5 text-green-400 mt-0.5"
+                      />
+                      <div>
+                        <div className="font-semibold">Конфиденциально</div>
+                        <div className="text-gray-400 text-sm">
+                          Не передаём данные третьим лицам
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon
+                        name="Clock"
+                        className="h-5 w-5 text-blue-400 mt-0.5"
+                      />
+                      <div>
+                        <div className="font-semibold">Без ожидания</div>
+                        <div className="text-gray-400 text-sm">
+                          Сразу соединим с профильным юристом
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon
+                        name="Shield"
+                        className="h-5 w-5 text-yellow-400 mt-0.5"
+                      />
+                      <div>
+                        <div className="font-semibold">Честная оценка</div>
+                        <div className="text-gray-400 text-sm">
+                          Скажем, если не сможем помочь
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
