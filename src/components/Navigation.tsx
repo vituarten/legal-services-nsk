@@ -1,6 +1,7 @@
+// Navigation.tsx - исправленная версия с ButtonSimple
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { ButtonSimple } from "@/components/ui/button-simple";
 import Icon from "@/components/ui/icon";
 
 interface NavigationProps {
@@ -95,27 +96,27 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                   Документы
                 </a>
 
-                {/* ГОРОДСКОЙ ТЕЛЕФОН - ИСПРАВЛЕНО */}
-                <Button
+                {/* ГОРОДСКОЙ ТЕЛЕФОН */}
+                <ButtonSimple
                   size="sm"
-                  className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 shadow-lg hover:shadow-red-500/25 ml-2"
+                  className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 shadow-lg hover:shadow-red-500/25 ml-2 text-white"
                   onClick={() => (window.location.href = `tel:${cityPhoneRaw}`)}
                 >
                   <Icon name="Phone" className="h-4 w-4 mr-2" />
                   <span className="font-bold">{cityPhone}</span>
-                </Button>
+                </ButtonSimple>
               </div>
             </nav>
 
             {/* Мобильная версия */}
             <div className="md:hidden flex items-center gap-3">
-              <Button
+              <ButtonSimple
                 size="sm"
-                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
+                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white"
                 onClick={() => (window.location.href = `tel:${cityPhoneRaw}`)}
               >
                 <Icon name="Phone" className="h-4 w-4" />
-              </Button>
+              </ButtonSimple>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="p-2"
@@ -179,8 +180,8 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                   Реальные кейсы
                 </a>
 
-                <Button
-                  className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 mt-4"
+                <ButtonSimple
+                  className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white mt-4"
                   onClick={() => {
                     setIsMenuOpen(false);
                     window.location.href = `tel:${cityPhoneRaw}`;
@@ -188,7 +189,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                 >
                   <Icon name="Phone" className="h-4 w-4 mr-2" />
                   {cityPhone}
-                </Button>
+                </ButtonSimple>
               </nav>
             </div>
           )}
@@ -236,19 +237,19 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
             ))}
           </nav>
 
-          {/* CTA Buttons - ИСПРАВЛЕНО */}
+          {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Icon name="MapPin" className="h-4 w-4 text-primary" />
               <span>г. Новосибирск, ул. Ленина, д. 3</span>
             </div>
-            <Button
-              className="bg-primary hover:bg-primary/90"
+            <ButtonSimple
+              className="bg-primary hover:bg-primary/90 text-white"
               onClick={() => (window.location.href = `tel:${cityPhoneRaw}`)}
             >
               <Icon name="Phone" className="h-4 w-4 mr-2" />
               {cityPhone}
-            </Button>
+            </ButtonSimple>
           </div>
 
           {/* Mobile Menu Button */}
@@ -282,8 +283,8 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
                   {item.name}
                 </Link>
               ))}
-              <Button
-                className="w-full bg-primary hover:bg-primary/90"
+              <ButtonSimple
+                className="w-full bg-primary hover:bg-primary/90 text-white"
                 onClick={() => {
                   setIsMenuOpen(false);
                   window.location.href = `tel:${cityPhoneRaw}`;
@@ -291,7 +292,7 @@ const Navigation = ({ onLoginClick }: NavigationProps) => {
               >
                 <Icon name="Phone" className="h-4 w-4 mr-2" />
                 {cityPhone}
-              </Button>
+              </ButtonSimple>
             </nav>
           </div>
         </div>
