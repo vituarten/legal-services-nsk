@@ -263,21 +263,6 @@ const Services = () => {
     },
   ];
 
-  // Популярные поисковые запросы
-  const popularSearches = [
-    "банкротство",
-    "взыскание долга",
-    "раздел имущества",
-    "алименты",
-    "дтп",
-    "незаконное увольнение",
-    "застройщик обманул",
-    "возврат товара",
-    "оформление земли",
-    "получение гражданства",
-    "некачественный ремонт",
-  ];
-
   // ПОЛНЫЙ СПИСОК ЮРИДИЧЕСКИХ УСЛУГ
   const legalServices = [
     // === Финансы и долги ===
@@ -291,7 +276,7 @@ const Services = () => {
       link: "/bankruptcy-lawyer",
       icon: "FileCheck",
       color: "from-red-500 to-orange-500",
-      category: "money",
+      categories: ["money"],
       keywords: [
         "не могу платить кредиты",
         "долги банкам",
@@ -316,7 +301,7 @@ const Services = () => {
       link: "/debt-collection",
       icon: "Scale",
       color: "from-blue-500 to-cyan-500",
-      category: "money",
+      categories: ["money"],
       keywords: [
         "должник не возвращает деньги",
         "заем не отдают",
@@ -343,7 +328,7 @@ const Services = () => {
       link: "/disputes-with-developers",
       icon: "Building",
       color: "from-indigo-500 to-purple-500",
-      category: "housing",
+      categories: ["housing", "construction"], // Пересечение с строительным правом
       keywords: [
         "застройщик нарушил сроки",
         "квартира с недостатками",
@@ -368,7 +353,7 @@ const Services = () => {
       link: "/flood-damage",
       icon: "Droplets",
       color: "from-cyan-500 to-blue-500",
-      category: "housing",
+      categories: ["housing"],
       keywords: [
         "затопили квартиру",
         "потоп от соседей",
@@ -395,7 +380,7 @@ const Services = () => {
       link: "/family-lawyer",
       icon: "HeartBreak",
       color: "from-pink-500 to-rose-500",
-      category: "family",
+      categories: ["family"],
       keywords: [
         "развод с мужем/женой",
         "раздел квартиры при разводе",
@@ -420,7 +405,7 @@ const Services = () => {
       link: "/family-lawyer",
       icon: "Baby",
       color: "from-rose-500 to-pink-500",
-      category: "family",
+      categories: ["family"],
       keywords: [
         "алименты на ребенка",
         "неплательщик алиментов",
@@ -436,22 +421,43 @@ const Services = () => {
       ],
     },
 
-    // === Автомобильное право ===
+    // === Автомобильное право (ВОССТАНОВЛЕНО 6 УСЛУГ) ===
     {
-      problem: "Споры со страховой по ДТП",
-      description: "Страховая занижает выплату или отказывает в возмещении",
-      solution: "Досудебная претензия и суд",
-      result: "Взыскание полной суммы ущерба + штраф 50%",
-      time: "2-4 месяца",
-      stats: [
-        "Опыт 15+ лет",
-        "98% выигранных дел",
-        "Увеличили выплаты в 87% случаев",
+      problem: "Установление вины за ДТП",
+      description:
+        "Доказательство невиновности и защита ваших интересов в споре о виновнике",
+      solution: "Доказать невиновность",
+      result: "Снятие обвинений или смягчение ответственности",
+      time: "1-3 месяца",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "Car",
+      color: "from-green-500 to-emerald-500",
+      categories: ["auto"],
+      keywords: [
+        "дтп вина",
+        "невиновность в дтп",
+        "спор о виновнике дтп",
+        "установление виновника аварии",
+        "административное расследование дтп",
+        "экспертиза дтп",
+        "обжалование постановления",
+        "виновность в аварии",
+        "доказательства невиновности",
+        "экспертиза обстоятельств дтп",
       ],
+    },
+    {
+      problem: "Споры со страховой",
+      description: "Страховая занижает выплату или отказывает в возмещении",
+      solution: "Узнать цену вопроса",
+      result: "Взыскание полной суммы ущерба с страховой компании + штраф 50%",
+      time: "2-4 месяца",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
       link: "/dtp-lawyer",
       icon: "ShieldAlert",
       color: "from-emerald-500 to-green-500",
-      category: "auto",
+      categories: ["auto"],
       keywords: [
         "страховая отказывает в выплате",
         "недостаточная выплата по осаго",
@@ -463,20 +469,92 @@ const Services = () => {
         "взыскание страхового возмещения",
         "каско выплата",
         "неправомерный отказ страховой",
-        "дтп выплата",
       ],
     },
     {
-      problem: "Некачественный ремонт в автосервисе",
-      description: "СТО сделала плохой ремонт или испортила машину",
-      solution: "Экспертиза и взыскание убытков",
+      problem: "Взыскание ущерба от ДТП",
+      description: "Виновник не платит за ремонт или вред здоровью",
+      solution: "Бесплатная консультация",
+      result: "Полное возмещение ущерба здоровью и имуществу + моральный вред",
+      time: "3-5 месяцев",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "FileWarning",
+      color: "from-teal-500 to-green-500",
+      categories: ["auto"],
+      keywords: [
+        "взыскание ущерба с виновника дтп",
+        "ущерб здоровью в дтп",
+        "ремонт автомобиля после аварии",
+        "компенсация вреда здоровью",
+        "моральный вред дтп",
+        "иск к виновнику дтп",
+        "возмещение ущерба имуществу",
+        "лечение после аварии",
+        "утрата трудоспособности дтп",
+        "упущенная выгода дтп",
+      ],
+    },
+    {
+      problem: "Лишают прав за алкоголь",
+      description: "Обжалование протокола и защита в суде",
+      solution: "Оценить мои шансы",
+      result:
+        "Сохранение водительского удостоверения или сокращение срока лишения",
+      time: "1-2 месяца",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "Wine",
+      color: "from-amber-500 to-orange-500",
+      categories: ["auto"],
+      keywords: [
+        "лишение прав за алкоголь",
+        "алкогольное опьянение за рулем",
+        "обжалование лишения прав",
+        "административный протокол",
+        "медицинское освидетельствование",
+        "возврат прав досрочно",
+        "суд по лишению прав",
+        "административное правонарушение",
+        "отказ от медосвидетельствования",
+        "управление в состоянии опьянения",
+      ],
+    },
+    {
+      problem: "Незаконный штраф ГИБДД",
+      description: "Обжалование необоснованных штрафов и постановлений",
+      solution: "Узнать, как решить",
+      result: "Отмена незаконного штрафа, возврат денег, сохранение прав",
+      time: "1-2 месяца",
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
+      link: "/dtp-lawyer",
+      icon: "FileText",
+      color: "from-yellow-500 to-amber-500",
+      categories: ["auto"],
+      keywords: [
+        "незаконный штраф гибдд",
+        "обжалование штрафа",
+        "необоснованное постановление",
+        "ошибочный штраф",
+        "протокол гибдд",
+        "административная жалоба",
+        "отмена постановления",
+        "нарушение пдд",
+        "автофиксация нарушений",
+        "камера штраф",
+      ],
+    },
+    {
+      problem: "СТО сделала плохой ремонт",
+      description: "Взыскание убытков за некачественный ремонт автомобиля",
+      solution: "Бесплатная консультация",
       result: "Возврат денег за ремонт + компенсация ущерба",
       time: "2-3 месяца",
-      stats: ["Опыт 9+ лет", "94% успешных дел", "Вернули до 500 тыс. ₽"],
+      stats: ["Опыт 15+ лет", "98% выигранных дел", "Бесплатная консультация"],
       link: "/dtp-lawyer",
       icon: "Wrench",
       color: "from-gray-500 to-slate-500",
-      category: "auto",
+      categories: ["auto", "consumer"], // ВАЖНО: Пересечение категорий - авто и защита прав потребителей
       keywords: [
         "некачественный ремонт автомобиля",
         "сто испортил машину",
@@ -506,7 +584,7 @@ const Services = () => {
       link: "/labor-law",
       icon: "Banknote",
       color: "from-amber-500 to-yellow-500",
-      category: "work",
+      categories: ["work"],
       keywords: [
         "не выплачивают зарплату",
         "задержка заработной платы",
@@ -534,7 +612,7 @@ const Services = () => {
       link: "/labor-law",
       icon: "Briefcase",
       color: "from-yellow-500 to-amber-500",
-      category: "work",
+      categories: ["work"],
       keywords: [
         "незаконное увольнение",
         "восстановление в должности",
@@ -560,7 +638,7 @@ const Services = () => {
       link: "/consumer-protection",
       icon: "PackageCheck",
       color: "from-purple-500 to-violet-500",
-      category: "consumer",
+      categories: ["consumer"],
       keywords: [
         "бракованный товар",
         "некачественная услуга",
@@ -584,7 +662,7 @@ const Services = () => {
       link: "/consumer-protection",
       icon: "FileText",
       color: "from-violet-500 to-purple-500",
-      category: "consumer",
+      categories: ["consumer"],
       keywords: [
         "нарушение сроков",
         "неустойка по договору",
@@ -610,7 +688,7 @@ const Services = () => {
       link: "/land-law",
       icon: "Map",
       color: "from-emerald-500 to-green-500",
-      category: "land",
+      categories: ["land"],
       keywords: [
         "границы участка",
         "межевание",
@@ -637,7 +715,7 @@ const Services = () => {
       link: "/land-law",
       icon: "Home",
       color: "from-green-500 to-emerald-500",
-      category: "land",
+      categories: ["land"],
       keywords: [
         "оформление земли в собственность",
         "приватизация земельного участка",
@@ -666,7 +744,7 @@ const Services = () => {
       link: "/migration",
       icon: "Flag",
       color: "from-blue-500 to-sky-500",
-      category: "migration",
+      categories: ["migration"],
       keywords: [
         "гражданство России",
         "прием в гражданство",
@@ -695,7 +773,7 @@ const Services = () => {
       link: "/migration",
       icon: "FileText",
       color: "from-sky-500 to-blue-500",
-      category: "migration",
+      categories: ["migration"],
       keywords: [
         "вид на жительство",
         "внж",
@@ -720,7 +798,7 @@ const Services = () => {
       link: "/construction-law",
       icon: "Wrench",
       color: "from-amber-500 to-orange-500",
-      category: "construction",
+      categories: ["construction", "consumer", "housing"], // Пересечение нескольких категорий
       keywords: [
         "некачественный ремонт",
         "строительные работы",
@@ -733,6 +811,8 @@ const Services = () => {
         "договор подряда",
         "некачественные материалы",
         "защита прав потребителей",
+        "жилье",
+        "квартира",
       ],
     },
     {
@@ -749,7 +829,7 @@ const Services = () => {
       link: "/construction-law",
       icon: "Eye",
       color: "from-orange-500 to-amber-500",
-      category: "construction",
+      categories: ["construction"],
       keywords: [
         "технический надзор",
         "контроль строительства",
@@ -765,15 +845,15 @@ const Services = () => {
     },
   ];
 
-  // Улучшенный поиск
+  // Улучшенный поиск с учетом пересечения категорий
   const filteredServices = useMemo(() => {
     if (!searchQuery && !activeCategory) return legalServices;
 
     const query = searchQuery.toLowerCase().trim();
 
     return legalServices.filter((service) => {
-      // Фильтрация по категории
-      if (activeCategory && service.category !== activeCategory) {
+      // Фильтрация по категории - теперь проверяем массив categories
+      if (activeCategory && !service.categories.includes(activeCategory)) {
         return false;
       }
 
@@ -830,20 +910,7 @@ const Services = () => {
               className="absolute right-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
             />
           </div>
-
-          {/* Упрощенные частые запросы */}
-          <div className="mt-4 flex flex-wrap gap-2 justify-center">
-            <span className="text-sm text-gray-500 mr-2">Часто ищут:</span>
-            {popularSearches.map((search, i) => (
-              <button
-                key={i}
-                onClick={() => setSearchQuery(search)}
-                className="text-sm px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
-              >
-                {search}
-              </button>
-            ))}
-          </div>
+          {/* Убрал блок "Часто ищут" */}
         </div>
 
         {/* Категории */}
