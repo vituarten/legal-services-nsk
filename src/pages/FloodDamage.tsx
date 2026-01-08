@@ -13,7 +13,6 @@ export default function FloodDamagePage() {
   const TG_LINK = "https://t.me/ваш_логин";
   const MAX_LINK = "https://max.me/ваша_компания";
 
-  // Таймер для естественной срочности
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeOnSite((prev) => prev + 1);
@@ -28,7 +27,6 @@ export default function FloodDamagePage() {
       return;
     }
     const message = `Заявка на консультацию по заливу:%0AИмя: ${userData.name}%0AТелефон: ${userData.phone}`;
-    // Перенаправляем в Telegram для мгновенной связи
     window.open(`https://t.me/share/url?url=${message}`, "_blank");
     alert(`Спасибо, ${userData.name}! Открываем Telegram для быстрой связи.`);
   };
@@ -115,8 +113,13 @@ export default function FloodDamagePage() {
             <div className="grid lg:grid-cols-2 gap-10 items-start">
               {/* Левая колонка: Форма и контакты */}
               <div className="space-y-8">
-                <div className="bg-white rounded-2xl border-2 border-blue-200 p-8 shadow-xl">
-                  <div className="text-center mb-8">
+                <div className="bg-white rounded-2xl border-2 border-blue-200 p-8 shadow-xl relative">
+                  {/* Декоративный элемент для акцента */}
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-1 rounded-full text-sm font-semibold">
+                    Главная форма заявки
+                  </div>
+
+                  <div className="text-center mb-8 pt-4">
                     <div className="text-5xl font-black text-green-600 mb-2">
                       0 ₽
                     </div>
@@ -140,7 +143,7 @@ export default function FloodDamagePage() {
                         onChange={(e) =>
                           setUserData({ ...userData, name: e.target.value })
                         }
-                        className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
                         placeholder="Как к вам обращаться?"
                       />
                     </div>
@@ -155,64 +158,107 @@ export default function FloodDamagePage() {
                         onChange={(e) =>
                           setUserData({ ...userData, phone: e.target.value })
                         }
-                        className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
                         placeholder={CITY_PHONE}
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="w-full py-5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all text-lg shadow-lg hover:shadow-xl"
+                      className="w-full py-5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-lg shadow-lg hover:shadow-xl shadow-blue-200"
                     >
                       Получить бесплатный план действий
                     </button>
 
                     <div className="text-center text-sm text-gray-500 pt-4 border-t">
-                      <p>✅ Консультация ни к чему не обязывает</p>
-                      <p>✅ Сразу скажем, можно ли взыскать деньги</p>
+                      <p className="flex items-center justify-center gap-2">
+                        <span className="text-green-500">✓</span> Консультация
+                        ни к чему не обязывает
+                      </p>
+                      <p className="flex items-center justify-center gap-2 mt-1">
+                        <span className="text-green-500">✓</span> Сразу скажем,
+                        можно ли взыскать деньги
+                      </p>
                     </div>
                   </form>
                 </div>
 
-                {/* Блок связи */}
-                <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-gray-300 p-6">
+                {/* Блок связи - УЛУЧШЕННЫЙ ДИЗАЙН */}
+                <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-sm">
                   <h3 className="font-bold text-gray-900 mb-4 text-center">
                     Или свяжитесь сразу:
                   </h3>
                   <div className="grid grid-cols-3 gap-3">
+                    {/* Telegram */}
                     <a
                       href={TG_LINK}
                       target="_blank"
-                      className="p-4 bg-[#0088cc] text-white rounded-xl flex flex-col items-center justify-center hover:bg-[#007ab8] transition-colors"
+                      className="group p-4 bg-[#0088cc] text-white rounded-xl flex flex-col items-center justify-center hover:bg-[#0077b5] active:scale-[0.98] transition-all duration-200 shadow hover:shadow-md"
                     >
-                      <div className="text-2xl mb-2">✈️</div>
+                      <svg
+                        className="w-7 h-7 mb-2 group-hover:scale-110 transition-transform"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.139l-1.67 7.894c-.126.569-.452.71-.916.443l-2.537-1.87-1.223 1.18c-.135.135-.248.248-.508.248l.18-2.569 4.714-4.26c.205-.186-.045-.289-.317-.104l-5.826 3.673-2.513-.785c-.548-.17-.56-.548.115-.812l9.846-3.793c.456-.18.855.112.71.812z" />
+                      </svg>
                       <div className="text-sm font-medium">Telegram</div>
+                      <div className="text-xs opacity-80 mt-1">
+                        Отвечаем быстро
+                      </div>
                     </a>
+
+                    {/* MAX */}
                     <a
                       href={MAX_LINK}
                       target="_blank"
-                      className="p-4 bg-gradient-to-r from-[#FF3366] to-[#FF6633] text-white rounded-xl flex flex-col items-center justify-center hover:opacity-90 transition-opacity"
+                      className="group p-4 bg-gradient-to-br from-[#FF3366] via-[#FF3366] to-[#FF6633] text-white rounded-xl flex flex-col items-center justify-center hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow hover:shadow-md"
                     >
-                      <div className="text-2xl mb-2 font-bold">M</div>
+                      <div className="relative w-7 h-7 mb-2">
+                        <div className="absolute inset-0 bg-white rounded-full flex items-center justify-center">
+                          <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#FF3366] to-[#FF6633] font-bold text-lg">
+                            M
+                          </span>
+                        </div>
+                      </div>
                       <div className="text-sm font-medium">MAX</div>
+                      <div className="text-xs opacity-80 mt-1">Для звонков</div>
                     </a>
+
+                    {/* Телефон */}
                     <a
                       href={`tel:${CITY_PHONE_RAW}`}
-                      className="p-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl flex flex-col items-center justify-center hover:from-green-600 hover:to-emerald-700 transition-all"
+                      className="group p-4 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl flex flex-col items-center justify-center hover:from-gray-900 hover:to-black active:scale-[0.98] transition-all duration-200 shadow hover:shadow-md"
                     >
-                      <div className="text-2xl mb-2">📞</div>
+                      <svg
+                        className="w-7 h-7 mb-2 group-hover:scale-110 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
+                      </svg>
                       <div className="text-sm font-medium">Позвонить</div>
+                      <div className="text-xs opacity-80 mt-1">
+                        Прямо сейчас
+                      </div>
                     </a>
                   </div>
-                  <p className="text-center text-sm text-gray-600 mt-4">
-                    Отвечаем в мессенджерах 24/7
+                  <p className="text-center text-sm text-gray-600 mt-4 flex items-center justify-center gap-2">
+                    <span className="text-green-500">●</span> Отвечаем в
+                    мессенджерах 24/7
                   </p>
                 </div>
               </div>
 
               {/* Правая колонка: Чек-лист и информация */}
               <div className="space-y-8">
-                <div className="bg-white rounded-2xl border-2 border-blue-200 p-8">
+                <div className="bg-white rounded-2xl border-2 border-blue-100 p-8 shadow-sm">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">
                     Ответьте на 4 вопроса
                   </h2>
@@ -227,21 +273,41 @@ export default function FloodDamagePage() {
                               : [...prev, item.id],
                           )
                         }
-                        className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${checklist.includes(item.id) ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"}`}
+                        className={`p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:border-blue-300 hover:shadow-sm ${
+                          checklist.includes(item.id)
+                            ? "border-green-500 bg-green-50 shadow-sm"
+                            : "border-gray-200"
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-gray-900">
                             {item.text}
                           </span>
                           <div
-                            className={`w-7 h-7 rounded-full border-2 flex items-center justify-center ${checklist.includes(item.id) ? "border-green-500 bg-green-500" : "border-gray-400"}`}
+                            className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
+                              checklist.includes(item.id)
+                                ? "border-green-500 bg-green-500 shadow-sm"
+                                : "border-gray-300"
+                            }`}
                           >
                             {checklist.includes(item.id) && (
-                              <span className="text-white text-sm">✓</span>
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="3"
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
                             )}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-600 mt-3">
+                        <div className="text-sm text-gray-600 mt-3 pl-1">
                           {item.tip}
                         </div>
                       </div>
@@ -249,7 +315,7 @@ export default function FloodDamagePage() {
                   </div>
 
                   {timeOnSite > 30 && (
-                    <div className="mt-8 p-5 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl">
+                    <div className="mt-8 p-5 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl animate-pulse">
                       <div className="flex items-center gap-3">
                         <div className="text-2xl">⏱️</div>
                         <div>
@@ -266,7 +332,7 @@ export default function FloodDamagePage() {
                 </div>
 
                 {/* Блок "Кто виноват" */}
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 rounded-2xl p-8">
+                <div className="bg-gradient-to-br from-blue-50 to-white border-2 border-blue-100 rounded-2xl p-8 shadow-sm">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">
                     Кто вас затопил? Стратегия зависит от ответа
                   </h3>
@@ -274,27 +340,31 @@ export default function FloodDamagePage() {
                     {guiltyParties.map((party, idx) => (
                       <div
                         key={idx}
-                        className="bg-white/70 rounded-xl p-5 border border-blue-200"
+                        className="bg-white rounded-xl p-5 border border-blue-100 hover:border-blue-300 transition-colors duration-200"
                       >
                         <div className="flex items-center gap-4 mb-3">
-                          <div className="text-3xl">{party.icon}</div>
+                          <div className="text-3xl bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center">
+                            {party.icon}
+                          </div>
                           <div>
                             <div className="font-bold text-gray-900">
                               {party.type}
                             </div>
-                            <div className="text-sm text-red-600">
+                            <div className="text-sm text-red-600 font-medium">
                               Риск: {party.risk}
                             </div>
                           </div>
                         </div>
-                        <div className="text-sm text-gray-700">
-                          <span className="font-semibold">Решение:</span>{" "}
+                        <div className="text-sm text-gray-700 bg-blue-50 p-3 rounded-lg">
+                          <span className="font-semibold text-blue-700">
+                            Решение:
+                          </span>{" "}
                           {party.solution}
                         </div>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-6 pt-6 border-t border-blue-300/50">
+                  <div className="mt-6 pt-6 border-t border-blue-200">
                     <p className="text-center text-gray-700 font-medium">
                       На консультации разберём ваш случай и дадим шаблоны
                       документов
@@ -316,7 +386,7 @@ export default function FloodDamagePage() {
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4 border-2 border-blue-200">
                   1
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
@@ -327,7 +397,7 @@ export default function FloodDamagePage() {
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4 border-2 border-blue-200">
                   2
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
@@ -338,7 +408,7 @@ export default function FloodDamagePage() {
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4 border-2 border-blue-200">
                   3
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
@@ -354,20 +424,30 @@ export default function FloodDamagePage() {
       </section>
 
       {/* ФИНАЛЬНЫЙ CTA */}
-      <section className="py-16 bg-gradient-to-r from-blue-900 to-gray-900 text-white">
+      <section className="py-16 bg-gradient-to-br from-blue-900 via-blue-800 to-gray-900 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
               Бесплатно ≠ Бесполезно
             </h2>
-            <p className="text-xl mb-10 text-white/80 max-w-2xl mx-auto">
+            <p className="text-xl mb-10 text-blue-100 max-w-2xl mx-auto">
               Это ваш шанс получить профессиональную оценку ситуации, прежде чем
               совершить ошибку, которая обойдётся в десятки тысяч рублей.
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-white/20">
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-full mb-6">
-                <span className="text-green-300">✅</span>
+                <svg
+                  className="w-5 h-5 text-green-300"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
                 <span className="font-medium">
                   Консультация ни к чему не обязывает
                 </span>
@@ -380,20 +460,20 @@ export default function FloodDamagePage() {
                       .querySelector("form")
                       ?.scrollIntoView({ behavior: "smooth" })
                   }
-                  className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all text-lg"
+                  className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-lg shadow-lg hover:shadow-xl shadow-green-900/30"
                 >
                   Получить план бесплатно
                 </button>
                 <a
                   href={`tel:${CITY_PHONE_RAW}`}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all text-lg"
+                  className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-cyan-700 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-lg shadow-lg hover:shadow-xl shadow-blue-900/30"
                 >
                   Позвонить {CITY_PHONE}
                 </a>
               </div>
             </div>
 
-            <p className="text-white/60 text-sm">
+            <p className="text-blue-300/70 text-sm">
               Новосибирск и область • Консультация 0 ₽ • Работаем через
               Telegram/MAX • Отвечаем 24/7
             </p>
