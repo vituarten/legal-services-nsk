@@ -34,7 +34,7 @@ const GuiltDetermination = () => {
     }
     linkCanonical.setAttribute(
       "href",
-      `https://ваш-сайт.ру${SEO_CONFIG.canonical}`,
+      `https://юридический-сервис.рф${SEO_CONFIG.canonical}`,
     );
 
     // Очистка при размонтировании
