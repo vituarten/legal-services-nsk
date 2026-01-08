@@ -65,6 +65,7 @@ const Services = () => {
   const realCases = [
     {
       problem: "Должны деньги, но не отдают",
+      professionalTitle: "Взыскание задолженности",
       keywords: [
         "должны денег",
         "не отдают деньги",
@@ -74,6 +75,8 @@ const Services = () => {
         "задолженность",
         "одолжил",
         "заём",
+        "взыскание задолженности",
+        "взыскание долгов",
       ],
       solution: "Заставим вернуть через суд",
       result: "Получите свои деньги + проценты за просрочку",
@@ -85,6 +88,7 @@ const Services = () => {
     },
     {
       problem: "Затопили соседи, ремонт за свой счёт",
+      professionalTitle: "Возмещение ущерба от залива",
       keywords: [
         "затопили",
         "потоп",
@@ -93,6 +97,8 @@ const Services = () => {
         "ущерб",
         "затопило квартиру",
         "вода",
+        "возмещение ущерба",
+        "компенсация за залив",
       ],
       solution: "Взыщем ущерб в полном объёме",
       result: "Деньги на новый ремонт + компенсация за неудобства",
@@ -104,6 +110,7 @@ const Services = () => {
     },
     {
       problem: "Кредиты душат, коллекторы звонят",
+      professionalTitle: "Банкротство физических лиц",
       keywords: [
         "кредиты",
         "долги",
@@ -113,6 +120,8 @@ const Services = () => {
         "просрочка",
         "займы",
         "микрофинансы",
+        "банкротство физических лиц",
+        "списание долгов",
       ],
       solution: "Спишем долги через банкротство",
       result: "Избавитесь от долгов, сохраните жильё, остановите звонки",
@@ -124,6 +133,7 @@ const Services = () => {
     },
     {
       problem: "Попал в ДТП, страховая платит мало",
+      professionalTitle: "Юридическое сопровождение при ДТП",
       keywords: [
         "дтп",
         "авария",
@@ -133,6 +143,8 @@ const Services = () => {
         "авто",
         "машина",
         "авария",
+        "юридическое сопровождение дтп",
+        "споры со страховыми",
       ],
       solution: "Добьёмся полной выплаты",
       result: "Увеличим выплату в 2-3 раза, сохраним права",
@@ -144,6 +156,7 @@ const Services = () => {
     },
     {
       problem: "Развод, муж угрожает забрать всё",
+      professionalTitle: "Семейно-правовое консультирование",
       keywords: [
         "развод",
         "раздел имущества",
@@ -154,6 +167,8 @@ const Services = () => {
         "семья",
         "развод с мужем",
         "развод с женой",
+        "семейное право",
+        "раздел совместно нажитого имущества",
       ],
       solution: "Сохраним ваше имущество и права",
       result: "Справедливый раздел, определение детей, алименты",
@@ -165,6 +180,7 @@ const Services = () => {
     },
     {
       problem: "Купили квартиру, а застройщик обманул",
+      professionalTitle: "Сопровождение сделок с недвижимостью",
       keywords: [
         "застройщик",
         "новостройка",
@@ -173,6 +189,8 @@ const Services = () => {
         "обман",
         "строители",
         "некачественная квартира",
+        "сделки с недвижимостью",
+        "споры с застройщиком",
       ],
       solution: "Вернём деньги или заставим исправить",
       result: "Полный возврат средств или устранение всех недостатков",
@@ -184,6 +202,7 @@ const Services = () => {
     },
     {
       problem: "Не платят зарплату 3 месяца",
+      professionalTitle: "Трудовое право и защита прав работников",
       keywords: [
         "зарплата",
         "не платят",
@@ -192,6 +211,8 @@ const Services = () => {
         "трудовой спор",
         "деньги за работу",
         "задержка зарплаты",
+        "трудовое право",
+        "защита трудовых прав",
       ],
       solution: "Взыщем зарплату и компенсацию",
       result: "Все невыплаты + компенсация за задержку",
@@ -203,6 +224,7 @@ const Services = () => {
     },
     {
       problem: "Купил телефон, а он сломался",
+      professionalTitle: "Защита прав потребителей",
       keywords: [
         "брак",
         "некачественный товар",
@@ -212,6 +234,8 @@ const Services = () => {
         "покупка",
         "магазин",
         "обман",
+        "защита прав потребителей",
+        "возврат товара",
       ],
       solution: "Вернём деньги или заменим товар",
       result: "Возврат полной стоимости или замена на новый",
@@ -249,6 +273,7 @@ const Services = () => {
         case_.problem.toLowerCase(),
         case_.solution.toLowerCase(),
         case_.result.toLowerCase(),
+        case_.professionalTitle.toLowerCase(), // Добавлен поиск по профессиональному названию
         ...case_.keywords,
       ].join(" ");
 
@@ -419,7 +444,10 @@ const Services = () => {
                       <h3 className="text-lg font-bold text-gray-900 leading-tight mb-1">
                         {case_.problem}
                       </h3>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">
+                          Проф. название: {case_.professionalTitle}
+                        </div>
                         <div className="px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold rounded-full">
                           {case_.solution}
                         </div>
@@ -473,7 +501,7 @@ const Services = () => {
       <div className="border-t border-gray-200 pt-12">
         <details className="group">
           <summary className="flex items-center justify-between cursor-pointer text-xl font-bold text-gray-900 mb-6 list-none hover:text-primary transition-colors">
-            <span>Все услуги юриста (список для ознакомления)</span>
+            <span>Все профессиональные услуги юриста</span>
             <Icon
               name="ChevronDown"
               className="h-5 w-5 text-gray-500 transform group-open:rotate-180 transition-transform"
@@ -481,77 +509,21 @@ const Services = () => {
           </summary>
 
           <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              {
-                title: "Банкротство физических лиц",
-                desc: "Списание долгов, защита от коллекторов",
-                link: "/bankruptcy-lawyer",
-              },
-              {
-                title: "Взыскание долгов",
-                desc: "Вернём деньги с должников через суд",
-                link: "/debt-collection",
-              },
-              {
-                title: "Семейный юрист",
-                desc: "Развод, раздел имущества, алименты",
-                link: "/family-lawyer",
-              },
-              {
-                title: "Автоюрист",
-                desc: "ДТП, споры со страховыми, лишение прав",
-                link: "/dtp-lawyer",
-              },
-              {
-                title: "Недвижимость",
-                desc: "Сделки, перепланировки, споры",
-                link: "/real-estate-lawyer",
-              },
-              {
-                title: "Трудовые споры",
-                desc: "Невыплата зарплаты, незаконное увольнение",
-                link: "/labor-law",
-              },
-              {
-                title: "Защита прав потребителей",
-                desc: "Возврат некачественного товара",
-                link: "/consumer-protection",
-              },
-              {
-                title: "Миграционные вопросы",
-                desc: "ВНЖ, гражданство, защита от депортации",
-                link: "/migration",
-              },
-              {
-                title: "Уголовные дела",
-                desc: "Защита на следствии и в суде",
-                link: "/criminal-lawyer",
-              },
-              {
-                title: "Земельные споры",
-                desc: "Межевание, оформление участков",
-                link: "/land-law",
-              },
-              {
-                title: "Возмещение ущерба от потопов",
-                desc: "Взыскание ущерба при залитии",
-                link: "/flood-damage",
-              },
-              {
-                title: "Составление документов",
-                desc: "Договоры, иски, правовая экспертиза",
-                link: "/document-services",
-              },
-            ].map((service, index) => (
+            {realCases.map((service, index) => (
               <Link
                 key={index}
                 to={service.link}
                 className="block p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-primary/5 transition-all hover:shadow-sm"
               >
                 <div className="font-semibold text-gray-900 hover:text-primary transition-colors mb-1">
-                  {service.title}
+                  {service.professionalTitle}
                 </div>
-                <div className="text-sm text-gray-600">{service.desc}</div>
+                <div className="text-sm text-gray-600 mb-2">
+                  {service.solution}
+                </div>
+                <div className="text-xs text-gray-500">
+                  Как люди ищут: "{service.problem}"
+                </div>
               </Link>
             ))}
           </div>
