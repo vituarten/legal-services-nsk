@@ -4,130 +4,77 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
 export default function FloodDamagePage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    service: "free",
-  });
-  const [checklist, setChecklist] = useState([1, 2, 3]);
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const [activeGuiltyParty, setActiveGuiltyParty] = useState<string | null>(
-    "neighbor",
-  );
+  const [userData, setUserData] = useState({ name: "", phone: "" });
+  const [checklist, setChecklist] = useState<number[]>([]);
+  const [timeOnSite, setTimeOnSite] = useState(0);
 
   const CITY_PHONE = "+7 (383) 235-95-05";
   const CITY_PHONE_RAW = "+738322359505";
-  const TELEGRAM_LINK = "https://t.me/ваш_логин"; // ЗАМЕНИТЕ
-  const MAX_LINK = "https://max.me/ваша_компания"; // ЗАМЕНИТЕ
+  const TG_LINK = "https://t.me/ваш_логин";
+  const MAX_LINK = "https://max.me/ваша_компания";
+
+  // Таймер для естественной срочности
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeOnSite((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const service =
-      formData.service === "free"
-        ? "бесплатную консультацию"
-        : "анализ документов за 1 500 ₽";
-    alert(
-      `Спасибо, ${formData.name}! Мы свяжемся с вами в течение 15 минут для ${service}.`,
-    );
+    if (!userData.name || !userData.phone) {
+      alert("Пожалуйста, заполните имя и телефон");
+      return;
+    }
+    const message = `Заявка на консультацию по заливу:%0AИмя: ${userData.name}%0AТелефон: ${userData.phone}`;
+    // Перенаправляем в Telegram для мгновенной связи
+    window.open(`https://t.me/share/url?url=${message}`, "_blank");
+    alert(`Спасибо, ${userData.name}! Открываем Telegram для быстрой связи.`);
   };
 
   const checklistItems = [
     {
       id: 1,
-      text: "Остановить протечку и уведомить соседей/УК",
-      critical: true,
+      text: "Составили акт о заливе?",
+      tip: "Без акта шансы на компенсацию падают на 80%",
     },
     {
       id: 2,
-      text: "Сфотографировать/снять на видео весь ущерб",
-      critical: true,
+      text: "Виновник признаёт вину?",
+      tip: "Если нет — нужна особенная стратегия",
     },
     {
       id: 3,
-      text: "Вызвать представителя УК для составления акта",
-      critical: true,
+      text: "Ущерб больше 100 000 ₽?",
+      tip: "От суммы зависит способ взыскания",
     },
-    { id: 4, text: "Детально описать ВСЕ повреждения в акте", critical: false },
     {
-      id: 5,
-      text: "Получить подпись виновника или акт об отказе",
-      critical: true,
+      id: 4,
+      text: "Прошло больше 3 дней?",
+      tip: "Доказательства со временем теряют силу",
     },
-    { id: 6, text: "Не начинать ремонт до экспертизы", critical: true },
   ];
 
   const guiltyParties = [
     {
-      id: "neighbor",
-      title: "Сосед (физическое лицо)",
+      type: "Сосед",
       icon: "👤",
-      description:
-        "Частный собственник квартиры сверху или сбоку, из-за халатности которого произошел залив.",
-      pros: [
-        "Чаще признает вину",
-        "Возможность взыскать моральный вред",
-        "Можно решить вопрос досудебно",
-      ],
-      cons: [
-        "Может не иметь денег на компенсацию",
-        "Может скрываться",
-        "Сложности с взысканием, если он не собственник",
-      ],
-      strategy:
-        "Основная стратегия — досудебная претензия с детальным расчетом ущерба. Если игнорирует — подготовка иска в мировой суд с требованием взыскания ущерба, морального вреда и штрафа 50% по ЗПП.",
+      risk: "Может не платить, даже если признаёт вину",
+      solution: "Даём шаблон претензии с расчётом неустойки",
     },
     {
-      id: "uk",
-      title: "Управляющая компания (УК) / ТСЖ",
+      type: "Управляющая компания",
       icon: "🏢",
-      description:
-        "Организация, отвечающая за содержание общего имущества дома (крыша, стояки, инженерные системы).",
-      pros: [
-        "Юридическое лицо, у которого есть деньги",
-        "Несет ответственность за некачественное обслуживание",
-        "Можно взыскать неустойку за нарушение сроков",
-      ],
-      cons: [
-        "Имеют штатных юристов и стараются избегать выплат",
-        "Часто отсылают к виновным соседям",
-        "Требует четкого доказательства их вины через экспертизу",
-      ],
-      strategy:
-        "Требуется официальная претензия с ссылками на нормы жилищного законодательства и договор управления. Обязательна независимая строительно-техническая экспертиза для установления причины протечки из общего имущества.",
+      risk: "Будет занижать сумму или перекладывать вину",
+      solution: "Помогаем составить жалобу в Жилищную инспекцию",
     },
     {
-      id: "builder",
-      title: "Застройщик (новостройка)",
+      type: "Застройщик",
       icon: "🏗️",
-      description:
-        "Компания, которая построила дом. Ответственность наступает в рамках гарантийных обязательств (обычно 3-5 лет).",
-      pros: [
-        "Крупная организация с финансовыми ресурсами",
-        "Четкие гарантийные сроки по закону",
-        "Часто решают вопросы в досудебном порядке, чтобы сохранить репутацию",
-      ],
-      cons: [
-        "Длительные сроки проверок и экспертиз",
-        "Сложность доказательства строительного брака",
-        "Могут настаивать на ремонте вместо денежной компенсации",
-      ],
-      strategy:
-        "Необходимо официальное обращение с требованием устранить недостатки. Требуется строительно-техническая экспертиза для доказательства дефекта строительства. Важно действовать в рамках гарантийного срока.",
-    },
-  ];
-
-  const faqItems = [
-    {
-      q: "Чем консультация отличается от анализа за 1500₽?",
-      a: "Консультация (0₽) — устные ответы на вопросы и общий план. Анализ (1500₽) — детальная проверка ВАШИХ документов, поиск ошибок, из-за которых могут занизить сумму, и письменные рекомендации по их исправлению.",
-    },
-    {
-      q: "Как быстро начнется работа?",
-      a: "Сразу после вашего согласия. Договор вышлем в Telegram/MAX или на почту. Подписать его можно онлайн за 5 минут. Мы на связи 24/7 для любых вопросов.",
-    },
-    {
-      q: "Вы находите ошибки в документах?",
-      a: "В 9 из 10 случаев находим минимум 3-5 ошибок или упущений (нет подписи, не указан скрытый ущерб, неверные формулировки). Каждая ошибка — риск потерять 10-30% от суммы компенсации.",
+      risk: "Затянет решение на месяцы в рамках гарантии",
+      solution:
+        "Составляем требование с ссылками на закон о долевом строительстве",
     },
   ];
 
@@ -135,519 +82,320 @@ export default function FloodDamagePage() {
     <>
       <Helmet>
         <title>
-          Профессиональный разбор залива в Новосибирске | Консультация 0₽ или
-          анализ 1500₽
+          Бесплатная консультация юриста по заливу квартиры в Новосибирске
         </title>
         <meta
           name="description"
-          content={`Затопили соседи? Узнайте, что делать. Бесплатная консультация или анализ ваших документов за 1500₽. Договор онлайн. ${CITY_PHONE}`}
+          content={`Затопили соседи? Получите бесплатную консультацию юриста и пошаговый план действий за 20 минут. ${CITY_PHONE}`}
         />
       </Helmet>
 
-      {/* === 1. HERO: Главный оффер и форма === */}
-      <section className="py-12 md:py-20 bg-gradient-to-br from-blue-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Затопили квартиру в Новосибирске?
-              <br />
-              <span className="text-2xl md:text-3xl text-gray-700">
-                Поймите свои права и начните действовать правильно
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Разберитесь в ситуации за 15 минут.{" "}
-              <span className="font-bold text-green-600">Бесплатно</span>{" "}
-              получите план или за{" "}
-              <span className="font-bold text-blue-600">1 500 ₽</span> проверьте
-              документы на скрытые ошибки.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-10">
-            {/* Левая часть: Выбор услуги и форма */}
-            <div className="bg-white rounded-2xl border-2 border-gray-200 p-8 shadow-xl">
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {[
-                  {
-                    id: "free",
-                    title: "БЕСПЛАТНО",
-                    desc: "Консультация и план",
-                    price: "0 ₽",
-                  },
-                  {
-                    id: "paid",
-                    title: "АНАЛИЗ ДОКУМЕНТОВ",
-                    desc: "Проверка на ошибки",
-                    price: "1 500 ₽",
-                  },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setFormData({ ...formData, service: s.id })}
-                    className={`p-6 rounded-xl border-2 text-center transition-all ${formData.service === s.id ? "border-blue-500 bg-blue-50 shadow-inner" : "border-gray-300 hover:border-gray-400"}`}
-                  >
-                    <div className="text-3xl font-black mb-2">{s.price}</div>
-                    <div className="font-bold mb-1">{s.title}</div>
-                    <div className="text-sm text-gray-600">{s.desc}</div>
-                  </button>
-                ))}
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Как к вам обращаться? *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                    placeholder="Иван Иванов"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Телефон для связи *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                    placeholder={CITY_PHONE}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg hover:shadow-xl"
-                >
-                  {formData.service === "free"
-                    ? "▶ Получить бесплатный план действий"
-                    : "📄 Заказать анализ документов за 1 500 ₽"}
-                </button>
-                <p className="text-center text-sm text-gray-500">
-                  Нажимая, вы соглашаетесь на обработку данных.{" "}
-                  <span className="font-semibold">Спам не присылаем.</span>
-                </p>
-              </form>
-
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="font-bold text-gray-900 mb-4">
-                  Свяжитесь удобным способом:
-                </h3>
-                <div className="grid grid-cols-3 gap-3">
-                  <a
-                    href={TELEGRAM_LINK}
-                    target="_blank"
-                    className="p-3 bg-[#0088cc] text-white rounded-lg flex flex-col items-center justify-center hover:bg-[#007ab8] transition-colors"
-                  >
-                    <div className="text-xl mb-1">✈️</div>
-                    <div className="text-sm font-medium">Telegram</div>
-                  </a>
-                  <a
-                    href={MAX_LINK}
-                    target="_blank"
-                    className="p-3 bg-gradient-to-r from-[#FF3366] to-[#FF6633] text-white rounded-lg flex flex-col items-center justify-center hover:opacity-90 transition-opacity"
-                  >
-                    <div className="text-xl mb-1 font-bold">M</div>
-                    <div className="text-sm font-medium">MAX</div>
-                  </a>
-                  <a
-                    href={`tel:${CITY_PHONE_RAW}`}
-                    className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg flex flex-col items-center justify-center hover:from-green-600 hover:to-emerald-700 transition-all"
-                  >
-                    <div className="text-xl mb-1">📞</div>
-                    <div className="text-sm font-medium">Позвонить</div>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Правая часть: Чек-лист и блок доверия */}
-            <div className="space-y-8">
-              <div className="bg-white rounded-2xl border-2 border-blue-200 p-8">
-                <h2 className="text-2xl font-bold mb-6">
-                  Что уже сделано? Отметьте:
-                </h2>
-                <div className="space-y-4 mb-8">
-                  {checklistItems.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() =>
-                        setChecklist((prev) =>
-                          prev.includes(item.id)
-                            ? prev.filter((i) => i !== item.id)
-                            : [...prev, item.id],
-                        )
-                      }
-                      className={`flex items-start gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${checklist.includes(item.id) ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-gray-300"}`}
-                    >
-                      <div
-                        className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${checklist.includes(item.id) ? "border-green-500 bg-green-500 text-white" : "border-gray-300"}`}
-                      >
-                        {checklist.includes(item.id) ? "✓" : ""}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium">{item.text}</div>
-                        {item.critical && (
-                          <div className="text-xs text-red-600 mt-1 font-bold">
-                            ВАЖНО ДЛЯ КОМПЕНСАЦИИ
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="text-center">
-                  <div className="text-sm text-gray-600 mb-2">
-                    Ваш прогресс сбора доказательств:
-                  </div>
-                  <div className="text-3xl font-black text-blue-600">
-                    {checklist.length}/{checklistItems.length}
-                  </div>
-                  <div className="text-sm text-gray-600 mt-2">
-                    Чем больше пунктов, тем выше шансы на полную компенсацию
-                  </div>
-                </div>
-              </div>
-
-              {/* Блок про онлайн-договор и поддержку */}
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                  <span className="text-3xl">⚡</span> Начните работу сегодня
-                </h3>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <span className="text-blue-600 font-bold">1</span>
-                    </div>
-                    <div>
-                      <strong>Договор онлайн.</strong> Подпишите дистанционно за
-                      5 минут. Юридическая сила как у бумажного.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <span className="text-blue-600 font-bold">2</span>
-                    </div>
-                    <div>
-                      <strong>Поддержка 24/7.</strong> Отвечаем на вопросы в
-                      Telegram, MAX или по телефону в любое время.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <span className="text-blue-600 font-bold">3</span>
-                    </div>
-                    <div>
-                      <strong>Фокус на результат.</strong> Не просто
-                      консультация, а конкретный план по увеличению вашей
-                      компенсации.
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* === 2. НОВЫЙ ОБРАЗОВАТЕЛЬНЫЙ БЛОК: "КТО ВИНОВАТ?" === */}
-      <section className="py-16 bg-white">
+      {/* ГЛАВНЫЙ ЭКРАН */}
+      <section className="min-h-screen bg-gradient-to-br from-blue-50 to-white pt-10">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Понимание проблемы — первый шаг к решению
-              </h2>
-              <p className="text-xl text-gray-600">
-                От того, кто виноват, зависит вся ваша стратегия. Разберем по
-                пунктам.
+            {/* Шапка с триггером */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm mb-6">
+                <span className="animate-pulse">●</span> Онлайн • Консультация 0
+                ₽ • Договор в Telegram
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Бесплатно разберём вашу ситуацию с заливом
+                <span className="block text-3xl md:text-4xl text-blue-600 mt-4">
+                  и дадим пошаговый план
+                </span>
+              </h1>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                За 20 минут вы узнаете: какие документы готовить, как общаться с
+                виновником и сколько можно взыскать.
               </p>
             </div>
 
-            {/* Селектор для выбора виновника */}
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              {guiltyParties.map((party) => (
-                <button
-                  key={party.id}
-                  onClick={() => setActiveGuiltyParty(party.id)}
-                  className={`px-6 py-3 rounded-full border-2 font-medium transition-all flex items-center gap-3 ${activeGuiltyParty === party.id ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-300 hover:border-gray-400 text-gray-700"}`}
-                >
-                  <span className="text-xl">{party.icon}</span>
-                  <span>{party.title}</span>
-                </button>
-              ))}
-            </div>
+            <div className="grid lg:grid-cols-2 gap-10 items-start">
+              {/* Левая колонка: Форма и контакты */}
+              <div className="space-y-8">
+                <div className="bg-white rounded-2xl border-2 border-blue-200 p-8 shadow-xl">
+                  <div className="text-center mb-8">
+                    <div className="text-5xl font-black text-green-600 mb-2">
+                      0 ₽
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      Консультация юриста
+                    </h2>
+                    <p className="text-gray-600 mt-2">
+                      Оставьте контакты, перезвоним в течение 15 минут
+                    </p>
+                  </div>
 
-            {/* Детальная информация о выбранном виновнике */}
-            {guiltyParties.map(
-              (party) =>
-                activeGuiltyParty === party.id && (
-                  <div
-                    key={party.id}
-                    className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border-2 border-gray-300 p-8 shadow-lg"
-                  >
-                    <div className="grid md:grid-cols-2 gap-8">
-                      <div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-                          {party.icon} {party.title}
-                        </h3>
-                        <p className="text-gray-700 mb-6">
-                          {party.description}
-                        </p>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                        Ваше имя
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={userData.name}
+                        onChange={(e) =>
+                          setUserData({ ...userData, name: e.target.value })
+                        }
+                        className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        placeholder="Как к вам обращаться?"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                        Телефон для связи
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={userData.phone}
+                        onChange={(e) =>
+                          setUserData({ ...userData, phone: e.target.value })
+                        }
+                        className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                        placeholder={CITY_PHONE}
+                      />
+                    </div>
 
-                        <div className="mb-8">
-                          <h4 className="font-bold text-green-700 mb-3 flex items-center gap-2">
-                            <span>✅</span> Ваши сильные стороны в этом случае:
-                          </h4>
-                          <ul className="space-y-2">
-                            {party.pros.map((pro, index) => (
-                              <li
-                                key={index}
-                                className="flex items-start gap-2"
-                              >
-                                <span className="text-green-500 mt-1">•</span>
-                                <span className="text-gray-700">{pro}</span>
-                              </li>
-                            ))}
-                          </ul>
+                    <button
+                      type="submit"
+                      className="w-full py-5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all text-lg shadow-lg hover:shadow-xl"
+                    >
+                      Получить бесплатный план действий
+                    </button>
+
+                    <div className="text-center text-sm text-gray-500 pt-4 border-t">
+                      <p>✅ Консультация ни к чему не обязывает</p>
+                      <p>✅ Сразу скажем, можно ли взыскать деньги</p>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Блок связи */}
+                <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-gray-300 p-6">
+                  <h3 className="font-bold text-gray-900 mb-4 text-center">
+                    Или свяжитесь сразу:
+                  </h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    <a
+                      href={TG_LINK}
+                      target="_blank"
+                      className="p-4 bg-[#0088cc] text-white rounded-xl flex flex-col items-center justify-center hover:bg-[#007ab8] transition-colors"
+                    >
+                      <div className="text-2xl mb-2">✈️</div>
+                      <div className="text-sm font-medium">Telegram</div>
+                    </a>
+                    <a
+                      href={MAX_LINK}
+                      target="_blank"
+                      className="p-4 bg-gradient-to-r from-[#FF3366] to-[#FF6633] text-white rounded-xl flex flex-col items-center justify-center hover:opacity-90 transition-opacity"
+                    >
+                      <div className="text-2xl mb-2 font-bold">M</div>
+                      <div className="text-sm font-medium">MAX</div>
+                    </a>
+                    <a
+                      href={`tel:${CITY_PHONE_RAW}`}
+                      className="p-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl flex flex-col items-center justify-center hover:from-green-600 hover:to-emerald-700 transition-all"
+                    >
+                      <div className="text-2xl mb-2">📞</div>
+                      <div className="text-sm font-medium">Позвонить</div>
+                    </a>
+                  </div>
+                  <p className="text-center text-sm text-gray-600 mt-4">
+                    Отвечаем в мессенджерах 24/7
+                  </p>
+                </div>
+              </div>
+
+              {/* Правая колонка: Чек-лист и информация */}
+              <div className="space-y-8">
+                <div className="bg-white rounded-2xl border-2 border-blue-200 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    Ответьте на 4 вопроса
+                  </h2>
+                  <div className="space-y-4">
+                    {checklistItems.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setChecklist((prev) =>
+                            prev.includes(item.id)
+                              ? prev.filter((i) => i !== item.id)
+                              : [...prev, item.id],
+                          )
+                        }
+                        className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${checklist.includes(item.id) ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-900">
+                            {item.text}
+                          </span>
+                          <div
+                            className={`w-7 h-7 rounded-full border-2 flex items-center justify-center ${checklist.includes(item.id) ? "border-green-500 bg-green-500" : "border-gray-400"}`}
+                          >
+                            {checklist.includes(item.id) && (
+                              <span className="text-white text-sm">✓</span>
+                            )}
+                          </div>
                         </div>
-
-                        <div>
-                          <h4 className="font-bold text-red-700 mb-3 flex items-center gap-2">
-                            <span>⚠️</span> С какими сложностями можете
-                            столкнуться:
-                          </h4>
-                          <ul className="space-y-2">
-                            {party.cons.map((con, index) => (
-                              <li
-                                key={index}
-                                className="flex items-start gap-2"
-                              >
-                                <span className="text-red-500 mt-1">•</span>
-                                <span className="text-gray-700">{con}</span>
-                              </li>
-                            ))}
-                          </ul>
+                        <div className="text-sm text-gray-600 mt-3">
+                          {item.tip}
                         </div>
                       </div>
+                    ))}
+                  </div>
 
-                      <div>
-                        <div className="bg-gradient-to-r from-blue-100 to-cyan-100 rounded-xl p-6 h-full">
-                          <h4 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
-                            <span>🎯</span> Как правильно действовать?
-                          </h4>
-                          <p className="text-gray-800 mb-6">{party.strategy}</p>
-                          <div className="mt-6 p-4 bg-white/70 rounded-lg border border-blue-200">
-                            <p className="text-sm text-gray-700 mb-3">
-                              <strong>На бесплатной консультации</strong> мы
-                              детально разберем именно вашу ситуацию и дадим
-                              пошаговый алгоритм, адаптированный под этого
-                              виновника.
-                            </p>
-                            <button
-                              onClick={() => {
-                                setFormData({ ...formData, service: "free" });
-                                window.scrollTo({ top: 0, behavior: "smooth" });
-                              }}
-                              className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all"
-                            >
-                              Получить консультацию по этому случаю
-                            </button>
+                  {timeOnSite > 30 && (
+                    <div className="mt-8 p-5 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="text-2xl">⏱️</div>
+                        <div>
+                          <div className="font-bold text-amber-900">
+                            Вы уже изучили проблему {timeOnSite} секунд
+                          </div>
+                          <div className="text-sm text-amber-800">
+                            Самое время получить конкретный план вместо чтения
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ),
-            )}
-
-            <div className="mt-12 text-center">
-              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-                <strong>Главное:</strong> Неправильное определение
-                ответственного лица или ошибки в первоначальных документах могут
-                привести к месяцам бесполезной переписки и потере денег.
-                Доверьте диагностику профессионалу.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* === 3. БЛОК СРАВНЕНИЯ УСЛУГ === */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-              Что выбрать: консультацию или анализ?
-            </h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-2xl border-2 border-green-300 p-8 shadow-lg">
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-black text-green-600 mb-2">
-                    0 ₽
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    Бесплатная консультация
-                  </h3>
-                  <p className="text-gray-600">
-                    Идеально, если вы в начале пути
-                  </p>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  {[
-                    "Устный разбор ситуации за 20-30 минут",
-                    "Объяснение ваших прав и возможностей",
-                    "Пошаговый план действий именно для вашего случая",
-                    "Ответы на общие вопросы",
-                    "Рекомендация: нужен ли анализ документов",
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="text-green-500 mt-1">✓</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={() => {
-                    setFormData({ ...formData, service: "free" });
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all"
-                >
-                  Получить консультацию
-                </button>
-              </div>
-
-              <div className="bg-white rounded-2xl border-2 border-blue-400 p-8 shadow-xl relative">
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="px-4 py-1.5 bg-blue-600 text-white text-sm font-bold rounded-full">
-                    САМАЯ ВЫГОДНАЯ
-                  </span>
-                </div>
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-black text-blue-600 mb-2">
-                    1 500 ₽
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    Анализ документов
-                  </h3>
-                  <p className="text-gray-600">
-                    Если уже есть документы и нужен результат
-                  </p>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  {[
-                    "Проверка акта, переписки, фото на ошибки",
-                    "Поиск упущений, из-за которых занизят сумму",
-                    "Письменное заключение с конкретными рекомендациями",
-                    "Расчет, сколько вы можете потерять из-за ошибок",
-                    "План по увеличению итоговой суммы взыскания",
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="text-blue-500 mt-1">✓</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={() => {
-                    setFormData({ ...formData, service: "paid" });
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg hover:shadow-xl"
-                >
-                  Заказать анализ
-                </button>
-              </div>
-            </div>
-            <p className="text-center text-gray-600 mt-8">
-              Не знаете, что выбрать? Начните с бесплатной консультации — мы
-              подскажем.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* === 4. FAQ (Сомневаетесь?) === */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-              Сомневаетесь? Отвечаем
-            </h2>
-            <div className="space-y-4">
-              {faqItems.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="border-2 border-gray-300 rounded-2xl overflow-hidden"
-                >
-                  <button
-                    className="w-full p-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
-                    onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  >
-                    <h3 className="text-lg font-semibold text-gray-900 pr-4">
-                      {item.q}
-                    </h3>
-                    <span className="text-2xl text-gray-400 flex-shrink-0">
-                      {activeFaq === idx ? "−" : "+"}
-                    </span>
-                  </button>
-                  {activeFaq === idx && (
-                    <div className="px-6 pb-6">
-                      <p className="text-gray-700">{item.a}</p>
                     </div>
                   )}
                 </div>
-              ))}
+
+                {/* Блок "Кто виноват" */}
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 rounded-2xl p-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                    Кто вас затопил? Стратегия зависит от ответа
+                  </h3>
+                  <div className="space-y-6">
+                    {guiltyParties.map((party, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white/70 rounded-xl p-5 border border-blue-200"
+                      >
+                        <div className="flex items-center gap-4 mb-3">
+                          <div className="text-3xl">{party.icon}</div>
+                          <div>
+                            <div className="font-bold text-gray-900">
+                              {party.type}
+                            </div>
+                            <div className="text-sm text-red-600">
+                              Риск: {party.risk}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-sm text-gray-700">
+                          <span className="font-semibold">Решение:</span>{" "}
+                          {party.solution}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-6 pt-6 border-t border-blue-300/50">
+                    <p className="text-center text-gray-700 font-medium">
+                      На консультации разберём ваш случай и дадим шаблоны
+                      документов
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* === 5. ФИНАЛЬНЫЙ CTA === */}
+      {/* СЕКЦИЯ ПРОЦЕССА */}
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+              Как проходит консультация
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4">
+                  1
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  Звонок или сообщение
+                </h3>
+                <p className="text-gray-600">
+                  Связываемся в течение 15 минут в удобном вам мессенджере
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4">
+                  2
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  Разбор ситуации
+                </h3>
+                <p className="text-gray-600">
+                  Анализируем ваши документы, объясняем права и риски
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl font-bold text-blue-600 mx-auto mb-4">
+                  3
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  План действий
+                </h3>
+                <p className="text-gray-600">
+                  Даём пошаговую инструкцию и шаблоны необходимых документов
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ФИНАЛЬНЫЙ CTA */}
       <section className="py-16 bg-gradient-to-r from-blue-900 to-gray-900 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Поняв проблему, вы уже на полпути к её решению
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">
+              Бесплатно ≠ Бесполезно
             </h2>
-            <p className="text-xl mb-10 text-white/80">
-              Теперь нужен чёткий план и проверка документов, чтобы не потерять
-              деньги на ошибках.
+            <p className="text-xl mb-10 text-white/80 max-w-2xl mx-auto">
+              Это ваш шанс получить профессиональную оценку ситуации, прежде чем
+              совершить ошибку, которая обойдётся в десятки тысяч рублей.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => {
-                  setFormData({ ...formData, service: "free" });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all text-lg"
-              >
-                Получить бесплатный план
-              </button>
-              <button
-                onClick={() => {
-                  setFormData({ ...formData, service: "paid" });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all text-lg border-2 border-cyan-400/30"
-              >
-                Проверить документы за 1 500 ₽
-              </button>
+
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-full mb-6">
+                <span className="text-green-300">✅</span>
+                <span className="font-medium">
+                  Консультация ни к чему не обязывает
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() =>
+                    document
+                      .querySelector("form")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all text-lg"
+                >
+                  Получить план бесплатно
+                </button>
+                <a
+                  href={`tel:${CITY_PHONE_RAW}`}
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all text-lg"
+                >
+                  Позвонить {CITY_PHONE}
+                </a>
+              </div>
             </div>
-            <p className="mt-8 text-white/70 text-sm">
-              Новосибирск и область • Договор онлайн • Поддержка 24/7 в Telegram
-              и MAX • Работаем с 2016 года
+
+            <p className="text-white/60 text-sm">
+              Новосибирск и область • Консультация 0 ₽ • Работаем через
+              Telegram/MAX • Отвечаем 24/7
             </p>
           </div>
         </div>
