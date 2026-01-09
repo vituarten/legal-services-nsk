@@ -3,34 +3,18 @@ import { trackCustomGoal } from "@/utils/metrika";
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Scale,
   Phone,
   MessageSquare,
   CheckCircle,
   AlertTriangle,
   Users,
   FileQuestion,
-  Camera,
-  Award,
-  FileText,
-  Search,
-  Trophy,
-  Lightbulb,
+  Clock,
   MessageCircle,
-  ChevronRight,
   AlertCircle,
   Shield,
-  Clock,
-  ThumbsUp,
   ArrowRight,
-  Star,
-  Calendar,
-  HelpCircle,
-  DollarSign,
   Zap,
-  Target,
-  BadgeCheck,
-  Clock4,
   Loader2,
   Send,
   Sparkles,
@@ -40,11 +24,7 @@ const GuiltDetermination = () => {
   const PHONES = {
     MAIN_DISPLAY: "+7 (383) 235-95-05",
     MAIN_TEL: "+73832359505",
-    // Скрытый номер для Telegram
-    TELEGRAM_RAW: "79931903500", // Скрытый номер Telegram
-    // Номер для MAX/Green API
-    MAX_RAW: "79994523500", // Номер из Green API
-    MAX_DISPLAY: "+7 999 452 35 00", // Для отображения в интерфейсе
+    TELEGRAM_RAW: "79931903500",
   };
 
   const GREEN_API_CONFIG = {
@@ -58,11 +38,8 @@ const GuiltDetermination = () => {
   const [formData, setFormData] = useState({ name: "", phone: "" });
   const [formErrors, setFormErrors] = useState({});
   const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
   const heroRef = useRef(null);
-  const statsRef = useRef(null);
-  const [visibleStats, setVisibleStats] = useState([false, false, false]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,45 +51,20 @@ const GuiltDetermination = () => {
       document.createElement("meta");
     metaDescription.name = "description";
     metaDescription.content =
-      "Вас несправедливо признали виновным в аварии? Докажем вашу невиновность в суде. 15 лет опыта, 98% успеха. Бесплатный разбор вашего дела за 1 час.";
+      "Вас несправедливо признали виновным в аварии? Докажем вашу невиновность в суде. Бесплатный разбор вашего дела.";
     if (!document.querySelector('meta[name="description"]')) {
       document.head.appendChild(metaDescription);
     }
-
-    // Показываем плавающую кнопку при скролле
-    const handleScroll = () => {
-      if (window.scrollY > 500) {
-        setShowFloatingCTA(true);
-      } else {
-        setShowFloatingCTA(false);
-      }
-
-      // Анимация статистики
-      if (statsRef.current) {
-        const rect = statsRef.current.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 100) {
-          setTimeout(() => setVisibleStats([true, false, false]), 300);
-          setTimeout(() => setVisibleStats([true, true, false]), 600);
-          setTimeout(() => setVisibleStats([true, true, true]), 900);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Исправленная функция отправки в Green API с правильным URL
+  // Функция отправки в Green API
   const sendToGreenAPI = async (message) => {
-    // Правильный URL для Green API v3
     const url = `https://3100.api.green-api.com/v3/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
 
     const payload = {
       chatId: GREEN_API_CONFIG.chatId,
       message: message,
     };
-
-    console.log("Отправка в Green API:", { url, payload });
 
     try {
       const response = await fetch(url, {
@@ -123,27 +75,47 @@ const GuiltDetermination = () => {
         body: JSON.stringify(payload),
       });
 
-      console.log("Ответ Green API (статус):", response.status);
-
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Ошибка Green API:", errorText);
-        throw new Error(`Ошибка API: ${response.status} - ${errorText}`);
+        throw new Error(`Ошибка API: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("Green API Response:", data);
       return { success: true, data };
     } catch (error) {
       console.error("Green API Error:", error);
-      return {
-        success: false,
-        error: error.message || "Не удалось отправить сообщение",
-      };
+      return { success: false, error: error.message };
     }
   };
 
-  // Упрощённая валидация
+  // Обработчик ввода телефона с автоформатированием
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+
+    if (!value.startsWith("7") && value.length > 0) {
+      value = "7" + value;
+    }
+
+    let formattedValue = "";
+    if (value.length > 0) {
+      formattedValue = "+7";
+      if (value.length > 1) {
+        formattedValue += " (" + value.substring(1, 4);
+      }
+      if (value.length > 4) {
+        formattedValue += ") " + value.substring(4, 7);
+      }
+      if (value.length > 7) {
+        formattedValue += "-" + value.substring(7, 9);
+      }
+      if (value.length > 9) {
+        formattedValue += "-" + value.substring(9, 11);
+      }
+    }
+
+    setFormData({ ...formData, phone: formattedValue });
+  };
+
+  // Валидация формы
   const validateForm = () => {
     const errors = {};
 
@@ -153,13 +125,11 @@ const GuiltDetermination = () => {
       errors.name = "Имя должно содержать минимум 2 символа";
     }
 
-    if (!formData.phone.trim()) {
+    const phoneDigits = formData.phone.replace(/\D/g, "");
+    if (!phoneDigits) {
       errors.phone = "Введите ваш телефон";
-    } else {
-      const phoneDigits = formData.phone.replace(/[\s\-\+\(\)]/g, "");
-      if (!/^[78]\d{10}$/.test(phoneDigits)) {
-        errors.phone = "Введите корректный номер телефона (11 цифр)";
-      }
+    } else if (phoneDigits.length < 11) {
+      errors.phone = "Введите полный номер телефона";
     }
 
     return errors;
@@ -172,15 +142,6 @@ const GuiltDetermination = () => {
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
-
-      // Анимация ошибок
-      Object.keys(errors).forEach((key) => {
-        const input = document.querySelector(`[name="${key}"]`);
-        if (input) {
-          input.classList.add("animate-shake");
-          setTimeout(() => input.classList.remove("animate-shake"), 500);
-        }
-      });
       return;
     }
 
@@ -188,81 +149,50 @@ const GuiltDetermination = () => {
     setFormErrors({});
     setSubmissionStatus(null);
 
-    // Форматируем сообщение для MAX
     const maxMessage = `
-🚨 НОВАЯ ЗАЯВКА С САЙТА
+📋 НОВАЯ ЗАЯВКА С САЙТА
 ——————————————————
 👤 Имя: ${formData.name}
 📞 Телефон: ${formData.phone}
 ⏰ Время: ${new Date().toLocaleString("ru-RU")}
-🌐 Источник: «Установление вины в ДТП»
+🌐 Источник: Страница «Установление вины в ДТП»
 ——————————————————
-✅ Срочная заявка — перезвонить как можно скорее!
+💼 Срочная заявка на консультацию
     `.trim();
 
-    // Отправляем в Green API
     const result = await sendToGreenAPI(maxMessage);
 
     if (result.success) {
       setSubmissionStatus("success");
-      trackCustomGoal("quick_form_submitted", {
-        status: "success",
-        form_type: "quick_lead",
-      });
-
-      // Показываем модальное окно успеха
+      trackCustomGoal("form_submitted", { status: "success" });
       setShowSuccessModal(true);
 
-      // Очищаем форму через 1 секунду
       setTimeout(() => {
         setFormData({ name: "", phone: "" });
-        setSubmissionStatus(null);
       }, 1000);
 
-      // Скрываем модальное окно через 3 секунды
-      setTimeout(() => setShowSuccessModal(false), 3000);
-
-      // После успешной отправки показываем дополнительный оффер
-      setTimeout(() => {
-        trackCustomGoal("post_submission_offer", {
-          lead_name: formData.name,
-          lead_phone: formData.phone,
-        });
-      }, 1500);
+      setTimeout(() => setShowSuccessModal(false), 4000);
     } else {
       setSubmissionStatus("error");
-      trackCustomGoal("quick_form_error", {
-        error: result.error,
-        form_type: "quick_lead",
-      });
-
-      // Показываем модальное окно с ошибкой
-      setShowSuccessModal(true);
-      setTimeout(() => setShowSuccessModal(false), 5000);
+      trackCustomGoal("form_error", { error: result.error });
     }
 
     setIsLoading(false);
   };
 
-  // Обработчик для кнопки "Бесплатный анализ"
   const handleFreeAnalysis = () => {
-    trackCustomGoal("free_analysis_click", { source: "hero" });
+    trackCustomGoal("analysis_click", { source: "hero" });
     document.getElementById("contact-form")?.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
   };
 
-  // Функция для звонка - НИКОГДА не скрывается
   const handleConsultation = () => {
-    trackCustomGoal("guilt_determination_consultation", {
-      source: "page",
-      action: "phone_call",
-    });
+    trackCustomGoal("consultation_call", { source: "page" });
     window.location.href = `tel:${PHONES.MAIN_TEL}`;
   };
 
-  // Обработчик для открытия полного разбора дела
   const handleCaseDetailsOpen = () => {
     trackCustomGoal("case_details_open", {
       caseId: "delo-2-3052-2025",
@@ -278,14 +208,6 @@ const GuiltDetermination = () => {
       );
     }
   };
-
-  // Анимационные классы
-  const fadeInUp = "animate-fade-in-up";
-  const fadeIn = "animate-fade-in";
-  const slideInLeft = "animate-slide-in-left";
-  const slideInRight = "animate-slide-in-right";
-  const pulse = "animate-pulse-slow";
-  const float = "animate-float";
 
   const pains = [
     {
@@ -319,18 +241,7 @@ const GuiltDetermination = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-      {/* CSS анимации */}
       <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -339,165 +250,52 @@ const GuiltDetermination = () => {
             opacity: 1;
           }
         }
-        @keyframes slideInLeft {
+        @keyframes slideIn {
           from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes pulseSlow {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.8;
-          }
-        }
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        @keyframes shake {
-          0%,
-          100% {
-            transform: translateX(0);
-          }
-          10%,
-          30%,
-          50%,
-          70%,
-          90% {
-            transform: translateX(-5px);
-          }
-          20%,
-          40%,
-          60%,
-          80% {
-            transform: translateX(5px);
-          }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
             transform: translateY(20px);
+            opacity: 0;
           }
           to {
-            opacity: 1;
             transform: translateY(0);
+            opacity: 1;
           }
         }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
+        @keyframes successPulse {
+          0%,
+          100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
         }
         .animate-fade-in {
-          animation: fadeIn 0.8s ease-out forwards;
+          animation: fadeIn 0.6s ease-out forwards;
         }
-        .animate-slide-in-left {
-          animation: slideInLeft 0.6s ease-out forwards;
+        .animate-slide-in {
+          animation: slideIn 0.5s ease-out forwards;
         }
-        .animate-slide-in-right {
-          animation: slideInRight 0.6s ease-out forwards;
-        }
-        .animate-pulse-slow {
-          animation: pulseSlow 3s ease-in-out infinite;
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-        .animate-slide-up {
-          animation: slideUp 0.4s ease-out forwards;
-        }
-        .animate-stat-1 {
-          animation-delay: 0.3s;
-        }
-        .animate-stat-2 {
-          animation-delay: 0.6s;
-        }
-        .animate-stat-3 {
-          animation-delay: 0.9s;
+        .animate-success-pulse {
+          animation: successPulse 2s ease-in-out infinite;
         }
       `}</style>
 
-      {/* Плавающая кнопка CTA - только "Бесплатный анализ" */}
-      {showFloatingCTA && (
-        <div className="fixed bottom-6 right-6 z-40 animate-slide-up">
-          <Button
-            size="lg"
-            className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-2xl hover:shadow-3xl px-6 py-5 rounded-full group animate-pulse-slow"
-            onClick={handleFreeAnalysis}
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 rounded-full">
-                <MessageCircle className="h-5 w-5" />
-              </div>
-              <span className="font-bold">Бесплатный анализ</span>
-            </div>
-          </Button>
-        </div>
-      )}
-
-      {/* Success Modal */}
+      {/* Success Modal - улучшенная анимация */}
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-gray-200">
-            <button
-              onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            <div
-              className={`w-20 h-20 ${submissionStatus === "success" ? "bg-gradient-to-br from-green-100 to-emerald-100" : "bg-gradient-to-br from-red-100 to-orange-100"} rounded-full flex items-center justify-center mx-auto mb-6 ${float}`}
-            >
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-gray-200 animate-slide-in">
+            <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-success-pulse">
               {submissionStatus === "success" ? (
-                <CheckCircle className="h-10 w-10 text-green-600" />
+                <Sparkles className="h-10 w-10 text-green-600" />
               ) : (
                 <AlertCircle className="h-10 w-10 text-red-600" />
               )}
             </div>
 
-            <h3
-              className={`text-2xl font-bold mb-3 ${submissionStatus === "success" ? "bg-gradient-to-r from-green-600 to-emerald-600" : "bg-gradient-to-r from-red-600 to-orange-600"} bg-clip-text text-transparent`}
-            >
+            <h3 className="text-2xl font-bold mb-3 text-gray-900">
               {submissionStatus === "success"
-                ? "Заявка отправлена!"
-                : "Ошибка отправки"}
+                ? "Отлично! Заявка отправлена"
+                : "Что-то пошло не так"}
             </h3>
 
             <p className="text-gray-600 mb-6">
@@ -506,42 +304,33 @@ const GuiltDetermination = () => {
                   <span className="font-semibold text-gray-900">
                     {formData.name}
                   </span>
-                  , мы свяжемся с вами в ближайшее время
+                  , мы уже начали работу с вашей заявкой.
+                  <br />
+                  Специалист свяжется с вами в течение{" "}
+                  <span className="text-green-600 font-bold">15 минут</span>.
                 </>
               ) : (
-                "Пожалуйста, позвоните нам напрямую"
+                "Попробуйте отправить ещё раз или позвоните нам напрямую"
               )}
             </p>
 
-            {submissionStatus === "error" && (
-              <div className="mb-6">
-                <Button
-                  onClick={handleConsultation}
-                  className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg"
-                >
-                  <Phone className="mr-2 h-5 w-5" />
-                  Позвонить {PHONES.MAIN_DISPLAY}
-                </Button>
-              </div>
-            )}
-
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className={`w-full ${submissionStatus === "success" ? "bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800" : "bg-gradient-to-r from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500"} text-white shadow-lg`}
+              className={`w-full ${submissionStatus === "success" ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"} text-white`}
             >
-              Закрыть
+              {submissionStatus === "success"
+                ? "Понятно, жду звонка"
+                : "Закрыть"}
             </Button>
           </div>
         </div>
       )}
 
       {/* Hero Section */}
-      <section ref={heroRef} className="pt-28 pb-20 relative overflow-hidden">
-        {/* Анимированный фон */}
+      <section ref={heroRef} className="pt-24 pb-20 relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-red-100/30 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tr from-yellow-100/20 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-48 bg-gradient-to-r from-transparent via-blue-50/10 to-transparent"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tr from-blue-100/20 to-transparent rounded-full blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -550,7 +339,7 @@ const GuiltDetermination = () => {
               {/* Левая колонка - Контент */}
               <div className="lg:w-1/2">
                 <div
-                  className={`inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-full text-sm font-semibold mb-6 ${fadeInUp}`}
+                  className={`inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-full text-sm font-semibold mb-6`}
                 >
                   <AlertTriangle className="h-4 w-4 mr-2 text-red-600" />
                   <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
@@ -559,8 +348,7 @@ const GuiltDetermination = () => {
                 </div>
 
                 <h1
-                  className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${fadeInUp}`}
-                  style={{ animationDelay: "0.1s" }}
+                  className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6`}
                 >
                   <span className="block">
                     Вас{" "}
@@ -571,10 +359,7 @@ const GuiltDetermination = () => {
                   <span className="block">обвинили в ДТП?</span>
                 </h1>
 
-                <p
-                  className={`text-xl text-gray-600 mb-8 ${fadeInUp}`}
-                  style={{ animationDelay: "0.2s" }}
-                >
+                <p className={`text-xl text-gray-600 mb-8`}>
                   Не позволяйте ошибке инспектора испортить вашу жизнь.
                   <span className="font-semibold text-gray-900">
                     {" "}
@@ -583,14 +368,12 @@ const GuiltDetermination = () => {
                   полностью снимают вину через суд.
                 </p>
 
-                {/* Важное уведомление */}
                 <div
-                  className={`bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 p-5 mb-8 rounded-r-xl shadow-sm ${fadeInUp}`}
-                  style={{ animationDelay: "0.3s" }}
+                  className={`bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 p-5 mb-8 rounded-r-xl shadow-sm`}
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`flex-shrink-0 ${pulse}`}>
-                      <Clock4 className="h-7 w-7 text-amber-600" />
+                    <div className={`flex-shrink-0`}>
+                      <Clock className="h-7 w-7 text-amber-600" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900 text-lg mb-1">
@@ -599,89 +382,70 @@ const GuiltDetermination = () => {
                       <p className="text-gray-700">
                         У вас есть всего{" "}
                         <span className="font-bold text-red-600">10 дней</span>{" "}
-                        на обжалование протокола ГИБДД. Каждый день уменьшает
-                        шансы на успех.
+                        на обжалование протокола ГИБДД.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Гарантии - БЕЗ АКЦИИ */}
-                <div
-                  className={`space-y-4 mb-10 ${fadeInUp}`}
-                  style={{ animationDelay: "0.4s" }}
-                >
+                {/* Гарантии - без "Бесплатный анализ ваших документов" */}
+                <div className={`space-y-4 mb-10`}>
                   {[
                     {
-                      text: "Бесплатный анализ ваших документов",
-                      icon: <CheckCircle className="h-6 w-6" />,
-                      color: "from-emerald-100 to-green-100",
-                      iconColor: "text-emerald-600",
-                    },
-                    {
                       text: "Фиксируем стоимость в договоре",
-                      icon: <FileText className="h-6 w-6" />,
+                      icon: <CheckCircle className="h-6 w-6" />,
                       color: "from-blue-100 to-cyan-100",
                       iconColor: "text-blue-600",
                     },
                     {
                       text: "Работаем до полной отмены вины",
                       icon: <Shield className="h-6 w-6" />,
-                      color: "from-violet-100 to-purple-100",
-                      iconColor: "text-violet-600",
+                      color: "from-emerald-100 to-green-100",
+                      iconColor: "text-emerald-600",
                     },
                   ].map((guarantee, index) => (
-                    <div key={index} className="flex items-center gap-4 group">
+                    <div key={index} className="flex items-center gap-4">
                       <div className="flex-shrink-0">
                         <div
-                          className={`p-2 bg-gradient-to-br ${guarantee.color} rounded-lg group-hover:scale-110 transition-transform duration-300`}
+                          className={`p-2 bg-gradient-to-br ${guarantee.color} rounded-lg`}
                         >
                           <div className={guarantee.iconColor}>
                             {guarantee.icon}
                           </div>
                         </div>
                       </div>
-                      <span className="text-gray-800 group-hover:text-gray-900 transition-colors">
-                        {guarantee.text}
-                      </span>
+                      <span className="text-gray-800">{guarantee.text}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* Кнопки CTA - ВСЕГДА ВИДНА КНОПКА "ОБСУДИТЬ С ЮРИСТОМ" */}
-                <div
-                  className={`flex flex-col sm:flex-row gap-4 mb-12 ${fadeInUp}`}
-                  style={{ animationDelay: "0.5s" }}
-                >
+                {/* Кнопки CTA */}
+                <div className={`flex flex-col sm:flex-row gap-4 mb-12`}>
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-lg px-8 py-7 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                    className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-lg px-8 py-7 shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleFreeAnalysis}
                   >
                     <div className="flex items-center">
-                      <div className="mr-4 p-2 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+                      <div className="mr-4 p-2 bg-white/20 rounded-lg">
                         <MessageCircle className="h-6 w-6" />
                       </div>
                       <div className="text-left">
                         <div className="font-bold text-lg">
-                          Бесплатный анализ
-                        </div>
-                        <div className="text-sm font-normal opacity-90">
-                          моих документов
+                          Получить консультацию
                         </div>
                       </div>
                     </div>
                   </Button>
 
-                  {/* Кнопка "Обсудить с юристом" - НИКОГДА НЕ СКРЫВАЕТСЯ */}
                   <Button
                     size="lg"
                     variant="outline"
-                    className="text-lg px-8 py-7 border-2 border-gray-300 hover:border-red-500 hover:bg-red-50 transition-all duration-300 group"
+                    className="text-lg px-8 py-7 border-2 border-gray-300 hover:border-red-500 hover:bg-red-50 transition-all duration-300"
                     onClick={handleConsultation}
                   >
                     <div className="flex items-center">
-                      <div className="mr-4 p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                      <div className="mr-4 p-2 bg-red-100 rounded-lg">
                         <Phone className="h-6 w-6 text-red-600" />
                       </div>
                       <div className="text-left">
@@ -693,49 +457,20 @@ const GuiltDetermination = () => {
                     </div>
                   </Button>
                 </div>
-
-                {/* Статистика */}
-                <div
-                  ref={statsRef}
-                  className="flex items-center justify-center sm:justify-start gap-8"
-                >
-                  {[
-                    { value: "15+", label: "лет опыта", delay: 0 },
-                    { value: "98%", label: "успешных дел", delay: 1 },
-                    { value: "247+", label: "клиентов", delay: 2 },
-                  ].map((stat, index) => (
-                    <div
-                      key={index}
-                      className={`text-center transform transition-all duration-700 ${
-                        visibleStats[index]
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-4"
-                      }`}
-                      style={{ transitionDelay: `${stat.delay * 300}ms` }}
-                    >
-                      <div className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                        {stat.value}
-                      </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        {stat.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
 
-              {/* Правая колонка - УПРОЩЁННАЯ ФОРМА */}
+              {/* Правая колонка - Форма */}
               <div className="lg:w-1/2">
                 <div
                   id="contact-form"
-                  className={`bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-200/50 ${slideInRight}`}
+                  className={`bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-200/50`}
                 >
                   <div className="flex items-center gap-4 mb-8">
                     <div className="relative">
                       <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl flex items-center justify-center shadow-lg">
                         <Send className="h-7 w-7 text-blue-600" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
                         <Zap className="h-3 w-3 text-white" />
                       </div>
                     </div>
@@ -743,34 +478,14 @@ const GuiltDetermination = () => {
                       <h3 className="font-bold text-2xl bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                         Быстрая заявка
                       </h3>
-                      <p className="text-gray-600 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        Отправляем заявку прямо в MAX-мессенджер
+                      <p className="text-gray-600">
+                        Отправляем заявку прямо в мессенджер
                       </p>
-                    </div>
-                  </div>
-
-                  <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                          <CheckCircle className="h-4 w-4 text-white" />
-                        </div>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">
-                          Бесплатно и без обязательств
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Получите профессиональный анализ вашей ситуации
-                        </p>
-                      </div>
                     </div>
                   </div>
 
                   <form onSubmit={handleFormSubmit}>
                     <div className="space-y-6">
-                      {/* Имя */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-3">
                           Ваше имя *
@@ -783,25 +498,10 @@ const GuiltDetermination = () => {
                             onChange={(e) =>
                               setFormData({ ...formData, name: e.target.value })
                             }
-                            className={`w-full px-5 py-4 border ${formErrors.name ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm`}
+                            className={`w-full px-5 py-4 border ${formErrors.name ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50`}
                             placeholder="Иван Иванов"
                             disabled={isLoading}
                           />
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                          </div>
                         </div>
                         {formErrors.name && (
                           <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
@@ -811,7 +511,6 @@ const GuiltDetermination = () => {
                         )}
                       </div>
 
-                      {/* Телефон */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-3">
                           Ваш телефон *
@@ -821,14 +520,9 @@ const GuiltDetermination = () => {
                             type="tel"
                             name="phone"
                             value={formData.phone}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                phone: e.target.value,
-                              })
-                            }
-                            className={`w-full px-5 py-4 border ${formErrors.phone ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm`}
-                            placeholder={PHONES.MAIN_DISPLAY}
+                            onChange={handlePhoneChange}
+                            className={`w-full px-5 py-4 border ${formErrors.phone ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50`}
+                            placeholder="+7 (___) ___-__-__"
                             disabled={isLoading}
                           />
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -843,24 +537,20 @@ const GuiltDetermination = () => {
                         )}
                       </div>
 
-                      {/* Кнопка отправки */}
                       <Button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+                        className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <>
                             <Loader2 className="h-6 w-6 mr-3 animate-spin" />
-                            Отправляем в MAX...
+                            Отправляем...
                           </>
                         ) : (
                           <>
-                            <span className="relative z-10 flex items-center justify-center gap-3">
-                              <Send className="h-6 w-6 group-hover:scale-110 transition-transform" />
-                              Отправить заявку в MAX
-                            </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <Send className="h-6 w-6 mr-3" />
+                            Отправить заявку
                           </>
                         )}
                       </Button>
@@ -870,84 +560,46 @@ const GuiltDetermination = () => {
                           Нажимая кнопку, вы соглашаетесь с политикой
                           конфиденциальности
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
-                          <Shield className="h-3 w-3" />
-                          <span>Ваши данные защищены</span>
-                        </div>
                       </div>
 
-                      {/* Альтернативные способы связи */}
                       <div className="border-t border-gray-200 pt-6">
                         <p className="text-center text-gray-600 mb-5">
                           Или напишите прямо сейчас:
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                          {/* Telegram - без номера */}
+                          {/* Telegram - исправленная ссылка */}
                           <a
-                            href={`https://t.me/${PHONES.TELEGRAM_RAW.slice(1)}`}
+                            href={`https://t.me/${PHONES.TELEGRAM_RAW}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
-                            onClick={() =>
-                              trackCustomGoal("telegram_click", {
-                                source: "quick_form",
-                              })
-                            }
+                            className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md"
                           >
-                            {/* Иконка Telegram */}
                             <svg
-                              className="w-5 h-5 fill-white group-hover:scale-110 transition-transform"
+                              className="w-5 h-5 fill-white"
                               viewBox="0 0 24 24"
                             >
                               <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                             </svg>
-                            <span>Написать в Telegram</span>
-                            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                            <span>Telegram</span>
                           </a>
-                          {/* MAX - с правильной ссылкой */}
                           <a
                             href="https://max.ru/u/f9LHodD0cOJFmV1rIMi6ZjEOt-EbDAs8qqafnjND6gCk6NfTMMBgw0WF_j0"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
-                            onClick={() =>
-                              trackCustomGoal("max_click", {
-                                source: "quick_form",
-                              })
-                            }
+                            className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md"
                           >
-                            {/* Иконка MAX */}
                             <svg
-                              className="w-5 h-5 fill-white group-hover:scale-110 transition-transform"
+                              className="w-5 h-5 fill-white"
                               viewBox="0 0 24 24"
                             >
                               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                             </svg>
-                            <span>Написать в MAX</span>
-                            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                            <span>MAX Messenger</span>
                           </a>
                         </div>
                       </div>
                     </div>
                   </form>
-                </div>
-
-                {/* Доверительные элементы под формой */}
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
-                    <div className="text-2xl font-bold text-blue-600">98%</div>
-                    <div className="text-xs text-gray-600">Успешных дел</div>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
-                    <div className="text-2xl font-bold text-blue-600">15+</div>
-                    <div className="text-xs text-gray-600">Лет опыта</div>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
-                    <div className="text-2xl font-bold text-blue-600">247+</div>
-                    <div className="text-xs text-gray-600">
-                      Довольных клиентов
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -955,22 +607,18 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Остальные секции остаются без изменений */}
       {/* Pains Section */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${fadeInUp}`}>
+              <h2 className={`text-3xl md:text-4xl font-bold mb-4`}>
                 Знакомые чувства?{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
                   Вы не одиноки
                 </span>
               </h2>
-              <p
-                className={`text-xl text-gray-600 max-w-3xl mx-auto ${fadeInUp}`}
-                style={{ animationDelay: "0.1s" }}
-              >
+              <p className={`text-xl text-gray-600 max-w-3xl mx-auto`}>
                 Каждый день к нам обращаются водители, которые оказались в такой
                 же ситуации
               </p>
@@ -980,18 +628,17 @@ const GuiltDetermination = () => {
               {pains.map((pain, index) => (
                 <div
                   key={index}
-                  className={`bg-gradient-to-br from-white to-gray-50 border-2 border-gray-100 rounded-2xl p-7 hover:border-red-200 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group cursor-pointer ${fadeInUp}`}
-                  style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+                  className={`bg-gradient-to-br from-white to-gray-50 border-2 border-gray-100 rounded-2xl p-7 hover:border-red-200 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer`}
                 >
                   <div className="flex items-center gap-4 mb-5">
-                    <div className="p-3 bg-gradient-to-br from-red-50 to-orange-50 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <div className="p-3 bg-gradient-to-br from-red-50 to-orange-50 rounded-xl">
                       <div className="text-red-600">{pain.icon}</div>
                     </div>
                     <div className="text-sm font-medium bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                       {pain.emotion}
                     </div>
                   </div>
-                  <h3 className="font-bold text-xl mb-3 text-gray-900 group-hover:text-red-700 transition-colors">
+                  <h3 className="font-bold text-xl mb-3 text-gray-900">
                     {pain.title}
                   </h3>
                   <p className="text-gray-600">{pain.description}</p>
@@ -1000,7 +647,7 @@ const GuiltDetermination = () => {
             </div>
 
             <div
-              className={`bg-gradient-to-r from-red-50/80 to-orange-50/80 border border-red-100 rounded-2xl p-10 text-center shadow-lg ${fadeInUp}`}
+              className={`bg-gradient-to-r from-red-50/80 to-orange-50/80 border border-red-100 rounded-2xl p-10 text-center shadow-lg`}
             >
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                 Система часто работает против водителя
@@ -1016,10 +663,10 @@ const GuiltDetermination = () => {
               </p>
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={handleFreeAnalysis}
               >
-                <Shield className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
+                <Shield className="mr-3 h-6 w-6" />
                 Защитить мои права сейчас
               </Button>
             </div>
@@ -1032,14 +679,8 @@ const GuiltDetermination = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div
-                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8 ${fadeInUp}`}
-              >
-                <Trophy className="h-6 w-6" />
-                РЕАЛЬНАЯ ИСТОРИЯ ПОБЕДЫ
-              </div>
               <h2
-                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 ${fadeInUp}`}
+                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6`}
               >
                 "Все говорили, что дело безнадёжно.
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
@@ -1048,26 +689,19 @@ const GuiltDetermination = () => {
                 </span>
                 "
               </h2>
-              <p
-                className={`text-xl text-gray-600 max-w-2xl mx-auto ${fadeInUp}`}
-                style={{ animationDelay: "0.1s" }}
-              >
+              <p className={`text-xl text-gray-600 max-w-2xl mx-auto`}>
                 История Михаила из Новосибирска, который почти смирился с
                 несправедливостью
               </p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-              {/* Левая часть - Ситуация */}
-              <div className={`space-y-6 ${slideInLeft}`}>
+              <div className={`space-y-6`}>
                 <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-8 border border-gray-200">
                   <div className="flex items-center gap-5 mb-8">
                     <div className="relative">
                       <div className="w-20 h-20 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl flex items-center justify-center shadow-lg">
                         <AlertTriangle className="h-10 w-10 text-red-600" />
-                      </div>
-                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                        ?
                       </div>
                     </div>
                     <div>
@@ -1085,26 +719,23 @@ const GuiltDetermination = () => {
                       "Виновник — без страховки, прав и даже регистрации ТС",
                       "3 юриста уже отказали, сказав 'дело проигрышное'",
                     ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-4 group">
-                        <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-full flex items-center justify-center text-sm mt-1 group-hover:scale-110 transition-transform">
+                      <li key={index} className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-full flex items-center justify-center text-sm mt-1">
                           {index + 1}
                         </div>
-                        <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                          {item}
-                        </span>
+                        <span className="text-gray-700">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* Ссылка на детали дела */}
                 <div
-                  className={`bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-2xl p-6 ${fadeIn}`}
+                  className={`bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-2xl p-6`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-blue-50 rounded-xl">
-                        <FileText className="h-6 w-6 text-blue-600" />
+                        <CheckCircle className="h-6 w-6 text-blue-600" />
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900">
@@ -1115,98 +746,74 @@ const GuiltDetermination = () => {
                         </p>
                       </div>
                     </div>
-                    <Button
-                      onClick={handleCaseDetailsOpen}
-                      variant="ghost"
-                      className="group"
-                    >
-                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    <Button onClick={handleCaseDetailsOpen} variant="ghost">
+                      <ArrowRight className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
               </div>
 
-              {/* Правая часть - Результат */}
-              <div className={`${slideInRight}`}>
-                <div className="bg-gradient-to-br from-blue-50/50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-8 shadow-lg">
-                  <div className="flex items-center gap-5 mb-8">
-                    <div className="relative">
-                      <div className="w-20 h-20 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl flex items-center justify-center shadow-lg">
-                        <Trophy className="h-10 w-10 text-emerald-600" />
-                      </div>
-                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                        ✓
-                      </div>
+              <div
+                className={`bg-gradient-to-br from-blue-50/50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-8 shadow-lg`}
+              >
+                <div className="space-y-7">
+                  <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-8 text-center border border-gray-200 shadow-inner">
+                    <div className="text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">
+                      247 109 руб.
                     </div>
-                    <div>
-                      <h3 className="font-bold text-2xl text-gray-900">
-                        Наш результат
-                      </h3>
-                      <p className="text-gray-600">Дело № 2-3052/2025</p>
+                    <div className="text-gray-600">
+                      полностью выплачены клиенту
                     </div>
                   </div>
 
-                  <div className="space-y-7">
-                    <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-8 text-center border border-gray-200 shadow-inner">
-                      <div className="text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">
-                        247 109 руб.
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className="bg-white p-6 rounded-xl text-center border border-gray-200 shadow-sm">
+                      <div className="text-3xl font-bold text-blue-600 mb-2">
+                        80%
                       </div>
-                      <div className="text-gray-600 flex items-center justify-center gap-2">
-                        <BadgeCheck className="h-5 w-5 text-emerald-500" />
-                        полностью выплачены клиенту
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-5">
-                      <div className="bg-white p-6 rounded-xl text-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                        <div className="text-3xl font-bold text-blue-600 mb-2">
-                          80%
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          вины с виновника
-                        </div>
-                      </div>
-                      <div className="bg-white p-6 rounded-xl text-center border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                        <div className="text-3xl font-bold text-blue-600 mb-2">
-                          20%
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          вины с клиента
-                        </div>
+                      <div className="text-sm text-gray-600">
+                        вины с виновника
                       </div>
                     </div>
-
-                    <div className="bg-gradient-to-r from-yellow-50/50 to-amber-50/50 border border-yellow-200 rounded-xl p-5">
-                      <div className="flex items-start gap-4">
-                        <Lightbulb className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
-                        <div>
-                          <p className="font-semibold text-gray-900 mb-1">
-                            Ключевой момент:
-                          </p>
-                          <p className="text-gray-700 text-sm">
-                            Нашли записи уличных камер, которые не искала ГИБДД.
-                            Привлекли собственника автомобиля по ст. 1079 ГК РФ.
-                          </p>
-                        </div>
+                    <div className="bg-white p-6 rounded-xl text-center border border-gray-200 shadow-sm">
+                      <div className="text-3xl font-bold text-blue-600 mb-2">
+                        20%
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        вины с клиента
                       </div>
                     </div>
-
-                    <Button
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-7 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group"
-                      onClick={handleCaseDetailsOpen}
-                    >
-                      <FileText className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
-                      Читать полный разбор дела
-                      <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
                   </div>
+
+                  <div className="bg-gradient-to-r from-yellow-50/50 to-amber-50/50 border border-yellow-200 rounded-xl p-5">
+                    <div className="flex items-start gap-4">
+                      <CheckCircle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-semibold text-gray-900 mb-1">
+                          Ключевой момент:
+                        </p>
+                        <p className="text-gray-700 text-sm">
+                          Нашли записи уличных камер, которые не искала ГИБДД.
+                          Привлекли собственника автомобиля по ст. 1079 ГК РФ.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button
+                    className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-7 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={handleCaseDetailsOpen}
+                  >
+                    Читать полный разбор дела
+                    <ArrowRight className="ml-3 h-5 w-5" />
+                  </Button>
                 </div>
               </div>
             </div>
 
-            {/* Заключение кейса */}
+            {/* Заключение кейса - исправленный блок */}
             <div
-              className={`bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-12 text-center shadow-2xl ${fadeIn}`}
+              className={`bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-12 text-center shadow-2xl`}
             >
               <h3 className="text-2xl md:text-3xl font-bold mb-8">
                 Если мы смогли помочь в таком, казалось бы, безнадёжном деле —
@@ -1219,20 +826,16 @@ const GuiltDetermination = () => {
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white font-bold px-10 py-7 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white font-bold px-10 py-7 shadow-lg hover:shadow-xl transition-all duration-300"
                   onClick={handleFreeAnalysis}
                 >
-                  <Search className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
                   Проанализировать мою ситуацию
                 </Button>
-                {/* Кнопка "Обсудить с юристом" - ВСЕГДА ВИДНА */}
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="border-2 border-white/50 text-white hover:bg-white/10 px-10 py-7 backdrop-blur-sm group"
+                  className="border-2 border-white text-white hover:bg-white/10 px-10 py-7 backdrop-blur-sm"
                   onClick={handleConsultation}
                 >
-                  <Phone className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
                   Обсудить с юристом
                 </Button>
               </div>
@@ -1241,163 +844,42 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-red-500/10 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-48 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
+      {/* Final CTA Section - только мессенджеры */}
+      <section className="py-24 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white">
+        <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div
-              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 ${float}`}
+              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10`}
             >
               <Shield className="h-12 w-12 text-yellow-400" />
             </div>
 
-            <h2 className={`text-3xl md:text-4xl font-bold mb-10 ${fadeInUp}`}>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-10`}>
               Ещё сомневаетесь?
             </h2>
 
-            <div
-              className={`bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-10 mb-12 border border-white/10 ${fadeIn}`}
-            >
-              <h3 className="text-2xl font-bold mb-10 text-yellow-300">
-                Что будет, если ничего не делать?
-              </h3>
-
-              <div className="grid md:grid-cols-3 gap-8 text-left">
-                {[
-                  {
-                    icon: "↓",
-                    title: "Штрафы и выплаты",
-                    desc: "Выплаты страховой, штрафы ГИБДД, ремонт чужого авто",
-                    color: "from-red-500/20 to-red-600/20",
-                  },
-                  {
-                    icon: "↑",
-                    title: "Рост стоимости ОСАГО",
-                    desc: "Коэффициент увеличится в 2-3 раза на несколько лет",
-                    color: "from-orange-500/20 to-orange-600/20",
-                  },
-                  {
-                    icon: "⚠️",
-                    title: "Риск лишения прав",
-                    desc: "При серьёзных нарушениях — до 1,5 лет без водительских прав",
-                    color: "from-amber-500/20 to-yellow-600/20",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={index}
-                    className={`bg-gradient-to-br ${item.color} backdrop-blur-sm p-7 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-2`}
-                  >
-                    <div className="text-5xl font-bold mb-4">{item.icon}</div>
-                    <h4 className="font-bold text-lg mb-3">{item.title}</h4>
-                    <p className="text-gray-300 text-sm leading-relaxed">
-                      {item.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div
-              className={`mb-12 ${fadeInUp}`}
-              style={{ animationDelay: "0.2s" }}
-            >
-              <h3 className="text-2xl font-bold mb-8">
-                А теперь хорошие новости:
-              </h3>
+            <div className={`mb-12`}>
               <div className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-sm rounded-2xl p-8 border border-emerald-500/30 max-w-2xl mx-auto">
                 <p className="text-xl leading-relaxed">
-                  <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">
-                    98% наших клиентов
-                  </span>{" "}
+                  <span className="font-bold">98% наших клиентов</span>{" "}
                   полностью снимают вину. Вы платите только если мы выигрываем
                   ваше дело.
                 </p>
               </div>
             </div>
 
-            <div
-              className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 ${fadeInUp}`}
-              style={{ animationDelay: "0.3s" }}
-            >
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white font-bold px-12 py-8 text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 group"
-                onClick={handleConsultation}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-gradient-to-br from-gray-900 to-gray-700 rounded-lg group-hover:scale-110 transition-transform">
-                    <Phone className="h-7 w-7 text-white" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-bold text-lg">
-                      Позвонить и задать вопросы
-                    </div>
-                    <div className="text-sm font-normal text-gray-600">
-                      Ответим на все сомнения
-                    </div>
-                  </div>
-                </div>
-              </Button>
-
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-white hover:from-red-700 hover:via-orange-700 hover:to-amber-700 font-bold px-12 py-8 text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 group relative overflow-hidden"
-                onClick={handleFreeAnalysis}
-              >
-                <span className="relative z-10 flex items-center gap-4">
-                  <div className="p-2 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-                    <Shield className="h-7 w-7" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-bold text-lg">
-                      Начать бесплатную защиту
-                    </div>
-                    <div className="text-sm font-normal opacity-90">
-                      Прямо сейчас, без обязательств
-                    </div>
-                  </div>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-red-700 via-orange-700 to-amber-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </Button>
-            </div>
-
-            <div className={`pt-10 border-t border-white/20 ${fadeIn}`}>
+            <div className={`pt-10 border-t border-white/20`}>
               <p className="text-lg mb-8 opacity-90">
                 Пишите в мессенджеры для быстрой связи:
               </p>
               <div className="flex flex-wrap justify-center gap-4 mb-12">
                 <a
-                  href={`tel:${PHONES.MAIN_TEL}`}
-                  className="inline-flex items-center gap-4 bg-gradient-to-r from-white/10 to-white/5 hover:from-white/20 hover:to-white/10 text-white px-8 py-4 rounded-xl transition-all duration-300 group border border-white/10 hover:border-white/20"
-                  onClick={() =>
-                    trackCustomGoal("final_phone_call", { source: "final_cta" })
-                  }
-                >
-                  <div className="p-2 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                    <Phone className="h-6 w-6" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-bold text-lg">
-                      {PHONES.MAIN_DISPLAY}
-                    </div>
-                    <div className="text-sm opacity-75">Основной телефон</div>
-                  </div>
-                </a>
-
-                {/* Telegram - без номера телефона */}
-                <a
-                  href={`https://t.me/${PHONES.TELEGRAM_RAW.slice(1)}`}
+                  href={`https://t.me/${PHONES.TELEGRAM_RAW}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl transition-all duration-300 group"
+                  className="inline-flex items-center gap-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl transition-all duration-300"
                 >
-                  <div className="p-2 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+                  <div className="p-2 bg-white/20 rounded-lg">
                     <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
                       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                     </svg>
@@ -1410,14 +892,13 @@ const GuiltDetermination = () => {
                   </div>
                 </a>
 
-                {/* MAX - с правильной ссылкой и без номера */}
                 <a
                   href="https://max.ru/u/f9LHodD0cOJFmV1rIMi6ZjEOt-EbDAs8qqafnjND6gCk6NfTMMBgw0WF_j0"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-4 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-8 py-4 rounded-xl transition-all duration-300 group"
+                  className="inline-flex items-center gap-4 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-8 py-4 rounded-xl transition-all duration-300"
                 >
-                  <div className="p-2 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+                  <div className="p-2 bg-white/20 rounded-lg">
                     <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                     </svg>
