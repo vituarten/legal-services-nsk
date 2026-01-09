@@ -19,39 +19,6 @@ const ServicesMain = () => {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
-  const companyValues = [
-    {
-      icon: "Target",
-      title: "Стратегия решения",
-      description: "Разрабатываем пошаговый план действий для вашей ситуации",
-    },
-    {
-      icon: "Users",
-      title: "Экспертный подход",
-      description: "Каждым делом занимается профильный специалист",
-    },
-    {
-      icon: "Shield",
-      title: "Защита интересов",
-      description: "Отстаиваем ваши права на всех этапах",
-    },
-    {
-      icon: "FileText",
-      title: "Документальное сопровождение",
-      description: "Подготовим все необходимые документы",
-    },
-    {
-      icon: "Scale",
-      title: "Судебное представительство",
-      description: "Представляем ваши интересы в суде",
-    },
-    {
-      icon: "Clock",
-      title: "Сроки и отчетность",
-      description: "Четко соблюдаем сроки и информируем о прогрессе",
-    },
-  ];
-
   return (
     <section
       id="services"
@@ -60,19 +27,19 @@ const ServicesMain = () => {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 md:mb-16">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
-            Юридический консалтинг
+            Наши услуги
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Мы — юридическая консалтинговая компания, которая помогает клиентам
-            решать правовые вопросы любой сложности. Наша команда экспертов
-            обеспечивает комплексный подход к каждой ситуации.
+            Полный спектр юридических услуг. Подробную информацию обо всех
+            направлениях работы вы можете найти в разделе "Услуги".
           </p>
+
           <div className="pt-4">
             <Link
               to="/services"
               className="inline-flex items-center justify-center bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 active:scale-95"
             >
-              <span className="mr-2 sm:mr-3">Посмотреть все услуги</span>
+              <span className="mr-2 sm:mr-3">Перейти к услугам</span>
               <Icon
                 name="ArrowRight"
                 className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-2 transition-transform"
@@ -81,31 +48,7 @@ const ServicesMain = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-          {companyValues.map((value, index) => (
-            <Card
-              key={index}
-              className="h-full hover:shadow-xl sm:hover:shadow-2xl transition-all duration-300 border sm:border-2 hover:border-primary hover:-translate-y-1 cursor-pointer group"
-            >
-              <CardContent className="p-4 sm:p-5 md:p-6 lg:p-8 space-y-3 sm:space-y-4">
-                <div className="inline-block p-3 sm:p-3.5 md:p-4 bg-primary/10 rounded-lg sm:rounded-xl group-hover:bg-primary group-hover:scale-110 transition-all">
-                  <Icon
-                    name={value.icon as any}
-                    className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary group-hover:text-white"
-                  />
-                </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                  {value.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-xs sm:text-sm md:text-base">
-                  {value.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Преимущества - оставлено без изменений */}
+        {/* Преимущества */}
         <div className="mt-12 sm:mt-16 md:mt-20">
           <div className="text-center mb-8 sm:mb-10">
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
@@ -184,6 +127,18 @@ const ServicesMain = () => {
                 </p>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-sm text-muted-foreground">
+              Хотите узнать больше о наших услугах?
+              <Link
+                to="/services"
+                className="text-primary font-semibold ml-2 hover:underline"
+              >
+                Смотреть полный список →
+              </Link>
+            </p>
           </div>
         </div>
       </div>
