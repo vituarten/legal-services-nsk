@@ -34,56 +34,64 @@ const ServicesMain = () => {
           </p>
         </div>
 
-        {/* Центральная карточка с призывом */}
-        <div className="max-w-3xl mx-auto mb-10 sm:mb-12">
-          <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 via-white to-primary/5 hover:shadow-2xl transition-all duration-300">
-            <CardContent className="p-6 sm:p-8 md:p-10">
-              <div className="flex flex-col lg:flex-row items-center gap-6 sm:gap-8">
-                <div className="lg:w-1/4 flex justify-center">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Icon
-                      name="Briefcase"
-                      className="h-10 w-10 sm:h-12 sm:w-12 text-white"
-                    />
+        {/* Центральная карточка с акцентом */}
+        <div className="mb-12 sm:mb-16">
+          <div className="relative">
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-white via-primary/5 to-white overflow-hidden shadow-xl">
+              <CardContent className="p-8 sm:p-10 md:p-12">
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-6 sm:mb-8">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg mx-auto">
+                      <Icon
+                        name="Briefcase"
+                        className="h-10 w-10 sm:h-12 sm:w-12 text-white"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="lg:w-3/4 text-center lg:text-left">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4">
-                    Полный спектр юридических услуг
-                  </h3>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
-                    Мы предоставляем широкий перечень юридических услуг для
-                    решения различных вопросов. Подробную информацию о всех
-                    наших услугах, направлениях работы и специализациях вы
-                    можете найти в соответствующем разделе сайта.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                    <Link
-                      to="/services"
-                      className="inline-flex items-center justify-center bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-primary/90 transition-all hover:shadow-lg"
-                    >
-                      <span className="mr-2 sm:mr-3">Перейти к услугам</span>
-                      <Icon
-                        name="ArrowRight"
-                        className="h-4 w-4 sm:h-5 sm:w-5"
-                      />
-                    </Link>
-                    <a
-                      href="tel:+73832359505"
-                      className="inline-flex items-center justify-center border border-primary text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-primary/5 transition-all"
-                    >
-                      <Icon
-                        name="Phone"
-                        className="h-4 w-4 sm:h-5 sm:w-5 mr-2"
-                      />
-                      Заказать консультацию
-                    </a>
+                  <div className="max-w-2xl mx-auto">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-4">
+                      Полный спектр юридических услуг
+                    </h3>
+                    <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
+                      Мы предоставляем широкий перечень юридических услуг для
+                      решения различных вопросов. Подробную информацию о всех
+                      наших услугах, направлениях работы и специализациях вы
+                      можете найти в соответствующем разделе сайта.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Link
+                        to="/services"
+                        className="inline-flex items-center justify-center bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 active:scale-95 shadow-md"
+                      >
+                        <span className="mr-2 sm:mr-3">Перейти к услугам</span>
+                        <Icon
+                          name="ArrowRight"
+                          className="h-4 w-4 sm:h-5 sm:w-5"
+                        />
+                      </Link>
+
+                      <a
+                        href="tel:+73832359505"
+                        className="inline-flex items-center justify-center text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-primary/5 transition-all border border-primary/30"
+                      >
+                        <Icon
+                          name="Phone"
+                          className="h-4 w-4 sm:h-5 sm:w-5 mr-2"
+                        />
+                        +7 (383) 235-95-05
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+
+              {/* Декоративные элементы */}
+              <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-x-16 -translate-y-16"></div>
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full translate-x-16 translate-y-16"></div>
+            </Card>
+          </div>
         </div>
 
         {/* Преимущества */}
