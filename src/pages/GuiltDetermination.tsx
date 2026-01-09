@@ -4,14 +4,6 @@ import { trackCustomGoal } from "@/utils/metrika";
 import { useEffect } from "react";
 
 const GuiltDetermination = () => {
-  // Константы для телефонов
-  const PHONES = {
-    MAIN_DISPLAY: "+7 (383) 235-95-05",
-    MAIN_TEL: "+73832359505",
-    MESSENGER: "+7 993 190 35 00",
-    MESSENGER_TEL: "+79931903500",
-  };
-
   // SEO настройки
   useEffect(() => {
     document.title =
@@ -41,16 +33,6 @@ const GuiltDetermination = () => {
       "https://юридический-сервис.рф/guilt-determination",
     );
 
-    // Инициализация Яндекс.Метрики
-    if (window.ym && window.YOUR_COUNTER_ID) {
-      window.ym(window.YOUR_COUNTER_ID, "init", {
-        clickmap: true,
-        trackLinks: true,
-        accurateTrackBounce: true,
-        webvisor: true,
-      });
-    }
-
     // Очистка
     return () => {
       document.title = "Юридические услуги в Новосибирске";
@@ -62,17 +44,10 @@ const GuiltDetermination = () => {
       source: "page",
       action: "phone_call",
     });
-    window.location.href = `tel:${PHONES.MAIN_TEL}`;
+    window.location.href = "tel:+79994523500";
   };
 
   const openModal = handleConsultation;
-
-  const handleMessengerClick = (messenger) => {
-    trackCustomGoal(`${messenger}_click`, {
-      source: "page",
-      action: "messenger_contact",
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-white to-yellow-50">
@@ -98,45 +73,24 @@ const GuiltDetermination = () => {
                 size="lg"
                 className="bg-yellow-600 hover:bg-yellow-700 text-white"
                 asChild
-                onClick={() => {
-                  trackCustomGoal("main_phone_call", { source: "hero" });
-                }}
               >
-                <a href={`tel:${PHONES.MAIN_TEL}`}>
+                <a href="tel:+79994523500">
                   <Icon name="Phone" className="mr-2" />
-                  {PHONES.MAIN_DISPLAY}
+                  +7 999 452 35 00
                 </a>
               </Button>
-
               <Button
                 size="lg"
                 className="bg-blue-500 hover:bg-blue-600 text-white"
                 asChild
-                onClick={() => handleMessengerClick("telegram")}
               >
                 <a
-                  href={`https://t.me/${PHONES.MESSENGER_TEL.slice(1)}`}
+                  href="https://t.me/+79931903500"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <Icon name="Send" className="mr-2" />
                   Telegram
-                </a>
-              </Button>
-
-              <Button
-                size="lg"
-                className="bg-green-600 hover:bg-green-700 text-white"
-                asChild
-                onClick={() => handleMessengerClick("max_messenger")}
-              >
-                <a
-                  href={`https://max.im/${PHONES.MESSENGER_TEL.slice(1)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon name="MessageSquare" className="mr-2" />
-                  Max Messenger
                 </a>
               </Button>
             </div>
@@ -159,6 +113,7 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
+      {/* Остальные секции остаются без изменений */}
       {/* Problem Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
@@ -593,7 +548,7 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing Section - ИСПРАВЛЕННАЯ ВЕРСИЯ */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
@@ -825,7 +780,7 @@ const GuiltDetermination = () => {
                 className="bg-yellow-800 text-white hover:bg-yellow-900 font-semibold"
                 onClick={() => {
                   trackCustomGoal("phone_cta_click", { source: "main_cta" });
-                  window.location.href = `tel:${PHONES.MAIN_TEL}`;
+                  window.location.href = "tel:+79931903500";
                 }}
               >
                 <Icon name="Phone" className="mr-2" />
@@ -833,42 +788,11 @@ const GuiltDetermination = () => {
               </Button>
             </div>
             <p className="text-sm opacity-75 mt-4">
-              Или напишите в мессенджеры: Telegram или Max Messenger
+              Или напишите в Telegram: +7 993 190 35 00
             </p>
-            <div className="flex justify-center gap-4 mt-3">
-              <a
-                href={`https://t.me/${PHONES.MESSENGER_TEL.slice(1)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
-                onClick={() => handleMessengerClick("telegram_cta")}
-              >
-                <Icon name="Send" size={16} />
-                Telegram
-              </a>
-              <a
-                href={`https://max.im/${PHONES.MESSENGER_TEL.slice(1)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
-                onClick={() => handleMessengerClick("max_messenger_cta")}
-              >
-                <Icon name="MessageSquare" size={16} />
-                Max Messenger
-              </a>
-            </div>
           </div>
         </div>
       </section>
-
-      {/* Яндекс.Метрика скрытый код */}
-      <div style={{ display: "none" }}>
-        <img
-          src={`https://mc.yandex.ru/watch/YOUR_COUNTER_ID`}
-          style={{ position: "absolute", left: "-9999px" }}
-          alt=""
-        />
-      </div>
     </div>
   );
 };
