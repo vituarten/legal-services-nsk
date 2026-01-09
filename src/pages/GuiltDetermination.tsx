@@ -1279,8 +1279,8 @@ const GuiltDetermination = () => {
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">
                     98% наших клиентов
                   </span>{" "}
-                  полностью снимают вину. Вы платите только если мы выигрываем
-                  ваше дело.
+                  полностью снимают вину. Виновник несет все Расходы на наши
+                  услуги Юриста.
                 </p>
               </div>
             </div>
