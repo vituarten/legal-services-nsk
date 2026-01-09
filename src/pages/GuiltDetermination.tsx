@@ -31,6 +31,9 @@ import {
   Target,
   BadgeCheck,
   Clock4,
+  Loader2,
+  Send,
+  Sparkles,
 } from "lucide-react";
 
 const GuiltDetermination = () => {
@@ -38,11 +41,27 @@ const GuiltDetermination = () => {
     MAIN_DISPLAY: "+7 (383) 235-95-05",
     MAIN_TEL: "+73832359505",
     MESSENGER_DISPLAY: "+7 993 190 35 00",
-    MESSENGER_RAW: "+79931903500",
+    MESSENGER_RAW: "79931903500", // Без + для Green API
+  };
+
+  // Конфигурация Green API для MAX
+  const GREEN_API_CONFIG = {
+    idInstance: "3100445356",
+    apiTokenInstance: "ced349362db7404d8b038631d7e61c14ab7e4530efa541c7ac",
+    chatId: `${PHONES.MESSENGER_RAW}@c.us`,
   };
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    description: "",
+  });
+  const [formErrors, setFormErrors] = useState({});
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [progress, setProgress] = useState(0);
+
   const heroRef = useRef(null);
   const statsRef = useRef(null);
   const [visibleStats, setVisibleStats] = useState([false, false, false]);
@@ -79,18 +98,153 @@ const GuiltDetermination = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Функция отправки в Green API
+  const sendToGreenAPI = async (message) => {
+    const url = `https://3100.api.green-api.com/v3/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
+
+    const payload = {
+      chatId: GREEN_API_CONFIG.chatId,
+      message: message,
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка API: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Green API Response:", data);
+      return { success: true, data };
+    } catch (error) {
+      console.error("Green API Error:", error);
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Валидация формы
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = "Введите ваше имя";
+    }
+
+    if (!formData.phone.trim()) {
+      errors.phone = "Введите ваш телефон";
+    } else if (
+      !/^[\d\s\-\+\(\)]{10,20}$/.test(
+        formData.phone.replace(/[\s\-\+\(\)]/g, ""),
+      )
+    ) {
+      errors.phone = "Введите корректный номер телефона";
+    }
+
+    if (!formData.description.trim()) {
+      errors.description = "Опишите ситуацию";
+    } else if (formData.description.trim().length < 10) {
+      errors.description = "Опишите ситуацию подробнее";
+    }
+
+    return errors;
+  };
+
+  // Обработка отправки формы
+  const handleFormSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    setIsLoading(true);
+    setFormErrors({});
+    setSubmissionStatus(null);
+    setProgress(0);
+
+    // Анимация прогресса
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return prev;
+        }
+        return prev + 10;
+      });
+    }, 200);
+
+    // Форматируем сообщение для MAX
+    const maxMessage = `
+📋 НОВАЯ ЗАЯВКА С САЙТА
+——————————————————
+👤 Имя: ${formData.name}
+📞 Телефон: ${formData.phone}
+📝 Ситуация: ${formData.description}
+⏰ Время получения: ${new Date().toLocaleString("ru-RU")}
+🌐 Источник: Страница «Установление вины в ДТП»
+——————————————————
+💼 Требуется консультация по установлению вины в ДТП
+    `.trim();
+
+    // Отправляем в Green API
+    const result = await sendToGreenAPI(maxMessage);
+
+    clearInterval(progressInterval);
+    setProgress(100);
+
+    if (result.success) {
+      setSubmissionStatus("success");
+      trackCustomGoal("messenger_form_submitted", {
+        status: "success",
+        messenger: "max",
+      });
+
+      // Показываем модальное окно успеха
+      setShowSuccessModal(true);
+
+      // Очищаем форму через 2 секунды
+      setTimeout(() => {
+        setFormData({ name: "", phone: "", description: "" });
+        setSubmissionStatus(null);
+        setProgress(0);
+      }, 2000);
+
+      // Скрываем модальное окно через 7 секунд
+      setTimeout(() => setShowSuccessModal(false), 7000);
+    } else {
+      setSubmissionStatus("error");
+      trackCustomGoal("messenger_form_error", {
+        error: result.error,
+        messenger: "max",
+      });
+    }
+
+    setIsLoading(false);
+  };
+
+  // Обработчик для кнопки "Бесплатный анализ"
+  const handleFreeAnalysis = () => {
+    trackCustomGoal("free_analysis_click", { source: "hero" });
+    document.getElementById("contact-form")?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   const handleConsultation = () => {
     trackCustomGoal("guilt_determination_consultation", {
       source: "page",
       action: "phone_call",
     });
     window.location.href = `tel:${PHONES.MAIN_TEL}`;
-  };
-
-  const handleFreeAnalysis = () => {
-    trackCustomGoal("free_analysis_click", { source: "hero" });
-    setShowSuccessModal(true);
-    setTimeout(() => setShowSuccessModal(false), 5000);
   };
 
   // Анимационные классы
@@ -218,17 +372,6 @@ const GuiltDetermination = () => {
         .animate-stat-3 {
           animation-delay: 0.9s;
         }
-
-        /* Fix для белых квадратов в иконках */
-        .lucide-icon-fix {
-          display: inline-block;
-          width: 1em;
-          height: 1em;
-          stroke-width: 2;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-          fill: none;
-        }
       `}</style>
 
       {/* Success Modal */}
@@ -255,37 +398,63 @@ const GuiltDetermination = () => {
             </button>
 
             <div
-              className={`w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 ${float}`}
+              className={`w-24 h-24 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-float`}
             >
-              <ThumbsUp className="h-12 w-12 text-emerald-600" />
+              {submissionStatus === "success" ? (
+                <Sparkles className="h-12 w-12 text-blue-600" />
+              ) : submissionStatus === "error" ? (
+                <AlertCircle className="h-12 w-12 text-red-600" />
+              ) : (
+                <Loader2 className="h-12 w-12 text-blue-600 animate-spin" />
+              )}
             </div>
 
-            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
-              Заявка принята!
+            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              {submissionStatus === "success"
+                ? "Заявка принята!"
+                : submissionStatus === "error"
+                  ? "Ошибка отправки"
+                  : "Отправляем..."}
             </h3>
 
-            <p className="text-gray-600 mb-2">
-              <span className="font-semibold text-gray-900">
-                Юрист свяжется с вами в течение 15 минут
-              </span>
+            <p className="text-gray-600 mb-6">
+              {submissionStatus === "success" ? (
+                <>
+                  <span className="font-semibold text-gray-900">
+                    Ваша заявка успешно отправлена
+                  </span>
+                  <br />
+                  Специалист свяжется с вами для анализа документов
+                </>
+              ) : submissionStatus === "error" ? (
+                "Произошла ошибка при отправке. Пожалуйста, попробуйте позвонить."
+              ) : (
+                "Заявка обрабатывается..."
+              )}
             </p>
 
-            <p className="text-sm text-gray-500 mb-6">
-              Для бесплатного анализа документов и оценки шансов
-            </p>
+            {/* Анимированный прогресс-бар */}
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2.5 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
 
             <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>Статус: в обработке</span>
-              </div>
+              {submissionStatus === "success" && (
+                <div className="flex items-center gap-2 animate-pulse">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span>Статус: заявка в обработке</span>
+                </div>
+              )}
             </div>
 
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white shadow-lg"
+              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
             >
-              Понятно, жду звонка
+              {submissionStatus === "success" ? "Понятно" : "Закрыть"}
             </Button>
           </div>
         </div>
@@ -478,127 +647,193 @@ const GuiltDetermination = () => {
               {/* Правая колонка - Форма */}
               <div className="lg:w-1/2">
                 <div
+                  id="contact-form"
                   className={`bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-200/50 ${slideInRight}`}
                 >
                   <div className="flex items-center gap-4 mb-8">
                     <div className="relative">
                       <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl flex items-center justify-center shadow-lg">
-                        <MessageCircle className="h-7 w-7 text-blue-600" />
+                        <Send className="h-7 w-7 text-blue-600" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
                         <Zap className="h-3 w-3 text-white" />
                       </div>
                     </div>
                     <div>
                       <h3 className="font-bold text-2xl bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                        Срочная консультация
+                        Отправка заявки
                       </h3>
                       <p className="text-gray-600 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        Ответим через 5 минут
+                        <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                        Заявка отправится сразу после заполнения
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Как к вам обращаться?
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                          placeholder="Ваше имя"
+                  <form onSubmit={handleFormSubmit}>
+                    <div className="space-y-6">
+                      {/* Имя */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Как к вам обращаться? *
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={formData.name}
+                            onChange={(e) =>
+                              setFormData({ ...formData, name: e.target.value })
+                            }
+                            className={`w-full px-5 py-4 border ${formErrors.name ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm`}
+                            placeholder="Ваше имя"
+                            disabled={isLoading}
+                          />
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        {formErrors.name && (
+                          <p className="mt-2 text-sm text-red-600">
+                            {formErrors.name}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Телефон */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Ваш телефон *
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                phone: e.target.value,
+                              })
+                            }
+                            className={`w-full px-5 py-4 border ${formErrors.phone ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm`}
+                            placeholder={PHONES.MAIN_DISPLAY}
+                            disabled={isLoading}
+                          />
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <Phone className="w-5 h-5" />
+                          </div>
+                        </div>
+                        {formErrors.phone && (
+                          <p className="mt-2 text-sm text-red-600">
+                            {formErrors.phone}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Описание ситуации */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Кратко опишите ситуацию *
+                        </label>
+                        <textarea
+                          value={formData.description}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              description: e.target.value,
+                            })
+                          }
+                          className={`w-full px-5 py-4 border ${formErrors.description ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm h-36 resize-none`}
+                          placeholder="Когда произошло ДТП? Что написано в протоколе? Есть ли свидетели или запись с видеорегистратора?..."
+                          disabled={isLoading}
                         />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                        {formErrors.description && (
+                          <p className="mt-2 text-sm text-red-600">
+                            {formErrors.description}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Кнопка отправки */}
+                      <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="h-6 w-6 mr-3 animate-spin" />
+                            Отправляем заявку...
+                          </>
+                        ) : (
+                          <>
+                            <span className="relative z-10 flex items-center justify-center gap-3">
+                              <Send className="h-6 w-6 group-hover:scale-110 transition-transform" />
+                              Отправить заявку на анализ
+                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-cyan-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </>
+                        )}
+                      </Button>
+
+                      <p className="text-center text-gray-500 text-sm px-4">
+                        Нажимая кнопку, вы соглашаетесь с обработкой
+                        персональных данных
+                      </p>
+
+                      {/* Статус отправки */}
+                      {submissionStatus === "error" && (
+                        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+                          <p className="text-red-700 font-medium mb-2">
+                            Ошибка отправки заявки
+                          </p>
+                          <p className="text-red-600 text-sm">
+                            Пожалуйста, позвоните нам по номеру{" "}
+                            {PHONES.MAIN_DISPLAY}
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="border-t border-gray-200 pt-6">
+                        <p className="text-center text-gray-600 mb-5">
+                          Или напишите прямо сейчас:
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                          <a
+                            href={`https://t.me/${PHONES.MESSENGER_RAW.slice(1)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                            />
-                          </svg>
+                            <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span>Telegram</span>
+                            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                          </a>
+                          <a
+                            href="https://max.ru"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
+                          >
+                            <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span>MAX Messenger</span>
+                            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                          </a>
                         </div>
                       </div>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Ваш телефон
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="tel"
-                          className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                          placeholder={PHONES.MAIN_DISPLAY}
-                        />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <Phone className="w-5 h-5" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Кратко опишите ситуацию
-                      </label>
-                      <textarea
-                        className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm h-36 resize-none"
-                        placeholder="Когда произошло ДТП? Что написано в протоколе? Есть ли свидетели или запись с видеорегистратора?..."
-                      />
-                    </div>
-
-                    <Button
-                      className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
-                      onClick={handleFreeAnalysis}
-                    >
-                      <span className="relative z-10 flex items-center justify-center gap-3">
-                        <Target className="h-6 w-6 group-hover:scale-110 transition-transform" />
-                        Получить бесплатный анализ
-                      </span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </Button>
-
-                    <p className="text-center text-gray-500 text-sm px-4">
-                      Нажимая кнопку, вы соглашаетесь с обработкой персональных
-                      данных
-                    </p>
-
-                    <div className="border-t border-gray-200 pt-6">
-                      <p className="text-center text-gray-600 mb-5">
-                        Или напишите прямо сейчас:
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a
-                          href={`https://t.me/${PHONES.MESSENGER_RAW.slice(1)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
-                        >
-                          <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                          <span>Telegram</span>
-                          <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                        </a>
-                        <a
-                          href="https://max.ru"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
-                        >
-                          <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                          <span>MAX Messenger</span>
-                          <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -890,236 +1125,8 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Pricing Section - Исправленная версия */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2
-                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 ${fadeInUp}`}
-              >
-                Выберите{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
-                  безопасный вариант
-                </span>{" "}
-                сотрудничества
-              </h2>
-              <p
-                className={`text-xl text-gray-600 max-w-3xl mx-auto ${fadeInUp}`}
-                style={{ animationDelay: "0.1s" }}
-              >
-                Мы понимаем, что доверять незнакомым юристам страшно. Поэтому
-                предлагаем варианты без риска
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              {/* Базовый пакет */}
-              <div
-                className={`bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${slideInLeft}`}
-              >
-                <div className="mb-8">
-                  <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold mb-6">
-                    БЕЗОПАСНЫЙ СТАРТ
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">
-                    Базовый пакет
-                  </h3>
-                  <div className="text-5xl font-bold text-gray-900 mb-2">
-                    от 30 000 руб.
-                  </div>
-                  <p className="text-gray-500">
-                    Оплата частями по этапам работы
-                  </p>
-                </div>
-
-                <ul className="space-y-5 mb-10">
-                  {[
-                    "Полный анализ и стратегия",
-                    "Подготовка всех документов",
-                    "Представительство в суде",
-                    "Фиксированная цена в договоре",
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-start gap-4 group">
-                      <CheckCircle className="text-emerald-500 mt-1 h-6 w-6 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                      <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white py-6 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
-                  onClick={() => {
-                    trackCustomGoal("pricing_basic_click", { plan: "basic" });
-                    handleConsultation();
-                  }}
-                >
-                  <span className="flex items-center justify-center gap-3">
-                    Выбрать этот вариант
-                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Button>
-              </div>
-
-              {/* Самый выгодный тариф */}
-              <div
-                className={`relative ${float}`}
-                style={{ animationDuration: "4s" }}
-              >
-                <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <Star className="h-4 w-4" />
-                      САМЫЙ ВЫГОДНЫЙ
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-blue-600 via-blue-600 to-cyan-600 text-white rounded-2xl p-8 border-2 border-blue-800 shadow-2xl pt-14">
-                  <div className="mb-8">
-                    <div className="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-full text-sm font-semibold mb-6">
-                      БЕЗ РИСКА ДЛЯ ВАС
-                    </div>
-                    <h3 className="text-2xl font-bold mb-4">Полный пакет</h3>
-                    <div className="text-5xl font-bold mb-2">
-                      от 45 000 руб.
-                    </div>
-                    <p className="text-blue-100">
-                      Максимум действий для сложных случаев
-                    </p>
-                  </div>
-
-                  <ul className="space-y-5 mb-10">
-                    {[
-                      "Всё, что входит в Базовый пакет",
-                      "Организация и оплата экспертиз",
-                      "Сбор дополнительных доказательств",
-                      "Досудебное урегулирование",
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-start gap-4 group">
-                        <CheckCircle className="mt-1 h-6 w-6 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                        <span className="group-hover:text-white/90 transition-colors">
-                          {item}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    className="w-full bg-white text-blue-600 hover:bg-gray-100 font-bold py-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
-                    onClick={() => {
-                      trackCustomGoal("pricing_full_click", { plan: "full" });
-                      handleConsultation();
-                    }}
-                  >
-                    <span className="flex items-center justify-center gap-3">
-                      <Shield className="h-6 w-6" />
-                      Выбрать полный пакет
-                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Оплата по результату */}
-              <div
-                className={`bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${slideInRight}`}
-              >
-                <div className="mb-8">
-                  <div className="inline-flex items-center px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6">
-                    МАКСИМАЛЬНАЯ БЕЗОПАСНОСТЬ
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">
-                    Оплата по результату
-                  </h3>
-                  <div className="text-5xl font-bold text-gray-900 mb-2">
-                    0 руб. аванс
-                  </div>
-                  <p className="text-gray-500">
-                    Гонорар — 50% от взысканной суммы
-                  </p>
-                </div>
-
-                <ul className="space-y-5 mb-10">
-                  {[
-                    {
-                      text: "Бесплатная работа до получения денег",
-                      icon: CheckCircle,
-                    },
-                    { text: "Мы финансируем экспертизы", icon: CheckCircle },
-                    { text: "Платите только при успехе", icon: CheckCircle },
-                    {
-                      text: "Госпошлина оплачивается клиентом",
-                      icon: AlertCircle,
-                    },
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-start gap-4 group">
-                      <item.icon
-                        className={`${index === 3 ? "text-amber-500" : "text-emerald-500"} mt-1 h-6 w-6 flex-shrink-0 group-hover:scale-110 transition-transform`}
-                      />
-                      <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
-                        {item.text}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white py-6 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
-                  onClick={() => {
-                    trackCustomGoal("pricing_result_click", { plan: "result" });
-                    handleConsultation();
-                  }}
-                >
-                  <span className="flex items-center justify-center gap-3">
-                    <DollarSign className="h-6 w-6" />
-                    Работать без предоплаты
-                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Помощь в выборе */}
-            <div
-              className={`bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-10 text-center shadow-lg ${fadeIn}`}
-            >
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-                <div className="text-left">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    Не можете выбрать?{" "}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
-                      Это нормально
-                    </span>
-                  </h3>
-                  <p className="text-gray-700 max-w-2xl">
-                    После анализа ваших документов мы сами порекомендуем
-                    оптимальный вариант.
-                    <span className="font-semibold text-gray-900">
-                      {" "}
-                      Первая консультация всегда бесплатна.
-                    </span>
-                  </p>
-                </div>
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300 group whitespace-nowrap"
-                  onClick={handleFreeAnalysis}
-                >
-                  <HelpCircle className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
-                  Помогите выбрать вариант
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA Section */}
       <section className="py-24 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white relative overflow-hidden">
-        {/* Анимированные элементы фона */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-red-500/10 to-transparent rounded-full blur-3xl"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-3xl"></div>
@@ -1129,7 +1136,7 @@ const GuiltDetermination = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div
-              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 ${float}`}
+              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 animate-float`}
             >
               <Shield className="h-12 w-12 text-yellow-400" />
             </div>
@@ -1138,7 +1145,6 @@ const GuiltDetermination = () => {
               Ещё сомневаетесь?
             </h2>
 
-            {/* Что будет если ничего не делать */}
             <div
               className={`bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-10 mb-12 border border-white/10 ${fadeIn}`}
             >
@@ -1181,7 +1187,6 @@ const GuiltDetermination = () => {
               </div>
             </div>
 
-            {/* Хорошие новости */}
             <div
               className={`mb-12 ${fadeInUp}`}
               style={{ animationDelay: "0.2s" }}
@@ -1194,12 +1199,11 @@ const GuiltDetermination = () => {
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">
                     98% наших клиентов
                   </span>{" "}
-                  полностью снимают вину.
+                  полностью снимают вину. Все расходы несет Виновная сторона.
                 </p>
               </div>
             </div>
 
-            {/* Финальные кнопки */}
             <div
               className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 ${fadeInUp}`}
               style={{ animationDelay: "0.3s" }}
@@ -1246,7 +1250,6 @@ const GuiltDetermination = () => {
               </Button>
             </div>
 
-            {/* Контакты */}
             <div className={`pt-10 border-t border-white/20 ${fadeIn}`}>
               <p className="text-lg mb-8 opacity-90">
                 Пишите в мессенджеры для быстрой связи:
@@ -1305,7 +1308,6 @@ const GuiltDetermination = () => {
                 </a>
               </div>
 
-              {/* Футер */}
               <div className="border-t border-white/10 pt-8">
                 <p className="text-sm opacity-75 mb-4">
                   <span className="opacity-90">Работаем с 2010 года.</span> Офис
