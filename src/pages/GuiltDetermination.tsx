@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { trackCustomGoal } from "@/utils/metrika";
 import { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Scale,
   Phone,
@@ -40,11 +40,10 @@ const GuiltDetermination = () => {
   const PHONES = {
     MAIN_DISPLAY: "+7 (383) 235-95-05",
     MAIN_TEL: "+73832359505",
-    MESSENGER_DISPLAY: "+7 993 190 35 00",
-    MESSENGER_RAW: "79931903500", // Без + для Green API
+    MESSENGER_DISPLAY: "+7 999 452 35 00",
+    MESSENGER_RAW: "89994523500",
   };
 
-  // Конфигурация Green API для MAX
   const GREEN_API_CONFIG = {
     idInstance: "3100445356",
     apiTokenInstance: "ced349362db7404d8b038631d7e61c14ab7e4530efa541c7ac",
@@ -53,35 +52,37 @@ const GuiltDetermination = () => {
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    description: "",
-  });
+  const [formData, setFormData] = useState({ name: "", phone: "" });
   const [formErrors, setFormErrors] = useState({});
   const [submissionStatus, setSubmissionStatus] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
 
   const heroRef = useRef(null);
   const statsRef = useRef(null);
   const [visibleStats, setVisibleStats] = useState([false, false, false]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title =
       "Несправедливо признали виновным в ДТП? Исправим в суде — Новосибирск";
 
-    // SEO метатеги
     const metaDescription =
       document.querySelector('meta[name="description"]') ||
       document.createElement("meta");
     metaDescription.name = "description";
     metaDescription.content =
       "Вас несправедливо признали виновным в аварии? Докажем вашу невиновность в суде. 15 лет опыта, 98% успеха. Бесплатный разбор вашего дела за 1 час.";
-    document.head.appendChild(metaDescription);
+    if (!document.querySelector('meta[name="description"]')) {
+      document.head.appendChild(metaDescription);
+    }
 
-    // Scroll handler
+    // Показываем плавающую кнопку при скролле
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      if (window.scrollY > 500) {
+        setShowFloatingCTA(true);
+      } else {
+        setShowFloatingCTA(false);
+      }
 
       // Анимация статистики
       if (statsRef.current) {
@@ -98,9 +99,9 @@ const GuiltDetermination = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Функция отправки в Green API
+  // Функция отправки в Green API - упрощённая версия
   const sendToGreenAPI = async (message) => {
-    const url = `https://3100.api.green-api.com/v3/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
+    const url = `https://api.green-api.com/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
 
     const payload = {
       chatId: GREEN_API_CONFIG.chatId,
@@ -129,12 +130,14 @@ const GuiltDetermination = () => {
     }
   };
 
-  // Валидация формы
+  // Упрощённая валидация
   const validateForm = () => {
     const errors = {};
 
     if (!formData.name.trim()) {
       errors.name = "Введите ваше имя";
+    } else if (formData.name.trim().length < 2) {
+      errors.name = "Имя должно содержать минимум 2 символа";
     }
 
     if (!formData.phone.trim()) {
@@ -147,85 +150,81 @@ const GuiltDetermination = () => {
       errors.phone = "Введите корректный номер телефона";
     }
 
-    if (!formData.description.trim()) {
-      errors.description = "Опишите ситуацию";
-    } else if (formData.description.trim().length < 10) {
-      errors.description = "Опишите ситуацию подробнее";
-    }
-
     return errors;
   };
 
-  // Обработка отправки формы
+  // Обработка отправки формы - маркетинговый подход
   const handleFormSubmit = async (e) => {
     if (e) e.preventDefault();
 
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
+
+      // Анимация ошибок
+      Object.keys(errors).forEach((key) => {
+        const input = document.querySelector(`[name="${key}"]`);
+        if (input) {
+          input.classList.add("animate-shake");
+          setTimeout(() => input.classList.remove("animate-shake"), 500);
+        }
+      });
       return;
     }
 
     setIsLoading(true);
     setFormErrors({});
     setSubmissionStatus(null);
-    setProgress(0);
 
-    // Анимация прогресса
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return prev;
-        }
-        return prev + 10;
-      });
-    }, 200);
-
-    // Форматируем сообщение для MAX
+    // Форматируем сообщение для MAX с маркетинговым акцентом
     const maxMessage = `
-📋 НОВАЯ ЗАЯВКА С САЙТА
+🚨 СРОЧНАЯ ЗАЯВКА С ЛЕНДИНГА
 ——————————————————
 👤 Имя: ${formData.name}
 📞 Телефон: ${formData.phone}
-📝 Ситуация: ${formData.description}
-⏰ Время получения: ${new Date().toLocaleString("ru-RU")}
-🌐 Источник: Страница «Установление вины в ДТП»
+⏰ Время: ${new Date().toLocaleString("ru-RU")}
+🌐 Источник: «Установление вины в ДТП»
+🔗 Акция: Бесплатный анализ за 24 часа
 ——————————————————
-💼 Требуется консультация по установлению вины в ДТП
+✅ Горячий лид — перезвонить в первые 5 минут!
     `.trim();
 
     // Отправляем в Green API
     const result = await sendToGreenAPI(maxMessage);
 
-    clearInterval(progressInterval);
-    setProgress(100);
-
     if (result.success) {
       setSubmissionStatus("success");
-      trackCustomGoal("messenger_form_submitted", {
+      trackCustomGoal("quick_form_submitted", {
         status: "success",
-        messenger: "max",
+        form_type: "quick_lead",
       });
 
       // Показываем модальное окно успеха
       setShowSuccessModal(true);
 
-      // Очищаем форму через 2 секунды
+      // Очищаем форму через 1 секунду
       setTimeout(() => {
-        setFormData({ name: "", phone: "", description: "" });
+        setFormData({ name: "", phone: "" });
         setSubmissionStatus(null);
-        setProgress(0);
-      }, 2000);
+      }, 1000);
 
-      // Скрываем модальное окно через 7 секунд
-      setTimeout(() => setShowSuccessModal(false), 7000);
+      // Скрываем модальное окно через 3 секунды
+      setTimeout(() => setShowSuccessModal(false), 3000);
+
+      // После успешной отправки показываем дополнительный оффер
+      setTimeout(() => {
+        trackCustomGoal("post_submission_offer", {
+          lead_name: formData.name,
+          lead_phone: formData.phone,
+        });
+      }, 1500);
     } else {
       setSubmissionStatus("error");
-      trackCustomGoal("messenger_form_error", {
+      trackCustomGoal("quick_form_error", {
         error: result.error,
-        messenger: "max",
+        form_type: "quick_lead",
       });
+      setTimeout(() => setSubmissionStatus(null), 3000);
     }
 
     setIsLoading(false);
@@ -236,6 +235,7 @@ const GuiltDetermination = () => {
     trackCustomGoal("free_analysis_click", { source: "hero" });
     document.getElementById("contact-form")?.scrollIntoView({
       behavior: "smooth",
+      block: "center",
     });
   };
 
@@ -245,6 +245,27 @@ const GuiltDetermination = () => {
       action: "phone_call",
     });
     window.location.href = `tel:${PHONES.MAIN_TEL}`;
+  };
+
+  // Обработчик для открытия полного разбора дела
+  const handleCaseDetailsOpen = () => {
+    trackCustomGoal("case_details_open", {
+      caseId: "delo-2-3052-2025",
+      source: "case_study_section",
+    });
+
+    // На сервисе poehali.dev все роуты должны быть предварительно определены
+    // Если роут существует в вашем приложении, используем navigate
+    // Если нет, открываем GitHub страницу
+    try {
+      navigate("/case-details/delo-2-3052-2025");
+    } catch (error) {
+      // Если роута нет, открываем GitHub
+      window.open(
+        "https://github.com/vituarten/legal-services-nsk/blob/main/app/case-details/delo-2-3052-2025/page.tsx",
+        "_blank",
+      );
+    }
   };
 
   // Анимационные классы
@@ -345,6 +366,35 @@ const GuiltDetermination = () => {
             transform: translateY(-10px);
           }
         }
+        @keyframes shake {
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          10%,
+          30%,
+          50%,
+          70%,
+          90% {
+            transform: translateX(-5px);
+          }
+          20%,
+          40%,
+          60%,
+          80% {
+            transform: translateX(5px);
+          }
+        }
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
         .animate-fade-in-up {
           animation: fadeInUp 0.6s ease-out forwards;
         }
@@ -363,6 +413,12 @@ const GuiltDetermination = () => {
         .animate-float {
           animation: float 3s ease-in-out infinite;
         }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+        .animate-slide-up {
+          animation: slideUp 0.4s ease-out forwards;
+        }
         .animate-stat-1 {
           animation-delay: 0.3s;
         }
@@ -374,87 +430,58 @@ const GuiltDetermination = () => {
         }
       `}</style>
 
-      {/* Success Modal */}
+      {/* Плавающая кнопка CTA */}
+      {showFloatingCTA && (
+        <div className="fixed bottom-6 right-6 z-40 animate-slide-up">
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-2xl hover:shadow-3xl px-6 py-5 rounded-full group animate-pulse-slow"
+            onClick={handleFreeAnalysis}
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 rounded-full">
+                <MessageCircle className="h-5 w-5" />
+              </div>
+              <span className="font-bold">Бесплатный анализ</span>
+            </div>
+          </Button>
+        </div>
+      )}
+
+      {/* Success Modal - упрощённый */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-gray-200">
-            <button
-              onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
             <div
-              className={`w-24 h-24 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-float`}
+              className={`w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 ${float}`}
             >
-              {submissionStatus === "success" ? (
-                <Sparkles className="h-12 w-12 text-blue-600" />
-              ) : submissionStatus === "error" ? (
-                <AlertCircle className="h-12 w-12 text-red-600" />
-              ) : (
-                <Loader2 className="h-12 w-12 text-blue-600 animate-spin" />
-              )}
+              <CheckCircle className="h-10 w-10 text-green-600" />
             </div>
 
-            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              {submissionStatus === "success"
-                ? "Заявка принята!"
-                : submissionStatus === "error"
-                  ? "Ошибка отправки"
-                  : "Отправляем..."}
+            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              Успешно отправлено!
             </h3>
 
             <p className="text-gray-600 mb-6">
-              {submissionStatus === "success" ? (
-                <>
-                  <span className="font-semibold text-gray-900">
-                    Ваша заявка успешно отправлена
-                  </span>
-                  <br />
-                  Специалист свяжется с вами для анализа документов
-                </>
-              ) : submissionStatus === "error" ? (
-                "Произошла ошибка при отправке. Пожалуйста, попробуйте позвонить."
-              ) : (
-                "Заявка обрабатывается..."
-              )}
+              <span className="font-semibold text-gray-900">
+                {formData.name}
+              </span>
+              , мы свяжемся с вами в течение{" "}
+              <span className="text-red-600 font-bold">5 минут</span>
             </p>
 
-            {/* Анимированный прогресс-бар */}
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2.5 rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-
-            <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-6">
-              {submissionStatus === "success" && (
-                <div className="flex items-center gap-2 animate-pulse">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span>Статус: заявка в обработке</span>
-                </div>
-              )}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-200">
+              <div className="flex items-center justify-center gap-2 text-sm text-green-700">
+                <Clock className="h-4 w-4" />
+                <span>Получите бесплатный анализ вашего дела за 24 часа</span>
+              </div>
             </div>
 
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
             >
-              {submissionStatus === "success" ? "Понятно" : "Закрыть"}
+              Понятно
             </Button>
           </div>
         </div>
@@ -508,24 +535,26 @@ const GuiltDetermination = () => {
                   полностью снимают вину через суд.
                 </p>
 
-                {/* Важное уведомление */}
+                {/* Ограниченное предложение */}
                 <div
-                  className={`bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 p-5 mb-8 rounded-r-xl shadow-sm ${fadeInUp}`}
-                  style={{ animationDelay: "0.3s" }}
+                  className={`bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 p-5 mb-8 rounded-xl shadow-lg ${pulse}`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={`flex-shrink-0 ${pulse}`}>
-                      <Clock4 className="h-7 w-7 text-amber-600" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
+                        <Clock4 className="h-6 w-6 text-white" />
+                      </div>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900 text-lg mb-1">
-                        Внимание: сроки истекают!
+                      <p className="font-bold text-gray-900 text-lg mb-1">
+                        🔥 Акция: Бесплатный анализ за 24 часа
                       </p>
                       <p className="text-gray-700">
-                        У вас есть всего{" "}
-                        <span className="font-bold text-red-600">10 дней</span>{" "}
-                        на обжалование протокола ГИБДД. Каждый день уменьшает
-                        шансы на успех.
+                        Оставьте заявку до конца дня и получите полный разбор
+                        вашей ситуации{" "}
+                        <span className="font-bold text-red-600">
+                          бесплатно
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -538,26 +567,30 @@ const GuiltDetermination = () => {
                 >
                   {[
                     {
-                      text: "Бесплатный анализ ваших документов",
-                      icon: <CheckCircle className="h-6 w-6" />,
+                      text: "Бесплатный анализ за 24 часа",
+                      icon: <Zap className="h-6 w-6" />,
+                      color: "from-yellow-100 to-amber-100",
+                      iconColor: "text-yellow-600",
                     },
                     {
                       text: "Фиксируем стоимость в договоре",
-                      icon: <CheckCircle className="h-6 w-6" />,
+                      icon: <FileText className="h-6 w-6" />,
+                      color: "from-blue-100 to-cyan-100",
+                      iconColor: "text-blue-600",
                     },
                     {
-                      text: "Работаем до полной отмены вины",
-                      icon: <CheckCircle className="h-6 w-6" />,
-                    },
-                    {
-                      text: "Оплата по факту выигрыша (опция)",
-                      icon: <CheckCircle className="h-6 w-6" />,
+                      text: "Оплата только при победе",
+                      icon: <ThumbsUp className="h-6 w-6" />,
+                      color: "from-emerald-100 to-green-100",
+                      iconColor: "text-emerald-600",
                     },
                   ].map((guarantee, index) => (
                     <div key={index} className="flex items-center gap-4 group">
                       <div className="flex-shrink-0">
-                        <div className="p-2 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                          <div className="text-emerald-600">
+                        <div
+                          className={`p-2 bg-gradient-to-br ${guarantee.color} rounded-lg group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <div className={guarantee.iconColor}>
                             {guarantee.icon}
                           </div>
                         </div>
@@ -588,7 +621,7 @@ const GuiltDetermination = () => {
                           Бесплатный анализ
                         </div>
                         <div className="text-sm font-normal opacity-90">
-                          моих документов
+                          за 24 часа
                         </div>
                       </div>
                     </div>
@@ -607,7 +640,7 @@ const GuiltDetermination = () => {
                       <div className="text-left">
                         <div className="font-bold">{PHONES.MAIN_DISPLAY}</div>
                         <div className="text-sm font-normal text-gray-500">
-                          Срочная консультация
+                          Срочный звонок
                         </div>
                       </div>
                     </div>
@@ -644,7 +677,7 @@ const GuiltDetermination = () => {
                 </div>
               </div>
 
-              {/* Правая колонка - Форма */}
+              {/* Правая колонка - УПРОЩЁННАЯ ФОРМА */}
               <div className="lg:w-1/2">
                 <div
                   id="contact-form"
@@ -653,20 +686,38 @@ const GuiltDetermination = () => {
                   <div className="flex items-center gap-4 mb-8">
                     <div className="relative">
                       <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl flex items-center justify-center shadow-lg">
-                        <Send className="h-7 w-7 text-blue-600" />
+                        <Zap className="h-7 w-7 text-blue-600" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                        <Zap className="h-3 w-3 text-white" />
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
+                        <Clock className="h-3 w-3 text-white" />
                       </div>
                     </div>
                     <div>
                       <h3 className="font-bold text-2xl bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                        Отправка заявки
+                        Быстрая заявка
                       </h3>
                       <p className="text-gray-600 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                        Заявка отправится сразу после заполнения
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        Заберём ваши документы и сделаем анализ за 24 часа
                       </p>
+                    </div>
+                  </div>
+
+                  <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                          <CheckCircle className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          Бесплатно и без обязательств
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Получите профессиональный анализ вашей ситуации
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -675,17 +726,18 @@ const GuiltDetermination = () => {
                       {/* Имя */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-3">
-                          Как к вам обращаться? *
+                          Ваше имя *
                         </label>
                         <div className="relative">
                           <input
                             type="text"
+                            name="name"
                             value={formData.name}
                             onChange={(e) =>
                               setFormData({ ...formData, name: e.target.value })
                             }
                             className={`w-full px-5 py-4 border ${formErrors.name ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm`}
-                            placeholder="Ваше имя"
+                            placeholder="Иван Иванов"
                             disabled={isLoading}
                           />
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -705,7 +757,8 @@ const GuiltDetermination = () => {
                           </div>
                         </div>
                         {formErrors.name && (
-                          <p className="mt-2 text-sm text-red-600">
+                          <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <AlertCircle className="h-4 w-4" />
                             {formErrors.name}
                           </p>
                         )}
@@ -719,6 +772,7 @@ const GuiltDetermination = () => {
                         <div className="relative">
                           <input
                             type="tel"
+                            name="phone"
                             value={formData.phone}
                             onChange={(e) =>
                               setFormData({
@@ -735,76 +789,57 @@ const GuiltDetermination = () => {
                           </div>
                         </div>
                         {formErrors.phone && (
-                          <p className="mt-2 text-sm text-red-600">
+                          <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <AlertCircle className="h-4 w-4" />
                             {formErrors.phone}
                           </p>
                         )}
                       </div>
 
-                      {/* Описание ситуации */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                          Кратко опишите ситуацию *
-                        </label>
-                        <textarea
-                          value={formData.description}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              description: e.target.value,
-                            })
-                          }
-                          className={`w-full px-5 py-4 border ${formErrors.description ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm h-36 resize-none`}
-                          placeholder="Когда произошло ДТП? Что написано в протоколе? Есть ли свидетели или запись с видеорегистратора?..."
-                          disabled={isLoading}
-                        />
-                        {formErrors.description && (
-                          <p className="mt-2 text-sm text-red-600">
-                            {formErrors.description}
-                          </p>
-                        )}
+                      {/* Счётчик времени */}
+                      <div className="text-center">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-50 to-orange-50 rounded-full">
+                          <Clock className="h-4 w-4 text-red-600" />
+                          <span className="text-sm font-medium text-gray-700">
+                            Бесплатный анализ за 24 часа
+                          </span>
+                        </div>
                       </div>
 
                       {/* Кнопка отправки */}
                       <Button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+                        className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <>
                             <Loader2 className="h-6 w-6 mr-3 animate-spin" />
-                            Отправляем заявку...
+                            Отправляем...
                           </>
                         ) : (
                           <>
                             <span className="relative z-10 flex items-center justify-center gap-3">
-                              <Send className="h-6 w-6 group-hover:scale-110 transition-transform" />
-                              Отправить заявку на анализ
+                              <Zap className="h-6 w-6 group-hover:scale-110 transition-transform" />
+                              Получить бесплатный анализ
                             </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-cyan-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           </>
                         )}
                       </Button>
 
-                      <p className="text-center text-gray-500 text-sm px-4">
-                        Нажимая кнопку, вы соглашаетесь с обработкой
-                        персональных данных
-                      </p>
-
-                      {/* Статус отправки */}
-                      {submissionStatus === "error" && (
-                        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
-                          <p className="text-red-700 font-medium mb-2">
-                            Ошибка отправки заявки
-                          </p>
-                          <p className="text-red-600 text-sm">
-                            Пожалуйста, позвоните нам по номеру{" "}
-                            {PHONES.MAIN_DISPLAY}
-                          </p>
+                      <div className="text-center space-y-3">
+                        <p className="text-gray-500 text-sm">
+                          Нажимая кнопку, вы соглашаетесь с политикой
+                          конфиденциальности
+                        </p>
+                        <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                          <Shield className="h-3 w-3" />
+                          <span>Ваши данные защищены</span>
                         </div>
-                      )}
+                      </div>
 
+                      {/* Альтернативные способы связи */}
                       <div className="border-t border-gray-200 pt-6">
                         <p className="text-center text-gray-600 mb-5">
                           Или напишите прямо сейчас:
@@ -815,8 +850,19 @@ const GuiltDetermination = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
+                            onClick={() =>
+                              trackCustomGoal("telegram_click", {
+                                source: "quick_form",
+                              })
+                            }
                           >
-                            <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            {/* Иконка Telegram */}
+                            <svg
+                              className="w-5 h-5 fill-white group-hover:scale-110 transition-transform"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                            </svg>
                             <span>Telegram</span>
                             <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                           </a>
@@ -825,8 +871,19 @@ const GuiltDetermination = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
+                            onClick={() =>
+                              trackCustomGoal("max_click", {
+                                source: "quick_form",
+                              })
+                            }
                           >
-                            <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            {/* Иконка MAX */}
+                            <svg
+                              className="w-5 h-5 fill-white group-hover:scale-110 transition-transform"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
                             <span>MAX Messenger</span>
                             <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                           </a>
@@ -835,12 +892,35 @@ const GuiltDetermination = () => {
                     </div>
                   </form>
                 </div>
+
+                {/* Доверительные элементы под формой */}
+                <div className="mt-6 grid grid-cols-3 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-blue-600">98%</div>
+                    <div className="text-xs text-gray-600">Успешных дел</div>
+                  </div>
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-blue-600">
+                      5 мин
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      Среднее время ответа
+                    </div>
+                  </div>
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-blue-600">24ч</div>
+                    <div className="text-xs text-gray-600">
+                      Анализ документов
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Остальные секции остаются без изменений */}
       {/* Pains Section */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
@@ -1000,10 +1080,12 @@ const GuiltDetermination = () => {
                         </p>
                       </div>
                     </div>
-                    <Button asChild variant="ghost" className="group">
-                      <Link to="/case-details/delo-2-3052-2025">
-                        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                    <Button
+                      onClick={handleCaseDetailsOpen}
+                      variant="ghost"
+                      className="group"
+                    >
+                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
@@ -1076,13 +1158,11 @@ const GuiltDetermination = () => {
 
                     <Button
                       className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-7 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 group"
-                      asChild
+                      onClick={handleCaseDetailsOpen}
                     >
-                      <Link to="/case-details/delo-2-3052-2025">
-                        <FileText className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
-                        Читать полный разбор дела
-                        <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                      <FileText className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
+                      Читать полный разбор дела
+                      <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
@@ -1136,7 +1216,7 @@ const GuiltDetermination = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div
-              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 animate-float`}
+              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 ${float}`}
             >
               <Shield className="h-12 w-12 text-yellow-400" />
             </div>
@@ -1199,7 +1279,8 @@ const GuiltDetermination = () => {
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">
                     98% наших клиентов
                   </span>{" "}
-                  полностью снимают вину. Все расходы несет Виновная сторона.
+                  полностью снимают вину. Вы платите только если мы выигрываем
+                  ваше дело.
                 </p>
               </div>
             </div>
@@ -1280,7 +1361,9 @@ const GuiltDetermination = () => {
                   className="inline-flex items-center gap-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl transition-all duration-300 group"
                 >
                   <div className="p-2 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-                    <MessageSquare className="h-6 w-6" />
+                    <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
+                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                    </svg>
                   </div>
                   <div className="text-left">
                     <div className="font-bold text-lg">Telegram</div>
@@ -1297,7 +1380,9 @@ const GuiltDetermination = () => {
                   className="inline-flex items-center gap-4 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-8 py-4 rounded-xl transition-all duration-300 group"
                 >
                   <div className="p-2 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-                    <MessageSquare className="h-6 w-6" />
+                    <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
                   </div>
                   <div className="text-left">
                     <div className="font-bold text-lg">MAX Messenger</div>
