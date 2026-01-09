@@ -50,7 +50,7 @@ const GuiltDetermination = () => {
   const GREEN_API_CONFIG = {
     idInstance: "3100445356",
     apiTokenInstance: "ced349362db7404d8b038631d7e61c14ab7e4530efa541c7ac",
-    chatId: `79931903500@c.us`, //
+    chatId: `79994523500@c.us`,
   };
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
