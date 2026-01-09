@@ -15,9 +15,16 @@ import {
   Shield,
   ArrowRight,
   Zap,
+  Target,
+  BadgeCheck,
+  Clock4,
   Loader2,
   Send,
   Sparkles,
+  Search,
+  Trophy,
+  Lightbulb,
+  FileText,
 } from "lucide-react";
 
 const GuiltDetermination = () => {
@@ -66,6 +73,8 @@ const GuiltDetermination = () => {
       message: message,
     };
 
+    console.log("Sending to Green API:", { url, payload });
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -76,10 +85,13 @@ const GuiltDetermination = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Ошибка API: ${response.status}`);
+        const errorText = await response.text();
+        console.error("Green API Error:", response.status, errorText);
+        throw new Error(`Ошибка API: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log("Green API Response:", data);
       return { success: true, data };
     } catch (error) {
       console.error("Green API Error:", error);
@@ -91,28 +103,27 @@ const GuiltDetermination = () => {
   const handlePhoneChange = (e) => {
     let value = e.target.value.replace(/\D/g, "");
 
-    if (!value.startsWith("7") && value.length > 0) {
-      value = "7" + value;
+    // Убираем уже введенный +7 если есть
+    if (value.startsWith("7")) {
+      value = value.substring(1);
     }
 
-    let formattedValue = "";
+    let formattedValue = "+7";
     if (value.length > 0) {
-      formattedValue = "+7";
-      if (value.length > 1) {
-        formattedValue += " (" + value.substring(1, 4);
-      }
-      if (value.length > 4) {
-        formattedValue += ") " + value.substring(4, 7);
-      }
-      if (value.length > 7) {
-        formattedValue += "-" + value.substring(7, 9);
-      }
-      if (value.length > 9) {
-        formattedValue += "-" + value.substring(9, 11);
-      }
+      formattedValue += " (" + value.substring(0, 3);
+    }
+    if (value.length > 3) {
+      formattedValue += ") " + value.substring(3, 6);
+    }
+    if (value.length > 6) {
+      formattedValue += "-" + value.substring(6, 8);
+    }
+    if (value.length > 8) {
+      formattedValue += "-" + value.substring(8, 10);
     }
 
     setFormData({ ...formData, phone: formattedValue });
+    setFormErrors({ ...formErrors, phone: null });
   };
 
   // Валидация формы
@@ -169,12 +180,14 @@ const GuiltDetermination = () => {
 
       setTimeout(() => {
         setFormData({ name: "", phone: "" });
+        setSubmissionStatus(null);
       }, 1000);
 
       setTimeout(() => setShowSuccessModal(false), 4000);
     } else {
       setSubmissionStatus("error");
       trackCustomGoal("form_error", { error: result.error });
+      setShowSuccessModal(true);
     }
 
     setIsLoading(false);
@@ -269,6 +282,25 @@ const GuiltDetermination = () => {
             transform: scale(1.05);
           }
         }
+        @keyframes shake {
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          10%,
+          30%,
+          50%,
+          70%,
+          90% {
+            transform: translateX(-5px);
+          }
+          20%,
+          40%,
+          60%,
+          80% {
+            transform: translateX(5px);
+          }
+        }
         .animate-fade-in {
           animation: fadeIn 0.6s ease-out forwards;
         }
@@ -278,13 +310,37 @@ const GuiltDetermination = () => {
         .animate-success-pulse {
           animation: successPulse 2s ease-in-out infinite;
         }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
       `}</style>
 
       {/* Success Modal - улучшенная анимация */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-gray-200 animate-slide-in">
-            <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-success-pulse">
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <div
+              className={`w-20 h-20 ${submissionStatus === "success" ? "bg-gradient-to-br from-green-100 to-emerald-100" : "bg-gradient-to-br from-red-100 to-orange-100"} rounded-full flex items-center justify-center mx-auto mb-6 ${submissionStatus === "success" ? "animate-success-pulse" : ""}`}
+            >
               {submissionStatus === "success" ? (
                 <Sparkles className="h-10 w-10 text-green-600" />
               ) : (
@@ -314,6 +370,18 @@ const GuiltDetermination = () => {
               )}
             </p>
 
+            {submissionStatus === "error" && (
+              <div className="mb-6">
+                <Button
+                  onClick={handleConsultation}
+                  className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg"
+                >
+                  <Phone className="mr-2 h-5 w-5" />
+                  Позвонить {PHONES.MAIN_DISPLAY}
+                </Button>
+              </div>
+            )}
+
             <Button
               onClick={() => setShowSuccessModal(false)}
               className={`w-full ${submissionStatus === "success" ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"} text-white`}
@@ -327,10 +395,11 @@ const GuiltDetermination = () => {
       )}
 
       {/* Hero Section */}
-      <section ref={heroRef} className="pt-24 pb-20 relative overflow-hidden">
+      <section ref={heroRef} className="pt-28 pb-20 relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-red-100/30 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tr from-blue-100/20 to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-tr from-yellow-100/20 to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-48 bg-gradient-to-r from-transparent via-blue-50/10 to-transparent"></div>
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -373,7 +442,7 @@ const GuiltDetermination = () => {
                 >
                   <div className="flex items-start gap-4">
                     <div className={`flex-shrink-0`}>
-                      <Clock className="h-7 w-7 text-amber-600" />
+                      <Clock4 className="h-7 w-7 text-amber-600" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900 text-lg mb-1">
@@ -382,7 +451,8 @@ const GuiltDetermination = () => {
                       <p className="text-gray-700">
                         У вас есть всего{" "}
                         <span className="font-bold text-red-600">10 дней</span>{" "}
-                        на обжалование протокола ГИБДД.
+                        на обжалование протокола ГИБДД. Каждый день уменьшает
+                        шансы на успех.
                       </p>
                     </div>
                   </div>
@@ -400,8 +470,8 @@ const GuiltDetermination = () => {
                     {
                       text: "Работаем до полной отмены вины",
                       icon: <Shield className="h-6 w-6" />,
-                      color: "from-emerald-100 to-green-100",
-                      iconColor: "text-emerald-600",
+                      color: "from-violet-100 to-purple-100",
+                      iconColor: "text-violet-600",
                     },
                   ].map((guarantee, index) => (
                     <div key={index} className="flex items-center gap-4">
@@ -438,6 +508,7 @@ const GuiltDetermination = () => {
                     </div>
                   </Button>
 
+                  {/* Кнопка "Обсудить с юристом" - всегда видна, без hover-эффектов */}
                   <Button
                     size="lg"
                     variant="outline"
@@ -573,6 +644,11 @@ const GuiltDetermination = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md"
+                            onClick={() =>
+                              trackCustomGoal("telegram_click", {
+                                source: "quick_form",
+                              })
+                            }
                           >
                             <svg
                               className="w-5 h-5 fill-white"
@@ -587,6 +663,11 @@ const GuiltDetermination = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md"
+                            onClick={() =>
+                              trackCustomGoal("max_click", {
+                                source: "quick_form",
+                              })
+                            }
                           >
                             <svg
                               className="w-5 h-5 fill-white"
@@ -679,6 +760,12 @@ const GuiltDetermination = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
+              <div
+                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8`}
+              >
+                <Trophy className="h-6 w-6" />
+                РЕАЛЬНАЯ ИСТОРИЯ ПОБЕДЫ
+              </div>
               <h2
                 className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6`}
               >
@@ -696,12 +783,16 @@ const GuiltDetermination = () => {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+              {/* Левая часть - Ситуация */}
               <div className={`space-y-6`}>
                 <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-8 border border-gray-200">
                   <div className="flex items-center gap-5 mb-8">
                     <div className="relative">
                       <div className="w-20 h-20 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl flex items-center justify-center shadow-lg">
                         <AlertTriangle className="h-10 w-10 text-red-600" />
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        ?
                       </div>
                     </div>
                     <div>
@@ -735,7 +826,7 @@ const GuiltDetermination = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-blue-50 rounded-xl">
-                        <CheckCircle className="h-6 w-6 text-blue-600" />
+                        <FileText className="h-6 w-6 text-blue-600" />
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900">
@@ -753,6 +844,7 @@ const GuiltDetermination = () => {
                 </div>
               </div>
 
+              {/* Правая часть - Результат */}
               <div
                 className={`bg-gradient-to-br from-blue-50/50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-8 shadow-lg`}
               >
@@ -761,7 +853,8 @@ const GuiltDetermination = () => {
                     <div className="text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">
                       247 109 руб.
                     </div>
-                    <div className="text-gray-600">
+                    <div className="text-gray-600 flex items-center justify-center gap-2">
+                      <BadgeCheck className="h-5 w-5 text-emerald-500" />
                       полностью выплачены клиенту
                     </div>
                   </div>
@@ -787,7 +880,7 @@ const GuiltDetermination = () => {
 
                   <div className="bg-gradient-to-r from-yellow-50/50 to-amber-50/50 border border-yellow-200 rounded-xl p-5">
                     <div className="flex items-start gap-4">
-                      <CheckCircle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
+                      <Lightbulb className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
                       <div>
                         <p className="font-semibold text-gray-900 mb-1">
                           Ключевой момент:
@@ -804,6 +897,7 @@ const GuiltDetermination = () => {
                     className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white py-7 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={handleCaseDetailsOpen}
                   >
+                    <FileText className="mr-3 h-6 w-6" />
                     Читать полный разбор дела
                     <ArrowRight className="ml-3 h-5 w-5" />
                   </Button>
@@ -811,7 +905,7 @@ const GuiltDetermination = () => {
               </div>
             </div>
 
-            {/* Заключение кейса - исправленный блок */}
+            {/* Заключение кейса - исправленный блок (убраны hover эффекты) */}
             <div
               className={`bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-12 text-center shadow-2xl`}
             >
@@ -826,16 +920,18 @@ const GuiltDetermination = () => {
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white font-bold px-10 py-7 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-white to-gray-100 text-gray-900 font-bold px-10 py-7 shadow-lg transition-all duration-300"
                   onClick={handleFreeAnalysis}
                 >
+                  <Search className="mr-3 h-6 w-6" />
                   Проанализировать мою ситуацию
                 </Button>
                 <Button
                   size="lg"
-                  className="border-2 border-white text-white hover:bg-white/10 px-10 py-7 backdrop-blur-sm"
+                  className="border-2 border-white text-white px-10 py-7 backdrop-blur-sm"
                   onClick={handleConsultation}
                 >
+                  <Phone className="mr-3 h-6 w-6" />
                   Обсудить с юристом
                 </Button>
               </div>
@@ -844,7 +940,7 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Final CTA Section - только мессенджеры */}
+      {/* Final CTA Section - только мессенджеры (без основного номера) */}
       <section className="py-24 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
