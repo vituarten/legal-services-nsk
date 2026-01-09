@@ -40,14 +40,17 @@ const GuiltDetermination = () => {
   const PHONES = {
     MAIN_DISPLAY: "+7 (383) 235-95-05",
     MAIN_TEL: "+73832359505",
-    MESSENGER_DISPLAY: "+7 999 452 35 00",
-    MESSENGER_RAW: "89994523500",
+    // Скрытый номер для Telegram
+    TELEGRAM_RAW: "79931903500", // Скрытый номер Telegram
+    // Номер для MAX/Green API
+    MAX_RAW: "79994523500", // Номер из Green API
+    MAX_DISPLAY: "+7 999 452 35 00", // Для отображения в интерфейсе
   };
 
   const GREEN_API_CONFIG = {
     idInstance: "3100445356",
     apiTokenInstance: "ced349362db7404d8b038631d7e61c14ab7e4530efa541c7ac",
-    chatId: `${PHONES.MESSENGER_RAW}@c.us`,
+    chatId: `${PHONES.MAX_RAW}@c.us`,
   };
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -99,14 +102,17 @@ const GuiltDetermination = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Функция отправки в Green API - упрощённая версия
+  // Исправленная функция отправки в Green API с правильным URL
   const sendToGreenAPI = async (message) => {
-    const url = `https://api.green-api.com/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
+    // Правильный URL для Green API v3
+    const url = `https://3100.api.green-api.com/v3/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
 
     const payload = {
       chatId: GREEN_API_CONFIG.chatId,
       message: message,
     };
+
+    console.log("Отправка в Green API:", { url, payload });
 
     try {
       const response = await fetch(url, {
@@ -117,8 +123,12 @@ const GuiltDetermination = () => {
         body: JSON.stringify(payload),
       });
 
+      console.log("Ответ Green API (статус):", response.status);
+
       if (!response.ok) {
-        throw new Error(`Ошибка API: ${response.status}`);
+        const errorText = await response.text();
+        console.error("Ошибка Green API:", errorText);
+        throw new Error(`Ошибка API: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
@@ -126,7 +136,10 @@ const GuiltDetermination = () => {
       return { success: true, data };
     } catch (error) {
       console.error("Green API Error:", error);
-      return { success: false, error: error.message };
+      return {
+        success: false,
+        error: error.message || "Не удалось отправить сообщение",
+      };
     }
   };
 
@@ -142,18 +155,17 @@ const GuiltDetermination = () => {
 
     if (!formData.phone.trim()) {
       errors.phone = "Введите ваш телефон";
-    } else if (
-      !/^[\d\s\-\+\(\)]{10,20}$/.test(
-        formData.phone.replace(/[\s\-\+\(\)]/g, ""),
-      )
-    ) {
-      errors.phone = "Введите корректный номер телефона";
+    } else {
+      const phoneDigits = formData.phone.replace(/[\s\-\+\(\)]/g, "");
+      if (!/^[78]\d{10}$/.test(phoneDigits)) {
+        errors.phone = "Введите корректный номер телефона (11 цифр)";
+      }
     }
 
     return errors;
   };
 
-  // Обработка отправки формы - маркетинговый подход
+  // Обработка отправки формы
   const handleFormSubmit = async (e) => {
     if (e) e.preventDefault();
 
@@ -176,17 +188,16 @@ const GuiltDetermination = () => {
     setFormErrors({});
     setSubmissionStatus(null);
 
-    // Форматируем сообщение для MAX с маркетинговым акцентом
+    // Форматируем сообщение для MAX
     const maxMessage = `
-🚨 СРОЧНАЯ ЗАЯВКА С ЛЕНДИНГА
+🚨 НОВАЯ ЗАЯВКА С САЙТА
 ——————————————————
 👤 Имя: ${formData.name}
 📞 Телефон: ${formData.phone}
 ⏰ Время: ${new Date().toLocaleString("ru-RU")}
 🌐 Источник: «Установление вины в ДТП»
-🔗 Акция: Бесплатный анализ за 24 часа
 ——————————————————
-✅ Горячий лид — перезвонить в первые 5 минут!
+✅ Срочная заявка — перезвонить как можно скорее!
     `.trim();
 
     // Отправляем в Green API
@@ -224,7 +235,10 @@ const GuiltDetermination = () => {
         error: result.error,
         form_type: "quick_lead",
       });
-      setTimeout(() => setSubmissionStatus(null), 3000);
+
+      // Показываем модальное окно с ошибкой
+      setShowSuccessModal(true);
+      setTimeout(() => setShowSuccessModal(false), 5000);
     }
 
     setIsLoading(false);
@@ -239,6 +253,7 @@ const GuiltDetermination = () => {
     });
   };
 
+  // Функция для звонка - НИКОГДА не скрывается
   const handleConsultation = () => {
     trackCustomGoal("guilt_determination_consultation", {
       source: "page",
@@ -254,13 +269,9 @@ const GuiltDetermination = () => {
       source: "case_study_section",
     });
 
-    // На сервисе poehali.dev все роуты должны быть предварительно определены
-    // Если роут существует в вашем приложении, используем navigate
-    // Если нет, открываем GitHub страницу
     try {
       navigate("/case-details/delo-2-3052-2025");
     } catch (error) {
-      // Если роута нет, открываем GitHub
       window.open(
         "https://github.com/vituarten/legal-services-nsk/blob/main/app/case-details/delo-2-3052-2025/page.tsx",
         "_blank",
@@ -430,7 +441,7 @@ const GuiltDetermination = () => {
         }
       `}</style>
 
-      {/* Плавающая кнопка CTA */}
+      {/* Плавающая кнопка CTA - только "Бесплатный анализ" */}
       {showFloatingCTA && (
         <div className="fixed bottom-6 right-6 z-40 animate-slide-up">
           <Button
@@ -448,40 +459,77 @@ const GuiltDetermination = () => {
         </div>
       )}
 
-      {/* Success Modal - упрощённый */}
+      {/* Success Modal */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-gray-200">
-            <div
-              className={`w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 ${float}`}
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
-              <CheckCircle className="h-10 w-10 text-green-600" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <div
+              className={`w-20 h-20 ${submissionStatus === "success" ? "bg-gradient-to-br from-green-100 to-emerald-100" : "bg-gradient-to-br from-red-100 to-orange-100"} rounded-full flex items-center justify-center mx-auto mb-6 ${float}`}
+            >
+              {submissionStatus === "success" ? (
+                <CheckCircle className="h-10 w-10 text-green-600" />
+              ) : (
+                <AlertCircle className="h-10 w-10 text-red-600" />
+              )}
             </div>
 
-            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-              Успешно отправлено!
+            <h3
+              className={`text-2xl font-bold mb-3 ${submissionStatus === "success" ? "bg-gradient-to-r from-green-600 to-emerald-600" : "bg-gradient-to-r from-red-600 to-orange-600"} bg-clip-text text-transparent`}
+            >
+              {submissionStatus === "success"
+                ? "Заявка отправлена!"
+                : "Ошибка отправки"}
             </h3>
 
             <p className="text-gray-600 mb-6">
-              <span className="font-semibold text-gray-900">
-                {formData.name}
-              </span>
-              , мы свяжемся с вами в течение{" "}
-              <span className="text-red-600 font-bold">5 минут</span>
+              {submissionStatus === "success" ? (
+                <>
+                  <span className="font-semibold text-gray-900">
+                    {formData.name}
+                  </span>
+                  , мы свяжемся с вами в ближайшее время
+                </>
+              ) : (
+                "Пожалуйста, позвоните нам напрямую"
+              )}
             </p>
 
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-200">
-              <div className="flex items-center justify-center gap-2 text-sm text-green-700">
-                <Clock className="h-4 w-4" />
-                <span>Получите бесплатный анализ вашего дела за 24 часа</span>
+            {submissionStatus === "error" && (
+              <div className="mb-6">
+                <Button
+                  onClick={handleConsultation}
+                  className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg"
+                >
+                  <Phone className="mr-2 h-5 w-5" />
+                  Позвонить {PHONES.MAIN_DISPLAY}
+                </Button>
               </div>
-            </div>
+            )}
 
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
+              className={`w-full ${submissionStatus === "success" ? "bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800" : "bg-gradient-to-r from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500"} text-white shadow-lg`}
             >
-              Понятно
+              Закрыть
             </Button>
           </div>
         </div>
@@ -535,42 +583,40 @@ const GuiltDetermination = () => {
                   полностью снимают вину через суд.
                 </p>
 
-                {/* Ограниченное предложение */}
+                {/* Важное уведомление */}
                 <div
-                  className={`bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 p-5 mb-8 rounded-xl shadow-lg ${pulse}`}
+                  className={`bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 p-5 mb-8 rounded-r-xl shadow-sm ${fadeInUp}`}
+                  style={{ animationDelay: "0.3s" }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
-                        <Clock4 className="h-6 w-6 text-white" />
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <div className={`flex-shrink-0 ${pulse}`}>
+                      <Clock4 className="h-7 w-7 text-amber-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 text-lg mb-1">
-                        🔥 Акция: Бесплатный анализ за 24 часа
+                      <p className="font-semibold text-gray-900 text-lg mb-1">
+                        Внимание: сроки истекают!
                       </p>
                       <p className="text-gray-700">
-                        Оставьте заявку до конца дня и получите полный разбор
-                        вашей ситуации{" "}
-                        <span className="font-bold text-red-600">
-                          бесплатно
-                        </span>
+                        У вас есть всего{" "}
+                        <span className="font-bold text-red-600">10 дней</span>{" "}
+                        на обжалование протокола ГИБДД. Каждый день уменьшает
+                        шансы на успех.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Гарантии */}
+                {/* Гарантии - БЕЗ АКЦИИ */}
                 <div
                   className={`space-y-4 mb-10 ${fadeInUp}`}
                   style={{ animationDelay: "0.4s" }}
                 >
                   {[
                     {
-                      text: "Бесплатный анализ за 24 часа",
-                      icon: <Zap className="h-6 w-6" />,
-                      color: "from-yellow-100 to-amber-100",
-                      iconColor: "text-yellow-600",
+                      text: "Бесплатный анализ ваших документов",
+                      icon: <CheckCircle className="h-6 w-6" />,
+                      color: "from-emerald-100 to-green-100",
+                      iconColor: "text-emerald-600",
                     },
                     {
                       text: "Фиксируем стоимость в договоре",
@@ -579,10 +625,10 @@ const GuiltDetermination = () => {
                       iconColor: "text-blue-600",
                     },
                     {
-                      text: "Оплата только при победе",
-                      icon: <ThumbsUp className="h-6 w-6" />,
-                      color: "from-emerald-100 to-green-100",
-                      iconColor: "text-emerald-600",
+                      text: "Работаем до полной отмены вины",
+                      icon: <Shield className="h-6 w-6" />,
+                      color: "from-violet-100 to-purple-100",
+                      iconColor: "text-violet-600",
                     },
                   ].map((guarantee, index) => (
                     <div key={index} className="flex items-center gap-4 group">
@@ -602,7 +648,7 @@ const GuiltDetermination = () => {
                   ))}
                 </div>
 
-                {/* Кнопки CTA */}
+                {/* Кнопки CTA - ВСЕГДА ВИДНА КНОПКА "ОБСУДИТЬ С ЮРИСТОМ" */}
                 <div
                   className={`flex flex-col sm:flex-row gap-4 mb-12 ${fadeInUp}`}
                   style={{ animationDelay: "0.5s" }}
@@ -621,12 +667,13 @@ const GuiltDetermination = () => {
                           Бесплатный анализ
                         </div>
                         <div className="text-sm font-normal opacity-90">
-                          за 24 часа
+                          моих документов
                         </div>
                       </div>
                     </div>
                   </Button>
 
+                  {/* Кнопка "Обсудить с юристом" - НИКОГДА НЕ СКРЫВАЕТСЯ */}
                   <Button
                     size="lg"
                     variant="outline"
@@ -640,7 +687,7 @@ const GuiltDetermination = () => {
                       <div className="text-left">
                         <div className="font-bold">{PHONES.MAIN_DISPLAY}</div>
                         <div className="text-sm font-normal text-gray-500">
-                          Срочный звонок
+                          Обсудить с юристом
                         </div>
                       </div>
                     </div>
@@ -686,10 +733,10 @@ const GuiltDetermination = () => {
                   <div className="flex items-center gap-4 mb-8">
                     <div className="relative">
                       <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl flex items-center justify-center shadow-lg">
-                        <Zap className="h-7 w-7 text-blue-600" />
+                        <Send className="h-7 w-7 text-blue-600" />
                       </div>
                       <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
-                        <Clock className="h-3 w-3 text-white" />
+                        <Zap className="h-3 w-3 text-white" />
                       </div>
                     </div>
                     <div>
@@ -698,7 +745,7 @@ const GuiltDetermination = () => {
                       </h3>
                       <p className="text-gray-600 flex items-center gap-2">
                         <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        Заберём ваши документы и сделаем анализ за 24 часа
+                        Отправляем заявку прямо в MAX-мессенджер
                       </p>
                     </div>
                   </div>
@@ -796,16 +843,6 @@ const GuiltDetermination = () => {
                         )}
                       </div>
 
-                      {/* Счётчик времени */}
-                      <div className="text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-50 to-orange-50 rounded-full">
-                          <Clock className="h-4 w-4 text-red-600" />
-                          <span className="text-sm font-medium text-gray-700">
-                            Бесплатный анализ за 24 часа
-                          </span>
-                        </div>
-                      </div>
-
                       {/* Кнопка отправки */}
                       <Button
                         type="submit"
@@ -815,13 +852,13 @@ const GuiltDetermination = () => {
                         {isLoading ? (
                           <>
                             <Loader2 className="h-6 w-6 mr-3 animate-spin" />
-                            Отправляем...
+                            Отправляем в MAX...
                           </>
                         ) : (
                           <>
                             <span className="relative z-10 flex items-center justify-center gap-3">
-                              <Zap className="h-6 w-6 group-hover:scale-110 transition-transform" />
-                              Получить бесплатный анализ
+                              <Send className="h-6 w-6 group-hover:scale-110 transition-transform" />
+                              Отправить заявку в MAX
                             </span>
                             <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           </>
@@ -845,8 +882,9 @@ const GuiltDetermination = () => {
                           Или напишите прямо сейчас:
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                          {/* Telegram - без номера */}
                           <a
-                            href={`https://t.me/${PHONES.MESSENGER_RAW.slice(1)}`}
+                            href={`https://t.me/${PHONES.TELEGRAM_RAW.slice(1)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
@@ -863,11 +901,12 @@ const GuiltDetermination = () => {
                             >
                               <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                             </svg>
-                            <span>Telegram</span>
+                            <span>Написать в Telegram</span>
                             <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                           </a>
+                          {/* MAX - с правильной ссылкой */}
                           <a
-                            href="https://max.ru"
+                            href="https://max.ru/u/f9LHodD0cOJFmV1rIMi6ZjEOt-EbDAs8qqafnjND6gCk6NfTMMBgw0WF_j0"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-6 py-3 rounded-xl transition-all duration-300 shadow hover:shadow-md group"
@@ -884,7 +923,7 @@ const GuiltDetermination = () => {
                             >
                               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                             </svg>
-                            <span>MAX Messenger</span>
+                            <span>Написать в MAX</span>
                             <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                           </a>
                         </div>
@@ -900,17 +939,13 @@ const GuiltDetermination = () => {
                     <div className="text-xs text-gray-600">Успешных дел</div>
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
-                    <div className="text-2xl font-bold text-blue-600">
-                      5 мин
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      Среднее время ответа
-                    </div>
+                    <div className="text-2xl font-bold text-blue-600">15+</div>
+                    <div className="text-xs text-gray-600">Лет опыта</div>
                   </div>
                   <div className="bg-white p-4 rounded-xl border border-gray-200 text-center shadow-sm">
-                    <div className="text-2xl font-bold text-blue-600">24ч</div>
+                    <div className="text-2xl font-bold text-blue-600">247+</div>
                     <div className="text-xs text-gray-600">
-                      Анализ документов
+                      Довольных клиентов
                     </div>
                   </div>
                 </div>
@@ -1190,6 +1225,7 @@ const GuiltDetermination = () => {
                   <Search className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
                   Проанализировать мою ситуацию
                 </Button>
+                {/* Кнопка "Обсудить с юристом" - ВСЕГДА ВИДНА */}
                 <Button
                   size="lg"
                   variant="outline"
@@ -1279,8 +1315,8 @@ const GuiltDetermination = () => {
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-300">
                     98% наших клиентов
                   </span>{" "}
-                  полностью снимают вину. Виновник несет все Расходы на наши
-                  услуги Юриста.
+                  полностью снимают вину. Вы платите только если мы выигрываем
+                  ваше дело.
                 </p>
               </div>
             </div>
@@ -1354,8 +1390,9 @@ const GuiltDetermination = () => {
                   </div>
                 </a>
 
+                {/* Telegram - без номера телефона */}
                 <a
-                  href={`https://t.me/${PHONES.MESSENGER_RAW.slice(1)}`}
+                  href={`https://t.me/${PHONES.TELEGRAM_RAW.slice(1)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl transition-all duration-300 group"
@@ -1368,13 +1405,14 @@ const GuiltDetermination = () => {
                   <div className="text-left">
                     <div className="font-bold text-lg">Telegram</div>
                     <div className="text-sm opacity-90">
-                      {PHONES.MESSENGER_DISPLAY}
+                      Написать в Telegram
                     </div>
                   </div>
                 </a>
 
+                {/* MAX - с правильной ссылкой и без номера */}
                 <a
-                  href="https://max.ru"
+                  href="https://max.ru/u/f9LHodD0cOJFmV1rIMi6ZjEOt-EbDAs8qqafnjND6gCk6NfTMMBgw0WF_j0"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-4 bg-gradient-to-r from-[#2B6CB0] to-[#2C5282] hover:from-[#2C5282] hover:to-[#2B6CB0] text-white px-8 py-4 rounded-xl transition-all duration-300 group"
@@ -1386,9 +1424,7 @@ const GuiltDetermination = () => {
                   </div>
                   <div className="text-left">
                     <div className="font-bold text-lg">MAX Messenger</div>
-                    <div className="text-sm opacity-90">
-                      {PHONES.MESSENGER_DISPLAY}
-                    </div>
+                    <div className="text-sm opacity-90">Написать в MAX</div>
                   </div>
                 </a>
               </div>
