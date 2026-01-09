@@ -19,6 +19,39 @@ const ServicesMain = () => {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
+  const problemTypes = [
+    {
+      icon: "AlertCircle",
+      title: "Споры и конфликты",
+      description: "Решаем конфликтные ситуации в правовом поле",
+    },
+    {
+      icon: "FileText",
+      title: "Документы и оформление",
+      description: "Помогаем с подготовкой и оформлением документов",
+    },
+    {
+      icon: "Scale",
+      title: "Судебные вопросы",
+      description: "Сопровождаем в судебных процессах",
+    },
+    {
+      icon: "Shield",
+      title: "Защита прав",
+      description: "Защищаем ваши законные права и интересы",
+    },
+    {
+      icon: "DollarSign",
+      title: "Финансовые вопросы",
+      description: "Помогаем в решении денежных вопросов и споров",
+    },
+    {
+      icon: "Home",
+      title: "Имущественные дела",
+      description: "Решаем вопросы с недвижимостью и имуществом",
+    },
+  ];
+
   return (
     <section
       id="services"
@@ -30,20 +63,65 @@ const ServicesMain = () => {
             Наши услуги
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Полный спектр юридических услуг. Подробную информацию обо всех
-            направлениях работы вы можете найти в разделе "Услуги".
+            Комплексная юридическая поддержка — от консультации до победы в суде
           </p>
 
-          <div className="pt-4">
+          <div className="pt-6">
             <Link
               to="/services"
               className="inline-flex items-center justify-center bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 active:scale-95"
             >
-              <span className="mr-2 sm:mr-3">Перейти к услугам</span>
+              <span className="mr-2 sm:mr-3">Смотреть все услуги</span>
               <Icon
                 name="ArrowRight"
                 className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-2 transition-transform"
               />
+            </Link>
+          </div>
+        </div>
+
+        {/* С какими вопросами помогаем */}
+        <div className="mb-12 sm:mb-16">
+          <div className="text-center mb-8 sm:mb-10">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+              С какими вопросами помогаем
+            </h3>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
+              Помогаем решать различные юридические вопросы
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+            {problemTypes.map((item, index) => (
+              <Card
+                key={index}
+                className="h-full hover:shadow-xl sm:hover:shadow-2xl transition-all duration-300 border sm:border-2 hover:border-primary hover:-translate-y-1 cursor-pointer group"
+              >
+                <CardContent className="p-4 sm:p-5 md:p-6 lg:p-8 space-y-3 sm:space-y-4">
+                  <div className="inline-block p-3 sm:p-3.5 md:p-4 bg-primary/10 rounded-lg sm:rounded-xl group-hover:bg-primary group-hover:scale-110 transition-all">
+                    <Icon
+                      name={item.icon as any}
+                      className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary group-hover:text-white"
+                    />
+                  </div>
+                  <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed text-xs sm:text-sm md:text-base">
+                    {item.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/services"
+              className="inline-flex items-center text-primary font-semibold hover:text-primary/80 transition-colors"
+            >
+              <span className="mr-2">Смотреть подробный список услуг</span>
+              <Icon name="ArrowRight" className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -127,18 +205,6 @@ const ServicesMain = () => {
                 </p>
               </CardContent>
             </Card>
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-sm text-muted-foreground">
-              Хотите узнать больше о наших услугах?
-              <Link
-                to="/services"
-                className="text-primary font-semibold ml-2 hover:underline"
-              >
-                Смотреть полный список →
-              </Link>
-            </p>
           </div>
         </div>
       </div>
