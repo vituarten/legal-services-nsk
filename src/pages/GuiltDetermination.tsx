@@ -26,6 +26,16 @@ import {
   Lightbulb,
   FileText,
   X,
+  FileCheck,
+  Scale,
+  TrendingUp,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  BookOpen,
+  ShieldCheck,
+  Target as TargetIcon,
+  BarChart,
 } from "lucide-react";
 
 const GuiltDetermination = () => {
@@ -47,6 +57,7 @@ const GuiltDetermination = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "" });
   const [formErrors, setFormErrors] = useState({});
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   const heroRef = useRef(null);
   const navigate = useNavigate();
@@ -271,6 +282,130 @@ const GuiltDetermination = () => {
       emotion: "Тревога и давление",
     },
   ];
+
+  // FAQ данные
+  const faqItems = [
+    {
+      question: "Если уже признали виновным — можно обжаловать?",
+      answer:
+        "Да, обязательно! В 85% случаев решение ГИБДД можно оспорить в суде. Даже если вы уже подписали протокол — это не окончательный вердикт. Мы анализируем все нарушения процедуры и доказательства.",
+      icon: <Scale className="h-5 w-5" />,
+      important: true,
+    },
+    {
+      question: "Если прошло 10 дней — всё потеряно?",
+      answer:
+        "Нет! У вас есть 10 дней на обжалование постановления, но если срок пропущен — мы подаем ходатайство о восстановлении срока. В 95% случаев суд идет навстречу, если причина уважительная.",
+      icon: <Clock className="h-5 w-5" />,
+      important: true,
+    },
+    {
+      question: "Какие шансы именно у меня?",
+      answer:
+        "После бесплатного анализа вашего дела мы даем четкий прогноз. В среднем по нашим делам: 78% — полное снятие вины, 15% — снижение вины (с 100% до 20-50%), 7% — сохранение статуса-кво. Точный прогноз — после изучения документов.",
+      icon: <TrendingUp className="h-5 w-5" />,
+      important: true,
+    },
+    {
+      question: "Сколько длится суд?",
+      answer:
+        "Обычно 2-3 месяца. Первое заседание через 3-4 недели после подачи иска. Мы ускоряем процесс за счет подготовки полного пакета документов сразу.",
+      icon: <Clock4 className="h-5 w-5" />,
+      important: true,
+    },
+    {
+      question: "Что если проиграем?",
+      answer:
+        "Мы работаем по договору с гарантией результата. Если не добиваемся положительного решения — вы платите только расходы на экспертизы (около 5000-15000 руб). Наша гонорарная часть — только при успехе.",
+      icon: <ShieldCheck className="h-5 w-5" />,
+      important: true,
+    },
+    {
+      question: "Сколько это стоит?",
+      answer:
+        "Стоимость зависит от сложности: от 25 000 руб за обжалование протокола до 45 000 руб за полный судебный процесс. Точную цену фиксируем в договоре после анализа документов.",
+      icon: <FileCheck className="h-5 w-5" />,
+    },
+    {
+      question: "Вы работаете только в Новосибирске?",
+      answer:
+        "Да, мы специализируемся на судах Новосибирска и области. Это позволяет нам глубоко знать местную судебную практику и быстро взаимодействовать с судами.",
+      icon: <TargetIcon className="h-5 w-5" />,
+    },
+    {
+      question: "Нужно ли мне присутствовать в суде?",
+      answer:
+        "В 70% случаев ваше присутствие не требуется. Мы представляем ваши интересы самостоятельно. Вызываем вас только если судья настаивает или для дачи пояснений.",
+      icon: <Users className="h-5 w-5" />,
+    },
+  ];
+
+  // Как мы работаем
+  const workflowSteps = [
+    {
+      step: "1",
+      title: "Бесплатный разбор дела",
+      description:
+        "Изучаем ваши документы (протокол, схему ДТП, фото/видео). Даем четкий прогноз и план действий.",
+      duration: "30-60 минут",
+      icon: <Search className="h-8 w-8" />,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      step: "2",
+      title: "Доказательства и экспертизы",
+      description:
+        "Собираем дополнительные доказательства, при необходимости — автотехническую экспертизу, запросы в ГИБДД, свидетелей.",
+      duration: "3-10 дней",
+      icon: <FileText className="h-8 w-8" />,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      step: "3",
+      title: "Суд и результат",
+      description:
+        "Подаем иск, представляем ваши интересы в суде, добиваемся решения. Полностью сопровождаем до исполнения решения.",
+      duration: "2-3 месяца",
+      icon: <Scale className="h-8 w-8" />,
+      color: "from-green-500 to-emerald-500",
+    },
+  ];
+
+  // Юридические гарантии
+  const legalGuarantees = [
+    {
+      title: "Фиксированная цена в договоре",
+      description:
+        "Стоимость услуг фиксируется в договоре и не меняется в процессе работы. Никаких скрытых платежей.",
+      icon: <FileCheck className="h-10 w-10" />,
+      color: "bg-blue-50 border-blue-200",
+    },
+    {
+      title: "Работа до результата",
+      description:
+        "Мы ведем дело до окончательного решения суда. Если нужна апелляция — продолжаем без доплат (кроме госпошлины).",
+      icon: <Target className="h-10 w-10" />,
+      color: "bg-green-50 border-green-200",
+    },
+    {
+      title: "Еженедельная отчетность",
+      description:
+        "Вы получаете отчет о проделанной работе каждую неделю. Все документы доступны в личном кабинете.",
+      icon: <BarChart className="h-10 w-10" />,
+      color: "bg-purple-50 border-purple-200",
+    },
+    {
+      title: "Деньги под защитой",
+      description:
+        "Ваши деньги хранятся на расчетном счете до выполнения этапов работ. Возврат при расторжении договора.",
+      icon: <ShieldCheck className="h-10 w-10" />,
+      color: "bg-amber-50 border-amber-200",
+    },
+  ];
+
+  const toggleFaq = (index: number) => {
+    setExpandedFaq(expandedFaq === index ? null : index);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-hidden">
@@ -824,6 +959,339 @@ const GuiltDetermination = () => {
                 <Shield className="mr-3 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
                 Защитить мои права сейчас
               </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section - Ответы на страхи */}
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <div
+                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
+              >
+                <HelpCircle className="h-6 w-6" />
+                ОТВЕТЫ НА ГЛАВНЫЕ ВОПРОСЫ
+              </div>
+              <h2
+                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
+              >
+                Развеиваем ваши{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
+                  главные страхи
+                </span>
+              </h2>
+              <p
+                className={`text-xl text-gray-600 animate-fade-in-up`}
+                style={{ animationDelay: "0.1s" }}
+              >
+                То, что волнует каждого водителя в вашей ситуации
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {faqItems.map((item, index) => (
+                <div
+                  key={index}
+                  className={`bg-white border ${item.important ? "border-red-200" : "border-gray-200"} rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up`}
+                  style={{ animationDelay: `${0.2 + index * 0.05}s` }}
+                >
+                  <button
+                    className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50/50 transition-colors"
+                    onClick={() => toggleFaq(index)}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div
+                        className={`flex-shrink-0 mt-1 ${item.important ? "text-red-600" : "text-blue-600"}`}
+                      >
+                        {item.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-gray-900">
+                          {item.question}
+                          {item.important && (
+                            <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              Важно
+                            </span>
+                          )}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0 ml-4">
+                      {expandedFaq === index ? (
+                        <ChevronUp className="h-5 w-5 text-gray-500" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-gray-500" />
+                      )}
+                    </div>
+                  </button>
+
+                  {expandedFaq === index && (
+                    <div className="px-6 pb-6 animate-fade-in">
+                      <div className="pl-10 border-l-2 border-blue-200">
+                        <p className="text-gray-700 leading-relaxed">
+                          {item.answer}
+                        </p>
+                        {item.important && index === 0 && (
+                          <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                            <p className="text-sm text-gray-700">
+                              <span className="font-semibold">Важно:</span> Из
+                              127 дел за 2024 год мы обжаловали 98% протоколов,
+                              и в 85% случаев суд встал на сторону водителя.
+                            </p>
+                          </div>
+                        )}
+                        {item.important && index === 2 && (
+                          <div className="mt-4 flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
+                            <BarChart className="h-5 w-5 text-blue-600" />
+                            <p className="text-sm text-gray-700">
+                              <span className="font-semibold">
+                                Наша статистика:
+                              </span>{" "}
+                              Полное снятие вины — 78%, Снижение степени вины —
+                              15%, Сохранение статуса — 7%.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-16 text-center animate-fade-in">
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-2xl p-8 max-w-2xl mx-auto">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Остались вопросы?
+                </h3>
+                <p className="text-gray-700 mb-6">
+                  Получите персональный ответ от нашего юриста в течение 15
+                  минут
+                </p>
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  onClick={handleFreeAnalysis}
+                >
+                  <MessageCircle className="mr-3 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                  Задать вопрос юристу
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Как мы работаем */}
+      <section className="py-24 bg-gradient-to-b from-white to-blue-50/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <div
+                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
+              >
+                <BookOpen className="h-6 w-6" />
+                ПОНЯТНЫЙ ПУТЬ К РЕЗУЛЬТАТУ
+              </div>
+              <h2
+                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
+              >
+                Как мы{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
+                  работаем
+                </span>
+              </h2>
+              <p
+                className={`text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up`}
+                style={{ animationDelay: "0.1s" }}
+              >
+                Четкий план действий от первой консультации до решения суда
+              </p>
+            </div>
+
+            <div className="relative">
+              {/* Декоративная линия для десктопа */}
+              <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-cyan-200 to-blue-200 transform -translate-x-1/2"></div>
+
+              <div className="space-y-12 lg:space-y-0">
+                {workflowSteps.map((step, index) => (
+                  <div
+                    key={index}
+                    className={`relative animate-fade-in-up`}
+                    style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+                  >
+                    <div
+                      className={`lg:flex items-center ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"}`}
+                    >
+                      {/* Контент */}
+                      <div
+                        className={`lg:w-1/2 ${index % 2 === 0 ? "lg:pr-12" : "lg:pl-12"}`}
+                      >
+                        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                          <div className="flex items-start gap-6 mb-6">
+                            <div
+                              className={`flex-shrink-0 w-16 h-16 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center shadow-lg`}
+                            >
+                              <div className="text-white">{step.icon}</div>
+                            </div>
+                            <div>
+                              <div className="inline-flex items-center px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-700 mb-2">
+                                <Clock className="h-3 w-3 mr-2" />
+                                {step.duration}
+                              </div>
+                              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                                {step.title}
+                              </h3>
+                            </div>
+                          </div>
+                          <p className="text-gray-700 leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Шаг с номером */}
+                      <div className="absolute left-1/2 transform -translate-x-1/2 lg:translate-x-0 z-10 mt-8 lg:mt-0">
+                        <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-white to-gray-50 border-4 border-white rounded-full shadow-xl">
+                          <div
+                            className={`text-2xl font-bold bg-gradient-to-br ${step.color} bg-clip-text text-transparent`}
+                          >
+                            {step.step}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Пустая колонка для выравнивания */}
+                      <div className="lg:w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-16 text-center animate-fade-in">
+              <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-12 shadow-2xl">
+                <h3 className="text-2xl md:text-3xl font-bold mb-6">
+                  Начните с первого шага — это бесплатно
+                </h3>
+                <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+                  Отправьте документы на анализ. Через 30-60 минут вы получите
+                  четкий план действий и точную стоимость услуг.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                    onClick={handleFreeAnalysis}
+                  >
+                    <FileText className="mr-3 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                    Отправить документы на анализ
+                  </Button>
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-gray-950 text-white border-2 border-white/50 hover:border-white px-10 py-6 backdrop-blur-sm group"
+                    onClick={handleConsultation}
+                  >
+                    <Phone className="mr-3 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                    {PHONES.MAIN_DISPLAY}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Юридические гарантии */}
+      <section className="py-24 bg-gradient-to-b from-blue-50/30 to-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <div
+                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
+              >
+                <ShieldCheck className="h-6 w-6" />
+                ЮРИДИЧЕСКИЕ ГАРАНТИИ
+              </div>
+              <h2
+                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
+              >
+                Ваша{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
+                  защита по договору
+                </span>
+              </h2>
+              <p
+                className={`text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up`}
+                style={{ animationDelay: "0.1s" }}
+              >
+                Формальные гарантии, которые дают вам уверенность и защищают
+                ваши права
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {legalGuarantees.map((guarantee, index) => (
+                <div
+                  key={index}
+                  className={`border-2 ${guarantee.color} rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer animate-fade-in-up`}
+                  style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div
+                      className={`p-4 rounded-2xl mb-6 transition-transform duration-300 hover:scale-110 ${guarantee.color.replace("bg-", "bg-").replace("border-", "bg-")}`}
+                    >
+                      <div
+                        className={`${guarantee.color.includes("blue") ? "text-blue-600" : guarantee.color.includes("green") ? "text-green-600" : guarantee.color.includes("purple") ? "text-purple-600" : "text-amber-600"}`}
+                      >
+                        {guarantee.icon}
+                      </div>
+                    </div>
+                    <h3 className="font-bold text-xl mb-4 text-gray-900">
+                      {guarantee.title}
+                    </h3>
+                    <p className="text-gray-600">{guarantee.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-10 text-center shadow-lg animate-fade-in">
+              <div className="max-w-3xl mx-auto">
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                  Договор — ваша главная защита
+                </h3>
+                <p className="text-gray-700 mb-8 text-lg">
+                  Каждый пункт договора согласовывается с вами. Вы платите
+                  только за результат.
+                  <span className="font-semibold text-gray-900">
+                    {" "}
+                    Все наши обязательства зафиксированы на бумаге.
+                  </span>
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                    onClick={handleFreeAnalysis}
+                  >
+                    <FileCheck className="mr-3 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                    Получить образец договора
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-green-600 text-green-600 hover:bg-green-50 px-10 py-6 group"
+                    onClick={() => window.open("/docs/license.pdf", "_blank")}
+                  >
+                    <FileText className="mr-3 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                    Наши лицензии
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
