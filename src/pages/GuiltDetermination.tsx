@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Phone,
-  MessageSquare,
   CheckCircle,
   AlertTriangle,
   Users,
@@ -20,7 +19,6 @@ import {
   Clock4,
   Loader2,
   Send,
-  Sparkles,
   Search,
   Trophy,
   Lightbulb,
@@ -34,8 +32,13 @@ import {
   ChevronUp,
   BookOpen,
   ShieldCheck,
-  Target as TargetIcon,
   BarChart,
+  Gavel,
+  Award,
+  Percent,
+  Calendar,
+  Mail,
+  MapPin,
 } from "lucide-react";
 
 const GuiltDetermination = () => {
@@ -62,62 +65,76 @@ const GuiltDetermination = () => {
   const heroRef = useRef(null);
   const navigate = useNavigate();
 
-  // Функция для показа уведомлений
-  const showToast = (type, message) => {
+  // Переменные для повторяющегося текста
+  const COPY = {
+    hero: {
+      title: "Вас несправедливо обвинили в ДТП? Или виновник не признает вину?",
+      subtitle:
+        "Защитим ваши права в суде. Докажем вашу невиновность или установим вину другого участника ДТП. Бесплатный разбор дела.",
+      stat: "98% наших клиентов",
+      urgency:
+        "10 дней на обжалование протокола ГИБДД. Каждый день уменьшает шансы на успех.",
+    },
+    pains: {
+      sectionTitle: "Знакомые чувства? Вы не одиноки",
+      sectionSubtitle:
+        "Каждый день к нам обращаются водители, которые оказались в такой же ситуации",
+    },
+    caseStudy: {
+      amount: "247 109 руб.",
+      victory: "РЕАЛЬНАЯ ИСТОРИЯ ПОБЕДЫ",
+    },
+    guarantees: {
+      fixedPrice: "Фиксируем стоимость в договоре",
+      fullSupport: "Работаем до полного результата",
+    },
+    cta: "Получить консультацию",
+  };
+
+  // Toast notifications
+  const showToast = (type: "success" | "error", message: string) => {
     setToastMessage(message);
-    if (type === "success") {
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 5000);
-    } else {
-      setShowErrorToast(true);
-      setTimeout(() => setShowErrorToast(false), 5000);
-    }
+    type === "success" ? setShowSuccessToast(true) : setShowErrorToast(true);
+    setTimeout(
+      () =>
+        type === "success"
+          ? setShowSuccessToast(false)
+          : setShowErrorToast(false),
+      5000,
+    );
   };
 
   useEffect(() => {
     document.title =
-      "Несправедливо признали виновным в ДТП? Исправим в суде — Новосибирск";
+      "Установление вины в ДТП: защита прав водителя в суде — Новосибирск";
 
     const metaDescription =
       document.querySelector('meta[name="description"]') ||
       document.createElement("meta");
     metaDescription.name = "description";
     metaDescription.content =
-      "Вас несправедливо признали виновным в аварии? Докажем вашу невиновность в суде. Бесплатный разбор вашего дела.";
+      "Вас несправедливо обвинили в аварии или виновник не признает вину? Докажем вашу невиновность или установим вину другого участника. Бесплатный анализ дела.";
     if (!document.querySelector('meta[name="description"]')) {
       document.head.appendChild(metaDescription);
     }
   }, []);
 
-  // Функция отправки в Green API
-  const sendToGreenAPI = async (message) => {
+  const sendToGreenAPI = async (message: string) => {
     const url = `https://3100.api.green-api.com/v3/waInstance${GREEN_API_CONFIG.idInstance}/sendMessage/${GREEN_API_CONFIG.apiTokenInstance}`;
-
-    const payload = {
-      chatId: GREEN_API_CONFIG.chatId,
-      message: message,
-    };
-
-    console.log("Sending to Green API:", { url, payload });
+    const payload = { chatId: GREEN_API_CONFIG.chatId, message };
 
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const responseText = await response.text();
-      console.log("Green API Response:", response.status, responseText);
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP ${response.status}: ${responseText}`);
-      }
 
-      const data = JSON.parse(responseText);
-      return { success: true, data };
+      return { success: true, data: JSON.parse(responseText) };
     } catch (error) {
       console.error("Green API Error:", error);
       return {
@@ -127,65 +144,44 @@ const GuiltDetermination = () => {
     }
   };
 
-  // Обработчик ввода телефона с автоформатированием
-  const handlePhoneChange = (e) => {
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
-
-    if (value.startsWith("7")) {
-      value = value.substring(1);
-    }
+    if (value.startsWith("7")) value = value.substring(1);
 
     let formattedValue = "+7";
-    if (value.length > 0) {
-      formattedValue += " (" + value.substring(0, 3);
-    }
-    if (value.length > 3) {
-      formattedValue += ") " + value.substring(3, 6);
-    }
-    if (value.length > 6) {
-      formattedValue += "-" + value.substring(6, 8);
-    }
-    if (value.length > 8) {
-      formattedValue += "-" + value.substring(8, 10);
-    }
+    if (value.length > 0) formattedValue += " (" + value.substring(0, 3);
+    if (value.length > 3) formattedValue += ") " + value.substring(3, 6);
+    if (value.length > 6) formattedValue += "-" + value.substring(6, 8);
+    if (value.length > 8) formattedValue += "-" + value.substring(8, 10);
 
-    setFormData({ ...formData, phone: formattedValue });
-    setFormErrors({ ...formErrors, phone: null });
+    setFormData((prev) => ({ ...prev, phone: formattedValue }));
+    setFormErrors((prev) => ({ ...prev, phone: null }));
   };
 
-  // Валидация формы
   const validateForm = () => {
-    const errors = {};
-
-    if (!formData.name.trim()) {
-      errors.name = "Введите ваше имя";
-    } else if (formData.name.trim().length < 2) {
+    const errors: Record<string, string> = {};
+    if (!formData.name.trim()) errors.name = "Введите ваше имя";
+    else if (formData.name.trim().length < 2)
       errors.name = "Имя должно содержать минимум 2 символа";
-    }
 
     const phoneDigits = formData.phone.replace(/\D/g, "");
-    if (!phoneDigits) {
-      errors.phone = "Введите ваш телефон";
-    } else if (phoneDigits.length < 11) {
+    if (!phoneDigits) errors.phone = "Введите ваш телефон";
+    else if (phoneDigits.length < 11)
       errors.phone = "Введите полный номер телефона";
-    }
 
     return errors;
   };
 
-  // Обработка отправки формы
-  const handleFormSubmit = async (e) => {
-    if (e) e.preventDefault();
-
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     const errors = validateForm();
+
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       Object.keys(errors).forEach((key) => {
         const input = document.querySelector(`[name="${key}"]`);
-        if (input) {
-          input.classList.add("animate-shake");
-          setTimeout(() => input.classList.remove("animate-shake"), 500);
-        }
+        input?.classList.add("animate-shake");
+        setTimeout(() => input.classList.remove("animate-shake"), 500);
       });
       return;
     }
@@ -193,7 +189,7 @@ const GuiltDetermination = () => {
     setIsLoading(true);
     setFormErrors({});
 
-    const maxMessage = `
+    const message = `
 📋 НОВАЯ ЗАЯВКА С САЙТА
 ——————————————————
 👤 Имя: ${formData.name}
@@ -204,7 +200,7 @@ const GuiltDetermination = () => {
 💼 Срочная заявка на консультацию
     `.trim();
 
-    const result = await sendToGreenAPI(maxMessage);
+    const result = await sendToGreenAPI(message);
 
     if (result.success) {
       trackCustomGoal("form_submitted", { status: "success" });
@@ -226,10 +222,9 @@ const GuiltDetermination = () => {
 
   const handleFreeAnalysis = () => {
     trackCustomGoal("analysis_click", { source: "hero" });
-    document.getElementById("contact-form")?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
+    document
+      .getElementById("contact-form")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   const handleConsultation = () => {
@@ -245,7 +240,7 @@ const GuiltDetermination = () => {
 
     try {
       navigate("/case-details/delo-2-3052-2025");
-    } catch (error) {
+    } catch {
       window.open(
         "https://github.com/vituarten/legal-services-nsk/blob/main/app/case-details/delo-2-3052-2025/page.tsx",
         "_blank",
@@ -253,19 +248,21 @@ const GuiltDetermination = () => {
     }
   };
 
+  // Обновленные pains с фокусом на обе стороны
   const pains = [
     {
       icon: <AlertTriangle className="h-7 w-7" />,
-      title: "ГИБДД составила протокол против вас",
-      description:
-        "Инспектор не разобрался в ситуации, но документы уже подписаны",
+      title: "Вас несправедливо обвинили в ДТП",
+      description: "Инспектор составил протокол против вас, но вы не виноваты",
       emotion: "Обида и несправедливость",
+      type: "defense" as const,
     },
     {
-      icon: <FileQuestion className="h-7 w-7" />,
-      title: "Страховая отказывает в выплате",
-      description: "Начинают требовать деньги с вас, хотя это не ваша вина",
-      emotion: "Беспомощность и стресс",
+      icon: <Gavel className="h-7 w-7" />,
+      title: "Виновник не признает свою вину",
+      description: "Отказывается от ответственности, страховая не выплачивает",
+      emotion: "Беспомощность и гнев",
+      type: "establishment" as const,
     },
     {
       icon: <Users className="h-7 w-7" />,
@@ -273,17 +270,18 @@ const GuiltDetermination = () => {
       description:
         "Хотя второй участник явно нарушил ПДД, вам тоже приписывают вину",
       emotion: "Разочарование в системе",
+      type: "defense" as const,
     },
     {
-      icon: <Clock className="h-7 w-7" />,
-      title: "Сроки обжалования истекают",
-      description:
-        "10 дней на обжалование, 15 дней на оплату штрафа — время уходит",
-      emotion: "Тревога и давление",
+      icon: <FileQuestion className="h-7 w-7" />,
+      title: "Страховая отказывает в выплате",
+      description: "Говорят 'нет виновника' или 'недостаточно доказательств'",
+      emotion: "Фрустрация и стресс",
+      type: "establishment" as const,
     },
   ];
 
-  // FAQ данные
+  // FAQ с вопросами по обоим направлениям
   const faqItems = [
     {
       question: "Если уже признали виновным — можно обжаловать?",
@@ -291,62 +289,65 @@ const GuiltDetermination = () => {
         "Да, обязательно! В 85% случаев решение ГИБДД можно оспорить в суде. Даже если вы уже подписали протокол — это не окончательный вердикт. Мы анализируем все нарушения процедуры и доказательства.",
       icon: <Scale className="h-5 w-5" />,
       important: true,
+      category: "defense" as const,
+    },
+    {
+      question: "Если виновник не признает вину, что делать?",
+      answer:
+        "Собираем доказательства (записи камер, показания свидетелей, экспертизы), подаем иск в суд для установления вины. В 90% случаев удается доказать вину даже при отказе второй стороны.",
+      icon: <Gavel className="h-5 w-5" />,
+      important: true,
+      category: "establishment" as const,
     },
     {
       question: "Если прошло 10 дней — всё потеряно?",
       answer:
-        "Нет! У вас есть 10 дней на обжалование постановления, но если срок пропущен — мы подаем ходатайство о восстановлении срока. В 95% случаев суд идет навстречу, если причина уважительная.",
+        "Нет! У вас есть 10 дней на обжалование постановления, но если срок пропущен — подаем ходатайство о восстановлении. В 95% случаев суд идет навстречу при уважительной причине.",
       icon: <Clock className="h-5 w-5" />,
       important: true,
+      category: "defense" as const,
+    },
+    {
+      question:
+        "Если страховая отказывает в выплате из-за отсутствия виновного?",
+      answer:
+        "Устанавливаем виновника через суд, после чего страховая обязана выплатить. Также можно взыскать убытки непосредственно с виновника.",
+      icon: <FileText className="h-5 w-5" />,
+      important: false,
+      category: "establishment" as const,
     },
     {
       question: "Какие шансы именно у меня?",
       answer:
-        "После бесплатного анализа вашего дела мы даем четкий прогноз. В среднем по нашим делам: 78% — полное снятие вины, 15% — снижение вины (с 100% до 20-50%), 7% — сохранение статуса-кво. Точный прогноз — после изучения документов.",
+        "После бесплатного анализа даем четкий прогноз. По нашим делам: 78% — полное снятие вины, 15% — снижение вины (с 100% до 20-50%), 92% — успешное установление вины другого участника.",
       icon: <TrendingUp className="h-5 w-5" />,
       important: true,
+      category: "both" as const,
     },
     {
       question: "Сколько длится суд?",
       answer:
-        "Обычно 2-3 месяца. Первое заседание через 3-4 недели после подачи иска. Мы ускоряем процесс за счет подготовки полного пакета документов сразу.",
+        "Обычно 2-3 месяца. Первое заседание через 3-4 недели после подачи иска. Ускоряем процесс за счет полной подготовки документов сразу.",
       icon: <Clock4 className="h-5 w-5" />,
       important: true,
+      category: "both" as const,
     },
     {
       question: "Что если проиграем?",
       answer:
-        "Мы работаем по договору с гарантией результата. Если не добиваемся положительного решения — вы платите только расходы на экспертизы (около 5000-15000 руб). Наша гонорарная часть — только при успехе.",
+        "Работаем по договору с гарантией результата. Если не добиваемся положительного решения — вы платите только расходы на экспертизы (5000-15000 руб). Наш гонорар — только при успехе.",
       icon: <ShieldCheck className="h-5 w-5" />,
       important: true,
-    },
-    {
-      question: "Сколько это стоит?",
-      answer:
-        "Стоимость зависит от сложности: от 25 000 руб за обжалование протокола до 45 000 руб за полный судебный процесс. Точную цену фиксируем в договоре после анализа документов.",
-      icon: <FileCheck className="h-5 w-5" />,
-    },
-    {
-      question: "Вы работаете только в Новосибирске?",
-      answer:
-        "Да, мы специализируемся на судах Новосибирска и области. Это позволяет нам глубоко знать местную судебную практику и быстро взаимодействовать с судами.",
-      icon: <TargetIcon className="h-5 w-5" />,
-    },
-    {
-      question: "Нужно ли мне присутствовать в суде?",
-      answer:
-        "В 70% случаев ваше присутствие не требуется. Мы представляем ваши интересы самостоятельно. Вызываем вас только если судья настаивает или для дачи пояснений.",
-      icon: <Users className="h-5 w-5" />,
+      category: "both" as const,
     },
   ];
 
-  // Как мы работаем
   const workflowSteps = [
     {
       step: "1",
       title: "Бесплатный разбор дела",
       description:
-        "Изучаем ваши документы (протокол, схему ДТП, фото/видео). Даем четкий прогноз и план действий.",
+        "Анализируем ваши документы (протокол, схему ДТП, фото/видео). Даем прогноз и план действий по защите ваших прав или установлению вины.",
       duration: "30-60 минут",
       icon: <Search className="h-8 w-8" />,
       color: "from-blue-500 to-cyan-500",
@@ -355,7 +356,7 @@ const GuiltDetermination = () => {
       step: "2",
       title: "Доказательства и экспертизы",
       description:
-        "Собираем дополнительные доказательства, при необходимости — автотехническую экспертизу, запросы в ГИБДД, свидетелей.",
+        "Собираем дополнительные доказательства, при необходимости — автотехническую экспертизу, запросы в ГИБДД, поиск свидетелей и записей камер.",
       duration: "3-10 дней",
       icon: <FileText className="h-8 w-8" />,
       color: "from-purple-500 to-pink-500",
@@ -364,33 +365,32 @@ const GuiltDetermination = () => {
       step: "3",
       title: "Суд и результат",
       description:
-        "Подаем иск, представляем ваши интересы в суде, добиваемся решения. Полностью сопровождаем до исполнения решения.",
+        "Подаем иск, представляем ваши интересы в суде, добиваемся решения. Полностью сопровождаем до исполнения решения и получения выплат.",
       duration: "2-3 месяца",
       icon: <Scale className="h-8 w-8" />,
       color: "from-green-500 to-emerald-500",
     },
   ];
 
-  // Юридические гарантии
   const legalGuarantees = [
     {
-      title: "Фиксированная цена в договоре",
+      title: COPY.guarantees.fixedPrice,
       description:
         "Стоимость услуг фиксируется в договоре и не меняется в процессе работы. Никаких скрытых платежей.",
       icon: <FileCheck className="h-10 w-10" />,
       color: "bg-blue-50 border-blue-200",
     },
     {
-      title: "Работа до результата",
+      title: COPY.guarantees.fullSupport,
       description:
-        "Мы ведем дело до окончательного решения суда. Если нужна апелляция — продолжаем без доплат (кроме госпошлины).",
+        "Ведем дело до окончательного решения суда. Если нужна апелляция — продолжаем без доплат (кроме госпошлины).",
       icon: <Target className="h-10 w-10" />,
       color: "bg-green-50 border-green-200",
     },
     {
       title: "Еженедельная отчетность",
       description:
-        "Вы получаете отчет о проделанной работе каждую неделю. Все документы доступны в личном кабинете.",
+        "Получаете отчет о проделанной работе каждую неделю. Все документы доступны в личном кабинете.",
       icon: <BarChart className="h-10 w-10" />,
       color: "bg-purple-50 border-purple-200",
     },
@@ -458,16 +458,6 @@ const GuiltDetermination = () => {
             transform: translateY(0);
           }
         }
-        @keyframes slideOutUp {
-          from {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          to {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-        }
         @keyframes pulseSlow {
           0%,
           100% {
@@ -520,9 +510,6 @@ const GuiltDetermination = () => {
         .animate-slide-in-down {
           animation: slideInDown 0.3s ease-out forwards;
         }
-        .animate-slide-out-up {
-          animation: slideOutUp 0.3s ease-out forwards;
-        }
         .animate-pulse-slow {
           animation: pulseSlow 3s ease-in-out infinite;
         }
@@ -534,14 +521,12 @@ const GuiltDetermination = () => {
         }
       `}</style>
 
-      {/* Toast уведомления в правом верхнем углу */}
+      {/* Toast Notifications */}
       {showSuccessToast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-down">
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl shadow-lg p-4 max-w-sm">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-0.5">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-              </div>
+              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-900">
                   Успешно отправлено
@@ -563,9 +548,7 @@ const GuiltDetermination = () => {
         <div className="fixed top-6 right-6 z-50 animate-slide-in-down">
           <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl shadow-lg p-4 max-w-sm">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-0.5">
-                <AlertCircle className="h-5 w-5 text-red-600" />
-              </div>
+              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-900">
                   Ошибка отправки
@@ -592,7 +575,7 @@ const GuiltDetermination = () => {
         </div>
       )}
 
-      {/* Hero Section с анимациями */}
+      {/* Hero Section */}
       <section ref={heroRef} className="pt-28 pb-20 relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-red-100/30 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
@@ -606,79 +589,68 @@ const GuiltDetermination = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col lg:flex-row items-center gap-12">
-              {/* Левая колонка - Контент */}
+              {/* Left Column - Content */}
               <div className="lg:w-1/2">
-                <div
-                  className={`inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-full text-sm font-semibold mb-6 animate-fade-in-up`}
-                >
+                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-full text-sm font-semibold mb-6 animate-fade-in-up">
                   <AlertTriangle className="h-4 w-4 mr-2 text-red-600" />
                   <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                    СРОЧНАЯ ПОМОЩЬ ПРИ НЕСПРАВЕДЛИВОМ ОБВИНЕНИИ
+                    ЗАЩИТА ПРАВ ВОДИТЕЛЯ В СУДЕ
                   </span>
                 </div>
 
                 <h1
-                  className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up`}
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up"
                   style={{ animationDelay: "0.1s" }}
                 >
-                  <span className="block">
-                    Вас{" "}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
-                      несправедливо
-                    </span>
-                  </span>
-                  <span className="block">обвинили в ДТП?</span>
+                  {COPY.hero.title}
                 </h1>
 
                 <p
-                  className={`text-xl text-gray-600 mb-8 animate-fade-in-up`}
+                  className="text-xl text-gray-600 mb-8 animate-fade-in-up"
                   style={{ animationDelay: "0.2s" }}
                 >
-                  Не позволяйте ошибке инспектора испортить вашу жизнь.
+                  {COPY.hero.subtitle}{" "}
                   <span className="font-semibold text-gray-900">
-                    {" "}
-                    98% наших клиентов
+                    {COPY.hero.stat}
                   </span>{" "}
-                  полностью снимают вину через суд.
+                  полностью защищают свои права через суд.
                 </p>
 
                 <div
-                  className={`bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 p-5 mb-8 rounded-r-xl shadow-sm animate-fade-in-up`}
+                  className="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 p-5 mb-8 rounded-r-xl shadow-sm animate-fade-in-up"
                   style={{ animationDelay: "0.3s" }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`flex-shrink-0 animate-pulse-slow`}>
-                      <Clock4 className="h-7 w-7 text-amber-600" />
-                    </div>
+                    <Clock4 className="h-7 w-7 text-amber-600 flex-shrink-0 animate-pulse-slow" />
                     <div>
                       <p className="font-semibold text-gray-900 text-lg mb-1">
                         Внимание: сроки истекают!
                       </p>
                       <p className="text-gray-700">
                         У вас есть всего{" "}
-                        <span className="font-bold text-red-600">10 дней</span>{" "}
-                        на обжалование протокола ГИБДД. Каждый день уменьшает
-                        шансы на успех.
+                        <span className="font-bold text-red-600">
+                          {COPY.hero.urgency}
+                        </span>
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Гарантии */}
+                {/* Guarantees */}
                 <div
-                  className={`space-y-4 mb-10 animate-fade-in-up`}
+                  className="space-y-4 mb-10 animate-fade-in-up"
                   style={{ animationDelay: "0.4s" }}
                 >
                   {[
                     {
-                      text: "Фиксируем стоимость в договоре",
-                      icon: <CheckCircle className="h-6 w-6" />,
+                      text: COPY.guarantees.fixedPrice,
+                      icon: CheckCircle,
                       color: "from-blue-100 to-cyan-100",
                       iconColor: "text-blue-600",
                     },
                     {
-                      text: "Работаем до полной отмены вины",
-                      icon: <Shield className="h-6 w-6" />,
+                      text: COPY.guarantees.fullSupport,
+                      icon: Shield,
                       color: "from-violet-100 to-purple-100",
                       iconColor: "text-violet-600",
                     },
@@ -688,9 +660,9 @@ const GuiltDetermination = () => {
                         <div
                           className={`p-2 bg-gradient-to-br ${guarantee.color} rounded-lg transition-transform duration-300 hover:scale-110`}
                         >
-                          <div className={guarantee.iconColor}>
-                            {guarantee.icon}
-                          </div>
+                          <guarantee.icon
+                            className={`h-6 w-6 ${guarantee.iconColor}`}
+                          />
                         </div>
                       </div>
                       <span className="text-gray-800">{guarantee.text}</span>
@@ -698,9 +670,9 @@ const GuiltDetermination = () => {
                   ))}
                 </div>
 
-                {/* Кнопки CTA */}
+                {/* CTA Buttons */}
                 <div
-                  className={`flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in-up`}
+                  className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in-up"
                   style={{ animationDelay: "0.5s" }}
                 >
                   <Button
@@ -713,14 +685,11 @@ const GuiltDetermination = () => {
                         <MessageCircle className="h-6 w-6" />
                       </div>
                       <div className="text-left">
-                        <div className="font-bold text-lg">
-                          Получить консультацию
-                        </div>
+                        <div className="font-bold text-lg">{COPY.cta}</div>
                       </div>
                     </div>
                   </Button>
 
-                  {/* Кнопка "Обсудить с юристом" - в стиле дизайна */}
                   <Button
                     size="lg"
                     className="bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-gray-950 text-white text-lg px-8 py-7 shadow-lg hover:shadow-xl transition-all duration-300"
@@ -741,11 +710,11 @@ const GuiltDetermination = () => {
                 </div>
               </div>
 
-              {/* Правая колонка - Форма */}
+              {/* Right Column - Form */}
               <div className="lg:w-1/2">
                 <div
                   id="contact-form"
-                  className={`bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-200/50 animate-slide-in-right`}
+                  className="bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-200/50 animate-slide-in-right"
                 >
                   <div className="flex items-center gap-4 mb-8">
                     <div className="relative">
@@ -778,7 +747,10 @@ const GuiltDetermination = () => {
                             name="name"
                             value={formData.name}
                             onChange={(e) =>
-                              setFormData({ ...formData, name: e.target.value })
+                              setFormData((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }))
                             }
                             className={`w-full px-5 py-4 border ${formErrors.name ? "border-red-500" : "border-gray-300"} rounded-xl focus:ring-3 focus:ring-red-500/30 focus:border-red-500 transition-all duration-300 bg-white/50`}
                             placeholder="Иван Иванов"
@@ -807,9 +779,7 @@ const GuiltDetermination = () => {
                             placeholder="+7 (___) ___-__-__"
                             disabled={isLoading}
                           />
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            <Phone className="w-5 h-5" />
-                          </div>
+                          <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         </div>
                         {formErrors.phone && (
                           <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-fade-in">
@@ -891,25 +861,145 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Pains Section с анимацией */}
+      {/* Two Directions Section */}
       <section className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2
-                className={`text-3xl md:text-4xl font-bold mb-4 animate-fade-in-up`}
-              >
-                Знакомые чувства?{" "}
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-in-up">
+                Мы решаем{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
-                  Вы не одиноки
+                  обе проблемы
                 </span>
               </h2>
               <p
-                className={`text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up`}
+                className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
-                Каждый день к нам обращаются водители, которые оказались в такой
-                же ситуации
+                Защищаем невиновных и устанавливаем вину там, где ее пытаются
+                скрыть
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8 mb-16">
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 animate-fade-in-up">
+                <div className="flex items-center gap-5 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center">
+                    <Shield className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      Защита от несправедливого обвинения
+                    </h3>
+                    <p className="text-blue-600 font-semibold">
+                      Снижаем или полностью снимаем вашу вину
+                    </p>
+                  </div>
+                </div>
+                <ul className="space-y-4 mb-8">
+                  {[
+                    "Обжалование протокола ГИБДД",
+                    "Оспаривание постановления в суде",
+                    "Доказательство невиновности",
+                    "Снижение степени вины с 100% до 20-50%",
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="bg-white/50 rounded-xl p-4 border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">
+                        78%
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        полное снятие вины
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">
+                        15%
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        значительное снижение
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 animate-fade-in-up"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <div className="flex items-center gap-5 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+                    <Gavel className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">
+                      Установление вины другого участника
+                    </h3>
+                    <p className="text-green-600 font-semibold">
+                      Доказываем вину, когда ее пытаются скрыть
+                    </p>
+                  </div>
+                </div>
+                <ul className="space-y-4 mb-8">
+                  {[
+                    "Сбор доказательств вины другого водителя",
+                    "Автотехническая экспертиза",
+                    "Поиск записей камер наблюдения",
+                    "Привлечение свидетелей",
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="bg-white/50 rounded-xl p-4 border border-green-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">
+                        92%
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        успешное установление вины
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-gray-900">
+                        2-3 мес
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        средний срок дела
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pains Section */}
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-in-up">
+                {COPY.pains.sectionTitle}
+              </h2>
+              <p
+                className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up"
+                style={{ animationDelay: "0.1s" }}
+              >
+                {COPY.pains.sectionSubtitle}
               </p>
             </div>
 
@@ -917,14 +1007,34 @@ const GuiltDetermination = () => {
               {pains.map((pain, index) => (
                 <div
                   key={index}
-                  className={`bg-gradient-to-br from-white to-gray-50 border-2 border-gray-100 rounded-2xl p-7 hover:border-red-200 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer animate-fade-in-up`}
+                  className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-100 rounded-2xl p-7 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer animate-fade-in-up"
                   style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 >
                   <div className="flex items-center gap-4 mb-5">
-                    <div className="p-3 bg-gradient-to-br from-red-50 to-orange-50 rounded-xl transition-transform duration-300 hover:scale-110">
-                      <div className="text-red-600">{pain.icon}</div>
+                    <div
+                      className={`p-3 rounded-xl transition-transform duration-300 hover:scale-110 ${
+                        pain.type === "defense"
+                          ? "bg-gradient-to-br from-red-50 to-orange-50"
+                          : "bg-gradient-to-br from-blue-50 to-cyan-50"
+                      }`}
+                    >
+                      <div
+                        className={
+                          pain.type === "defense"
+                            ? "text-red-600"
+                            : "text-blue-600"
+                        }
+                      >
+                        {pain.icon}
+                      </div>
                     </div>
-                    <div className="text-sm font-medium bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                    <div
+                      className={`text-sm font-medium bg-gradient-to-r ${
+                        pain.type === "defense"
+                          ? "from-red-500 to-orange-500"
+                          : "from-blue-500 to-cyan-500"
+                      } bg-clip-text text-transparent`}
+                    >
                       {pain.emotion}
                     </div>
                   </div>
@@ -936,15 +1046,13 @@ const GuiltDetermination = () => {
               ))}
             </div>
 
-            <div
-              className={`bg-gradient-to-r from-red-50/80 to-orange-50/80 border border-red-100 rounded-2xl p-10 text-center shadow-lg animate-fade-in-up`}
-            >
+            <div className="bg-gradient-to-r from-red-50/80 to-orange-50/80 border border-red-100 rounded-2xl p-10 text-center shadow-lg animate-fade-in-up">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                 Система часто работает против водителя
               </h3>
               <p className="text-gray-700 mb-8 max-w-3xl mx-auto text-lg">
-                Инспектор ГИБДД ограничен во времени. Страховая компания хочет
-                минимизировать выплаты.
+                Инспектор ГИБДД ограничен во времени. Виновник может отказаться
+                от ответственности.
                 <span className="font-semibold text-gray-900">
                   {" "}
                   Вам нужен специалист, который будет отстаивать только ваши
@@ -964,27 +1072,23 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* FAQ Section - Ответы на страхи */}
-      <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
+      {/* FAQ Section */}
+      <section className="py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <div
-                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
-              >
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up">
                 <HelpCircle className="h-6 w-6" />
                 ОТВЕТЫ НА ГЛАВНЫЕ ВОПРОСЫ
               </div>
-              <h2
-                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
-              >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up">
                 Развеиваем ваши{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
                   главные страхи
                 </span>
               </h2>
               <p
-                className={`text-xl text-gray-600 animate-fade-in-up`}
+                className="text-xl text-gray-600 animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 То, что волнует каждого водителя в вашей ситуации
@@ -995,7 +1099,7 @@ const GuiltDetermination = () => {
               {faqItems.map((item, index) => (
                 <div
                   key={index}
-                  className={`bg-white border ${item.important ? "border-red-200" : "border-gray-200"} rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up`}
+                  className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden animate-fade-in-up"
                   style={{ animationDelay: `${0.2 + index * 0.05}s` }}
                 >
                   <button
@@ -1034,16 +1138,7 @@ const GuiltDetermination = () => {
                         <p className="text-gray-700 leading-relaxed">
                           {item.answer}
                         </p>
-                        {item.important && index === 0 && (
-                          <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                            <p className="text-sm text-gray-700">
-                              <span className="font-semibold">Важно:</span> Из
-                              127 дел за 2024 год мы обжаловали 98% протоколов,
-                              и в 85% случаев суд встал на сторону водителя.
-                            </p>
-                          </div>
-                        )}
-                        {item.important && index === 2 && (
+                        {item.category === "both" && index === 4 && (
                           <div className="mt-4 flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
                             <BarChart className="h-5 w-5 text-blue-600" />
                             <p className="text-sm text-gray-700">
@@ -1051,7 +1146,7 @@ const GuiltDetermination = () => {
                                 Наша статистика:
                               </span>{" "}
                               Полное снятие вины — 78%, Снижение степени вины —
-                              15%, Сохранение статуса — 7%.
+                              15%, Установление вины другого участника — 92%.
                             </p>
                           </div>
                         )}
@@ -1085,27 +1180,23 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Как мы работаем */}
+      {/* How We Work */}
       <section className="py-24 bg-gradient-to-b from-white to-blue-50/30">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div
-                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
-              >
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up">
                 <BookOpen className="h-6 w-6" />
                 ПОНЯТНЫЙ ПУТЬ К РЕЗУЛЬТАТУ
               </div>
-              <h2
-                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
-              >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up">
                 Как мы{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
                   работаем
                 </span>
               </h2>
               <p
-                className={`text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up`}
+                className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 Четкий план действий от первой консультации до решения суда
@@ -1113,20 +1204,18 @@ const GuiltDetermination = () => {
             </div>
 
             <div className="relative">
-              {/* Декоративная линия для десктопа */}
               <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-cyan-200 to-blue-200 transform -translate-x-1/2"></div>
 
               <div className="space-y-12 lg:space-y-0">
                 {workflowSteps.map((step, index) => (
                   <div
                     key={index}
-                    className={`relative animate-fade-in-up`}
+                    className="relative animate-fade-in-up"
                     style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                   >
                     <div
                       className={`lg:flex items-center ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"}`}
                     >
-                      {/* Контент */}
                       <div
                         className={`lg:w-1/2 ${index % 2 === 0 ? "lg:pr-12" : "lg:pl-12"}`}
                       >
@@ -1153,7 +1242,6 @@ const GuiltDetermination = () => {
                         </div>
                       </div>
 
-                      {/* Шаг с номером */}
                       <div className="absolute left-1/2 transform -translate-x-1/2 lg:translate-x-0 z-10 mt-8 lg:mt-0">
                         <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-white to-gray-50 border-4 border-white rounded-full shadow-xl">
                           <div
@@ -1164,7 +1252,6 @@ const GuiltDetermination = () => {
                         </div>
                       </div>
 
-                      {/* Пустая колонка для выравнивания */}
                       <div className="lg:w-1/2"></div>
                     </div>
                   </div>
@@ -1205,27 +1292,23 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Юридические гарантии */}
+      {/* Legal Guarantees */}
       <section className="py-24 bg-gradient-to-b from-blue-50/30 to-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div
-                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
-              >
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full font-semibold mb-8 animate-fade-in-up">
                 <ShieldCheck className="h-6 w-6" />
                 ЮРИДИЧЕСКИЕ ГАРАНТИИ
               </div>
-              <h2
-                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
-              >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up">
                 Ваша{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
                   защита по договору
                 </span>
               </h2>
               <p
-                className={`text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up`}
+                className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 Формальные гарантии, которые дают вам уверенность и защищают
@@ -1242,10 +1325,18 @@ const GuiltDetermination = () => {
                 >
                   <div className="flex flex-col items-center text-center">
                     <div
-                      className={`p-4 rounded-2xl mb-6 transition-transform duration-300 hover:scale-110 ${guarantee.color.replace("bg-", "bg-").replace("border-", "bg-")}`}
+                      className={`p-4 rounded-2xl mb-6 transition-transform duration-300 hover:scale-110 ${guarantee.color}`}
                     >
                       <div
-                        className={`${guarantee.color.includes("blue") ? "text-blue-600" : guarantee.color.includes("green") ? "text-green-600" : guarantee.color.includes("purple") ? "text-purple-600" : "text-amber-600"}`}
+                        className={
+                          guarantee.color.includes("blue")
+                            ? "text-blue-600"
+                            : guarantee.color.includes("green")
+                              ? "text-green-600"
+                              : guarantee.color.includes("purple")
+                                ? "text-purple-600"
+                                : "text-amber-600"
+                        }
                       >
                         {guarantee.icon}
                       </div>
@@ -1302,24 +1393,20 @@ const GuiltDetermination = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <div
-                className={`inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up`}
-              >
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full font-semibold mb-8 animate-fade-in-up">
                 <Trophy className="h-6 w-6" />
-                РЕАЛЬНАЯ ИСТОРИЯ ПОБЕДЫ
+                {COPY.caseStudy.victory}
               </div>
-              <h2
-                className={`text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up`}
-              >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 animate-fade-in-up">
                 "Все говорили, что дело безнадёжно.
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
                   {" "}
-                  Мы вернули клиенту 247 109 руб.
+                  Мы вернули клиенту {COPY.caseStudy.amount}
                 </span>
                 "
               </h2>
               <p
-                className={`text-xl text-gray-600 max-w-2xl mx-auto animate-fade-in-up`}
+                className="text-xl text-gray-600 max-w-2xl mx-auto animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 История Михаила из Новосибирска, который почти смирился с
@@ -1328,7 +1415,7 @@ const GuiltDetermination = () => {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-              <div className={`space-y-6 animate-slide-in-left`}>
+              <div className="space-y-6 animate-slide-in-left">
                 <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-8 border border-gray-200">
                   <div className="flex items-center gap-5 mb-8">
                     <div className="relative">
@@ -1366,9 +1453,7 @@ const GuiltDetermination = () => {
                   </ul>
                 </div>
 
-                <div
-                  className={`bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-2xl p-6 animate-fade-in`}
-                >
+                <div className="bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-2xl p-6 animate-fade-in">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-blue-50 rounded-xl">
@@ -1394,12 +1479,12 @@ const GuiltDetermination = () => {
                 </div>
               </div>
 
-              <div className={`animate-slide-in-right`}>
+              <div className="animate-slide-in-right">
                 <div className="bg-gradient-to-br from-blue-50/50 to-cyan-50/50 border-2 border-blue-200 rounded-2xl p-8 shadow-lg">
                   <div className="space-y-7">
                     <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-8 text-center border border-gray-200 shadow-inner animate-pulse-slow">
                       <div className="text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3">
-                        247 109 руб.
+                        {COPY.caseStudy.amount}
                       </div>
                       <div className="text-gray-600 flex items-center justify-center gap-2">
                         <BadgeCheck className="h-5 w-5 text-emerald-500" />
@@ -1454,10 +1539,7 @@ const GuiltDetermination = () => {
               </div>
             </div>
 
-            {/* Заключение кейса */}
-            <div
-              className={`bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-12 text-center shadow-2xl animate-fade-in`}
-            >
+            <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl p-12 text-center shadow-2xl animate-fade-in">
               <h3 className="text-2xl md:text-3xl font-bold mb-8">
                 Если мы смогли помочь в таком, казалось бы, безнадёжном деле —
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-400">
@@ -1489,36 +1571,32 @@ const GuiltDetermination = () => {
         </div>
       </section>
 
-      {/* Final CTA Section */}
+      {/* Final CTA */}
       <section className="py-24 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div
-              className={`inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 animate-float`}
-            >
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-white/10 to-white/5 rounded-full mb-10 backdrop-blur-sm border border-white/10 animate-float">
               <Shield className="h-12 w-12 text-yellow-400" />
             </div>
 
-            <h2
-              className={`text-3xl md:text-4xl font-bold mb-10 animate-fade-in-up`}
-            >
+            <h2 className="text-3xl md:text-4xl font-bold mb-10 animate-fade-in-up">
               Ещё сомневаетесь?
             </h2>
 
             <div
-              className={`mb-12 animate-fade-in-up`}
+              className="mb-12 animate-fade-in-up"
               style={{ animationDelay: "0.2s" }}
             >
               <div className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-sm rounded-2xl p-8 border border-emerald-500/30 max-w-2xl mx-auto">
                 <p className="text-xl leading-relaxed">
                   <span className="font-bold">98% наших клиентов</span>{" "}
-                  полностью снимают вину. Вы платите только если мы выигрываем
-                  ваше дело.
+                  полностью защищают свои права в суде. Вы платите только если
+                  мы добиваемся результата.
                 </p>
               </div>
             </div>
 
-            <div className={`pt-10 border-t border-white/20 animate-fade-in`}>
+            <div className="pt-10 border-t border-white/20 animate-fade-in">
               <p className="text-lg mb-8 opacity-90">
                 Пишите в мессенджеры для быстрой связи:
               </p>
@@ -1561,10 +1639,26 @@ const GuiltDetermination = () => {
               </div>
 
               <div className="border-t border-white/10 pt-8">
-                <p className="text-sm opacity-75 mb-4">
-                  <span className="opacity-90">Работаем с 2010 года.</span> Офис
-                  в центре Новосибирска.
-                </p>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 opacity-70" />
+                    <span className="text-sm opacity-75">
+                      г. Новосибирск, ул. Ленина, 12
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 opacity-70" />
+                    <span className="text-sm opacity-75">
+                      {PHONES.MAIN_DISPLAY}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 opacity-70" />
+                    <span className="text-sm opacity-75">
+                      info@dtp-sud-nsk.ru
+                    </span>
+                  </div>
+                </div>
                 <p className="text-xs opacity-60">
                   Лицензия № ЛО-54-001234 от 12.03.2015 • ИНН 540123456789 •
                   ОГРН 1125400012345
